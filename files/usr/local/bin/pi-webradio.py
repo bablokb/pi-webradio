@@ -21,9 +21,9 @@ from argparse import ArgumentParser
 # --- application imports   --------------------------------------------------
 
 sys.path.append(os.path.join(
-  os.path.dirname(sys.argv[0]),"../lib","pi-webradio"))
+  os.path.dirname(sys.argv[0]),"../lib"))
 
-import SRWeb
+from webradio import *
 
 # --- helper class for options   --------------------------------------------
 
@@ -66,5 +66,5 @@ if __name__ == '__main__':
     print("DEBUG: pgm_dir directory: %s" % options.pgm_dir)
 
   # start server
-  server = SRWeb.SRWeb(options)
+  server = SRWeb(options)
   server.run()
