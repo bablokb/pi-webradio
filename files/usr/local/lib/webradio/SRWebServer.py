@@ -16,7 +16,7 @@ import os, bottle, json
 from bottle import route
 from gevent import monkey; monkey.patch_all()
 
-class SRWeb(object):
+class WebServer(object):
   """ Serve GUI and process API-requests """
 
   # --- constructor   --------------------------------------------------------
