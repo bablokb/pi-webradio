@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Simple radio: implementation of class Recorder
+# Pi-Webradio: implementation of class Recorder
 #
 # The class Recorder encapsulates the recording functions
 #
@@ -18,7 +18,7 @@
 import threading, os, datetime, urllib.request
 from threading import Thread
 
-from SRBase import Base
+from webradio import Base
 
 class Recorder(Thread,Base):
   """ Recorder-controller """
