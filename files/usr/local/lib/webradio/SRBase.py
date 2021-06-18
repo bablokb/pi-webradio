@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Simple radio: implementation of class Base
+# Pi-Webradio: implementation of class Base
 #
 # The class Base is the root-class of all classes and implements common methods
 #

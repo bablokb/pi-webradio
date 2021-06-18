@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Simple radio: implementation of class Player
+# Pi-Webradio: implementation of class Player
 #
 # The class Player implements the playback device for existing recordings
 #

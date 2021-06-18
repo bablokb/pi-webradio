@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Simple radio: implementation of class Mpg123
+# Pi-Webradio: implementation of class Mpg123
 #
 # The class Mpg123 encapsulates the mpg123-process for playing mp3s.
 #
