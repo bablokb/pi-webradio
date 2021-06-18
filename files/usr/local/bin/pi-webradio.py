@@ -91,9 +91,15 @@ if __name__ == '__main__':
   signal.signal(signal.SIGINT,  app.signal_handler)
 
   if options.do_list:
-    app.radio.print_channels()
+    channels = app.api.radio_get_channels()
+    PRINT_CHANNEL_FMT="{0:2d} {1:14.14s}: {2:s}"
+    i = 1
+    for channel in channels:
+      print(PRINT_CHANNEL_FMT.format(i,*channel))
+      i += 1
+
   elif options.do_record:
-    app.recorder.record(app.radio.get_channel(int(options.channel)-1))
+    app.api.rec_start(app.api.radio_get_channel(nr=int(options.channel)-1))
   else:
     app.run()
     signal.pause()

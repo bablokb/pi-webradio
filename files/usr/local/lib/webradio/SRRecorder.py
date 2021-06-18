@@ -30,12 +30,13 @@ class Recorder(Thread,Base):
     super(Recorder,self).__init__(name="Recorder")
 
     self._app          = app
+    self._api          = app.api
     self.rec_stop      = None
     self._rec_channel  = None
     self._rec_start_dt = None
 
     self.read_config()
-    app.register_funcs(self.get_funcs())
+    self.register_apis()
 
   # --- read configuration   --------------------------------------------------
 
@@ -61,6 +62,15 @@ class Recorder(Thread,Base):
       self._duration = int(self._app.options.duration)
     else:
       self._duration = int(self.get_value(self._app.parser,"RECORD","duration",60))
+
+  # --- register APIs   ------------------------------------------------------
+
+  def register_apis(self):
+    """ register API-functions """
+
+    self._api.rec_start  = self.rec_start
+    self._api.rec_stop   = self.rec_stop
+    #self._api.rec_toggle = self.rec_toggle
 
   # --- return status of recorder   -------------------------------------------
 
@@ -107,7 +117,9 @@ class Recorder(Thread,Base):
                                               (self._rec_channel,self._duration))
       conn = urllib.request.urlopen(request)
       self._rec_start_dt = datetime.datetime.now()
-      while(not self.rec_stop.is_set()):
+      while(not self.rec_stop.is_set() and
+            (datetime.datetime.now()-self._rec_start_dt).total_seconds() <
+                                                           60*self._duration):
         stream.write(conn.read(Recorder.RECORD_CHUNK))
 
     self.debug('recording finished')
@@ -137,7 +149,7 @@ class Recorder(Thread,Base):
 
   # --- start recording   -----------------------------------------------------
 
-  def start_recording(self,channel):
+  def rec_start(self,channel):
     """ start recording (argument is [name,url]-list) """
 
     self.debug("start recording")
@@ -149,7 +161,7 @@ class Recorder(Thread,Base):
 
   # --- stop recording   ------------------------------------------------------
 
-  def stop_recording(self):
+  def rec_stop(self):
     """ stop recording """
 
     self.debug("stop recording")
@@ -159,12 +171,3 @@ class Recorder(Thread,Base):
       self._rec_thread.join()
       self.rec_stop      = None
       self._rec_start_dt = None
-
-  # --- record for the given duration   ---------------------------------------
-
-  def record(self,channel):
-    """ record the given channel (blocks) """
-
-    self.start_recording(channel)
-    if not self.rec_stop.wait(60*self._duration):
-      self.stop_recording()

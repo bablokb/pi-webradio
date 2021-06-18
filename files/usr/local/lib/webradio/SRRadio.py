@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Simple radio: implementation of class Radio
+# Pi-Webradio: implementation of class Radio
 #
-# The class Radio implements the core functionality of simple radio
+# The class Radio implements the core functionality of the web-radio.
 #
 # Author: Bernhard Bablok
 # License: GPL3
@@ -16,7 +16,7 @@ import threading, os, time, datetime, shlex
 import queue, collections
 import threading, signal, subprocess, traceback
 
-from SRBase import Base
+from webradio import *
 
 class Radio(Base):
   """ Radio-controller """
@@ -25,7 +25,7 @@ class Radio(Base):
     """ initialization """
 
     self._app          = app
-    app.register_funcs(self.get_funcs())
+    self._api          = app.api
 
     self._active       = True
     self._channel      = -1                 # current channel index
@@ -34,6 +34,7 @@ class Radio(Base):
     self.stop_event    = app.stop_event
     self._title_toggle = True               # toggle title during recording
     self.read_config()
+    self.register_apis()
     self.read_channels()
 
   # --- read configuration   --------------------------------------------------
@@ -43,10 +44,23 @@ class Radio(Base):
 
     # section [GLOBAL]
     self._debug       = self.get_value(self._app.parser,"GLOBAL", "debug","0") == "1"
-    default_path        = os.path.join(os.path.expanduser("~"),
-                                       "pi-webradio.channels")
+    default_path        = "/etc/pi-webradio.channels"
     self._channel_file  = self.get_value(self._app.parser,"GLOBAL","channel_file",
                                          default_path)
+
+  # --- register APIs   ------------------------------------------------------
+
+  def register_apis(self):
+    """ register API-functions """
+
+    #self._api.radio_on            = self.radio_on
+    #self._api.radio_off           = self.radio_off
+    #self._api.radio_toggle        = self.radio_toggle
+    self._api.radio_get_channels   = self.radio_get_channels
+    self._api.radio_get_channel    = self.radio_get_channel
+    #self._api.radio_play_channel  = self.radio_play_channel
+    #self._api.radio_play_next     = self.radio_play_next
+    #self._api.radio_play_prev     = self.radio_play_prev
 
   # --- return persistent state of this class   -------------------------------
 
@@ -78,10 +92,10 @@ class Radio(Base):
 
   # --- get channel info   ----------------------------------------------------
 
-  def get_channel(self,index):
-    """ return info [name,url] for channel index """
+  def radio_get_channel(self,nr):
+    """ return info [name,url] for channel nr """
 
-    return self._channels[index]
+    return self._channels[nr]
 
   # --- set state   -----------------------------------------------------------
 
@@ -147,16 +161,12 @@ class Radio(Base):
           break
     return lines
 
-  # --- print channel-list   --------------------------------------------------
+  # --- return channel-list   ------------------------------------------------
 
-  def print_channels(self):
-    """ print channels """
+  def radio_get_channels(self):
+    """ return complete channel-list """
 
-    PRINT_CHANNEL_FMT="{0:2d} {1:14.14s}: {2:s}"
-    i = 1
-    for channel in self._channels:
-      print(PRINT_CHANNEL_FMT.format(i,*channel))
-      i += 1
+    return self._channels
 
   # --- switch channel   ------------------------------------------------------
 
