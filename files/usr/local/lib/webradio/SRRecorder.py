@@ -29,10 +29,10 @@ class Recorder(Thread,Base):
     """ initialization """
     super(Recorder,self).__init__(name="Recorder")
 
-    self._app          = app
-    self._api          = app.api
-    self.rec_stop      = None
-    self._rec_start_dt = None
+    self._app            = app
+    self._api            = app.api
+    self._rec_stop_event = None
+    self._rec_start_dt   = None
 
     self.read_config()
     self.register_apis()
@@ -116,13 +116,13 @@ class Recorder(Thread,Base):
       self.debug('recording %s for %d minutes' % (name,self._duration))
       conn = urllib.request.urlopen(request)
       self._rec_start_dt = datetime.datetime.now()
-      while(not self.rec_stop.is_set() and
+      while(not self._rec_stop_event.is_set() and
             (datetime.datetime.now()-self._rec_start_dt).total_seconds() <
                                                            60*self._duration):
         stream.write(conn.read(Recorder.RECORD_CHUNK))
 
     self.debug('recording finished')
-    self.rec_stop.set()
+    self._rec_stop_event.set()
 
   # --- start recording   -----------------------------------------------------
 
@@ -130,10 +130,10 @@ class Recorder(Thread,Base):
     """ start recording (argument is dict {name,url,logo}) """
 
     self.debug("start recording")
-    if self.rec_stop is None:
+    if self._rec_stop_event is None:
       # no recording ongoing, start it
       self._rec_thread = Thread(target=self.record_stream,args=(channel,))
-      self.rec_stop = threading.Event()
+      self._rec_stop_event = threading.Event()
       self._rec_thread.start()
 
   # --- stop recording   ------------------------------------------------------
@@ -142,9 +142,9 @@ class Recorder(Thread,Base):
     """ stop recording """
 
     self.debug("stop recording")
-    if self.rec_stop:
+    if self._rec_stop_event:
       # recording is ongoing, so stop it
-      self.rec_stop.set()
+      self._rec_stop_event.set()
       self._rec_thread.join()
-      self.rec_stop      = None
-      self._rec_start_dt = None
+      self._rec_stop_event = None
+      self._rec_start_dt   = None
