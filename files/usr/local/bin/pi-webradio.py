@@ -95,7 +95,7 @@ if __name__ == '__main__':
     PRINT_CHANNEL_FMT="{0:2d} {1:14.14s}: {2:s}"
     i = 1
     for channel in channels:
-      print(PRINT_CHANNEL_FMT.format(i,*channel))
+      print(PRINT_CHANNEL_FMT.format(i,channel['name'],channel['url']))
       i += 1
 
   elif options.do_record:
