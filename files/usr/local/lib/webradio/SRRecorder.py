@@ -32,7 +32,6 @@ class Recorder(Thread,Base):
     self._app          = app
     self._api          = app.api
     self.rec_stop      = None
-    self._rec_channel  = None
     self._rec_start_dt = None
 
     self.read_config()
@@ -84,11 +83,12 @@ class Recorder(Thread,Base):
   def record_stream(self,channel):
     """ record the given stream """
 
-    self._rec_channel,url = channel
+    name = channel['name']
+    url  = channel['url']
     request = urllib.request.Request(url)
     cur_dt_string = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
     filename = "%s%s%s_%s" % (self._target_dir,os.sep,cur_dt_string,
-                                                             self._rec_channel)
+                                                             name)
 
     content_type = request.get_header('Content-Type')
     if(content_type == 'audio/mpeg'):
@@ -113,8 +113,7 @@ class Recorder(Thread,Base):
       filename += '.mp3'
 
     with open(filename, "wb") as stream:
-      self.debug('recording %s for %d minutes' %
-                                              (self._rec_channel,self._duration))
+      self.debug('recording %s for %d minutes' % (name,self._duration))
       conn = urllib.request.urlopen(request)
       self._rec_start_dt = datetime.datetime.now()
       while(not self.rec_stop.is_set() and
@@ -125,32 +124,10 @@ class Recorder(Thread,Base):
     self.debug('recording finished')
     self.rec_stop.set()
 
-  # --- get title for recordings   -------------------------------------------
-
-  def get_title(self):
-    """ get title during recordings """
-
-    duration = datetime.datetime.now() - self._rec_start_dt
-    duration = int(duration.total_seconds())
-
-    m, s = divmod(duration,60)
-    # check if we have to stop recording
-    # actually, wie should do this elsewhere, but here we have all
-    # the necessary information
-    if m >= self._duration and self.rec_stop:
-      self.rec_stop.set()
-    h, m = divmod(m,60)
-
-    # return either mm:ss or hh:mm
-    if h > 0:
-      return (self._rec_channel,u"{0:02d}*{1:02d}".format(h,m))
-    else:
-      return (self._rec_channel,u"{0:02d}*{1:02d}".format(m,s))
-
   # --- start recording   -----------------------------------------------------
 
   def rec_start(self,channel):
-    """ start recording (argument is [name,url]-list) """
+    """ start recording (argument is dict {name,url,logo}) """
 
     self.debug("start recording")
     if self.rec_stop is None:
