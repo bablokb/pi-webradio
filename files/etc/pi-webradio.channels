@@ -1,16 +1,81 @@
-Bayern 1@http://br-br1-obb.cast.addradio.de/br/br1/obb/mp3/mid
-Bayern 2@http://br-br2-sued.cast.addradio.de/br/br2/sued/mp3/mid
-Bayern 3@http://br-br3-live.cast.addradio.de/br/br3/live/mp3/mid
-BR-Klassik@http://br-brklassik-live.cast.addradio.de/br/brklassik/live/mp3/high
-B5 aktuell@http://br-b5aktuell-live.cast.addradio.de/br/b5aktuell/live/mp3/mid
-MDR KLASSIK@http://mdr-284350-0.cast.mdr.de/mdr/284350/0/mp3/high/stream.mp3
-NDR Kultur@http://ndr-ndrkultur-live.cast.addradio.de/ndr/ndrkultur/live/mp3/128/stream.mp3
-hr2-kultur@http://hr-hr2-live.cast.addradio.de/hr/hr2/live/mp3/128/stream.mp3
-SR 2 Kultur@http://sr2m.akacast.akamaistream.net/7/375/142686/v1/gnl.akacast.akamaistream.net/sr2m
-DLF Kultur@http://st02.dlf.de/dlf/02/128/mp3/stream.mp3
-Kla im Konzert@http://mdr-284311-0.cast.mdr.de/mdr/284311/0/mp3/high/stream.mp3
-Kulturradio@http://rbb-kulturradio-live.cast.addradio.de/rbb/kulturradio/live/mp3/128/stream.mp3
-SWR 2@http://mp3-live.swr.de/swr2_m.m3u
-WDR 3@http://wdr-wdr3-live.icecast.wdr.de/wdr/wdr3/live/mp3/128/stream.mp3
-B 5 plus@http://br-b5plus-live.cast.addradio.de/br/b5plus/live/mp3/mid
-Bayern plus@http://br-bayernplus-live.cast.addradio.de/br/bayernplus/live/mp3/mid
+[
+  { "name": "Bayern 1",
+    "url": "http://br-br1-obb.cast.addradio.de/br/br1/obb/mp3/mid",
+    "logo": "Bayern1.jpg"
+  },
+
+  { "name": "Bayern 2",
+    "url":  "http://br-br2-sued.cast.addradio.de/br/br2/sued/mp3/mid",
+    "logo": "Bayern2.jpg"
+  },
+
+  { "name": "Bayern 3",
+    "url":  "http://br-br3-live.cast.addradio.de/br/br3/live/mp3/mid",
+    "logo": "Bayern3.png"
+  },
+
+  { "name": "BR-Klassik",
+    "url":  "http://br-brklassik-live.cast.addradio.de/br/brklassik/live/mp3/high",
+    "logo": "BR-Klassik.png"
+  },
+
+  { "name": "B5 aktuell",
+    "url":  "http://br-b5aktuell-live.cast.addradio.de/br/b5aktuell/live/mp3/mid",
+    "logo": "B5-Aktuell.png"
+  },
+
+  { "name": "MDR KLASSIK",
+    "url":  "http://mdr-284350-0.cast.mdr.de/mdr/284350/0/mp3/high/stream.mp3",
+    "logo": "logo.jpg"
+  },
+
+  { "name": "NDR Kultur",
+    "url":  "http://ndr-ndrkultur-live.cast.addradio.de/ndr/ndrkultur/live/mp3/128/stream.mp3",
+    "logo": "logo.jpg"
+  },
+
+  { "name": "hr2-kultur",
+    "url":  "http://hr-hr2-live.cast.addradio.de/hr/hr2/live/mp3/128/stream.mp3",
+    "logo": "logo.jpg"
+  },
+
+  { "name": "SR 2 Kultur",
+    "url":  "http://sr2m.akacast.akamaistream.net/7/375/142686/v1/gnl.akacast.akamaistream.net/sr2m",
+    "logo": "logo.jpg"
+  },
+
+  { "name": "DLF Kultur",
+    "url":  "http://st02.dlf.de/dlf/02/128/mp3/stream.mp3",
+    "logo": "logo.jpg"
+  },
+
+  { "name": "Kla im Konzert",
+    "url":  "http://mdr-284311-0.cast.mdr.de/mdr/284311/0/mp3/high/stream.mp3",
+    "logo": "logo.jpg"
+  },
+
+  { "name": "Kulturradio",
+    "url":  "http://rbb-kulturradio-live.cast.addradio.de/rbb/kulturradio/live/mp3/128/stream.mp3",
+    "logo": "logo.jpg"
+  },
+
+  { "name": "SWR 2",
+    "url":  "http://mp3-live.swr.de/swr2_m.m3u",
+    "logo": "logo.jpg"
+  },
+
+  { "name": "WDR 3",
+    "url":  "http://wdr-wdr3-live.icecast.wdr.de/wdr/wdr3/live/mp3/128/stream.mp3",
+    "logo": "logo.jpg"
+  },
+
+  { "name": "B 5 plus",
+    "url":  "http://br-b5plus-live.cast.addradio.de/br/b5plus/live/mp3/mid",
+    "logo": "logo.jpg"
+  },
+
+  { "name": "Bayern plus",
+    "url":  "http://br-bayernplus-live.cast.addradio.de/br/bayernplus/live/mp3/mid",
+    "logo": "logo.jpg"
+  }
+]
