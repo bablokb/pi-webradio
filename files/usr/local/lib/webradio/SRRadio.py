@@ -12,7 +12,7 @@
 #
 # -----------------------------------------------------------------------------
 
-import threading, os, time, datetime, shlex
+import os, time, datetime, shlex, json
 import queue, collections
 import threading, signal, subprocess, traceback
 
@@ -85,15 +85,20 @@ class Radio(Base):
     """ read channels into a list """
 
     self._channels = []
-    with open(self._channel_file) as f:
-      for channel in f:
-        channel = channel.rstrip('\n')
-        self._channels.append(channel.split('@')) # channel: line with name@url
+    try:
+      self.debug("Loading channels from %s" % self._channel_file)
+      f = open(self._channel_file,"r")
+      self._channels = json.load(f)
+      f.close()
+    except:
+      self.debug("Loading channels failed")
+      if self._debug:
+        traceback.print_exc()
 
   # --- get channel info   ----------------------------------------------------
 
   def radio_get_channel(self,nr):
-    """ return info [name,url] for channel nr """
+    """ return info-dict {name,url,logo} for channel nr """
 
     return self._channels[nr]
 
