@@ -103,3 +103,4 @@ if __name__ == '__main__':
   else:
     app.run()
     signal.pause()
+  sys.exit(0)

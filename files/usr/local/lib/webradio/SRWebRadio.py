@@ -216,7 +216,6 @@ class WebRadio(Base):
     map(threading.Thread.join,self._threads)
     self._save_state()
     self.debug("... done stopping program")
-    sys.exit(0)
 
   # --- run method   ----------------------------------------------------------
 
