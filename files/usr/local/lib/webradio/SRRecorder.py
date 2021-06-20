@@ -126,10 +126,11 @@ class Recorder(Thread,Base):
 
   # --- start recording   -----------------------------------------------------
 
-  def rec_start(self,channel):
-    """ start recording (argument is dict {name,url,logo}) """
+  def rec_start(self,nr):
+    """ start recording (argument is channel number) """
 
-    self.debug("start recording")
+    channel = app.api.radio_get_channel(nr)
+    self.debug("start recording of channel %d (%s)" % (nr,channel['name']))
     if self._rec_stop_event is None:
       # no recording ongoing, start it
       self._rec_thread = Thread(target=self.record_stream,args=(channel,))
