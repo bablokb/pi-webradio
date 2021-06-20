@@ -129,7 +129,7 @@ class Recorder(Thread,Base):
   def rec_start(self,nr):
     """ start recording (argument is channel number) """
 
-    channel = app.api.radio_get_channel(nr)
+    channel = self._api.radio_get_channel(nr)
     self.debug("start recording of channel %d (%s)" % (nr,channel['name']))
     if self._rec_stop_event is None:
       # no recording ongoing, start it
