@@ -43,21 +43,23 @@ class WebRadio(Base):
 
     # create all objects
     if options.do_record:
+      self.backend  = None
       self.radio    = Radio(self)
       self.recorder = Recorder(self)
       self._objects = [self,self.radio,self.recorder]
     elif options.do_play:
-      self.radio    = Radio(self)
       self.backend  = Mpg123(self)
+      self.radio    = Radio(self)
       self._objects = [self,self.radio,self.backend]
     elif options.do_list:
+      self.backend  = None
       self.radio    = Radio(self)
       self._objects = [self,self.radio]
     else:
+      self.backend  = Mpg123(self)
       self.radio    = Radio(self)
       self.player   = Player(self)
       self.recorder = Recorder(self)
-      self.backend  = Mpg123(self)
       self._objects = [self,self.radio,self.player,
                        self.recorder,self.backend]
     self._load_state()
@@ -213,7 +215,7 @@ class WebRadio(Base):
     """ signal-handler for clean shutdown """
 
     self.debug("received signal, stopping program ...")
-    if hasattr(self,'backend'):
+    if hasattr(self,'backend') and self.backend:
       self.backend.stop()
     self.stop_event.set()
     self.api.rec_stop()
