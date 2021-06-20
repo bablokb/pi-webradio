@@ -46,6 +46,10 @@ class WebRadio(Base):
       self.radio    = Radio(self)
       self.recorder = Recorder(self)
       self._objects = [self,self.radio,self.recorder]
+    elif options.do_play:
+      self.radio    = Radio(self)
+      self.backend  = Mpg123(self)
+      self._objects = [self,self.radio,self.backend]
     elif options.do_list:
       self.radio    = Radio(self)
       self._objects = [self,self.radio]

@@ -36,8 +36,8 @@ def get_parser():
     description='Pi-Webradio (version: %s)' % VERSION)
 
   parser.add_argument('-p', '--play', action='store_true',
-    dest='do_play', default=True,
-    help="play radio (default)")
+    dest='do_play', default=False,
+    help="play radio (direct, no web-interface, needs channel as argument)")
 
   parser.add_argument('-l', '--list', action='store_true',
     dest='do_list', default=False,
@@ -45,7 +45,7 @@ def get_parser():
 
   parser.add_argument('-r', '--record', action='store_true',
     dest='do_record', default=False,
-    help="record radio (needs channel as argument)")
+    help="record radio (direct, no webinterface, needs channel as argument)")
   parser.add_argument('-t', '--tdir', nargs=1,
     metavar='target directory', default=None,
     dest='target_dir',
@@ -99,7 +99,9 @@ if __name__ == '__main__':
       i += 1
 
   elif options.do_record:
-    app.api.rec_start(app.api.radio_get_channel(nr=int(options.channel)-1))
+    app.api.rec_start(nr=int(options.channel))
+  elif options.do_play:
+    app.api.radio_play_channel(nr=int(options.channel))
   else:
     app.run()
     signal.pause()
