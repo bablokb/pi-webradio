@@ -26,13 +26,11 @@ class Radio(Base):
 
     self._app          = app
     self._api          = app.api
+    self._backend      = app.backend
 
-    self._active       = True
-    self._channel      = -1                 # current channel index
-    self._last_channel = -1                 # last active channel index
-    self._name         = ''
+    self._channel_nr   = 0                  # current channel number
+    self._last_channel = 0                  # last active channel number
     self.stop_event    = app.stop_event
-    self._title_toggle = True               # toggle title during recording
     self.read_config()
     self.register_apis()
     self.read_channels()
@@ -53,21 +51,21 @@ class Radio(Base):
   def register_apis(self):
     """ register API-functions """
 
-    #self._api.radio_on            = self.radio_on
-    #self._api.radio_off           = self.radio_off
-    #self._api.radio_toggle        = self.radio_toggle
+    self._api.radio_on             = self.radio_on
+    self._api.radio_off            = self.radio_off
+    self._api.radio_toggle         = self.radio_toggle
     self._api.radio_get_channels   = self.radio_get_channels
     self._api.radio_get_channel    = self.radio_get_channel
-    #self._api.radio_play_channel  = self.radio_play_channel
-    #self._api.radio_play_next     = self.radio_play_next
-    #self._api.radio_play_prev     = self.radio_play_prev
+    self._api.radio_play_channel   = self.radio_play_channel
+    self._api.radio_play_next      = self.radio_play_next
+    self._api.radio_play_prev      = self.radio_play_prev
 
   # --- return persistent state of this class   -------------------------------
 
   def get_persistent_state(self):
     """ return persistent state (overrides SRBase.get_pesistent_state()) """
     return {
-      'channel_index': self._last_channel
+      'channel_nr': self._last_channel
       }
 
   # --- restore persistent state of this class   ------------------------------
@@ -77,7 +75,7 @@ class Radio(Base):
 
     self.debug("Radio: restoring persistent state")
     if 'channel_index' in state_map:
-      self._last_channel = state_map['channel_index']
+      self._last_channel = state_map['channel_nr']
 
   # --- read channels   -------------------------------------------------------
 
@@ -100,71 +98,7 @@ class Radio(Base):
   def radio_get_channel(self,nr):
     """ return info-dict {name,url,logo} for channel nr """
 
-    return self._channels[nr]
-
-  # --- set state   -----------------------------------------------------------
-
-  def set_state(self,active):
-    """ set state of object """
-
-    self._active = active
-
-    if active:
-      pass
-    else:
-      self._name    = None
-      self._channel = -1
-
-  # --- return active-state of the object   -----------------------------------
-
-  def is_active(self):
-    """ return active-state (overrides SRBase.is_active()) """
-
-    return self._active
-
-  # --- get title-line (1st line of display)   -------------------------------
-
-  def get_title(self):
-    """ return title-line (1st line of display) """
-
-    now = datetime.datetime.now()
-    if self._name and self._app.recorder.is_recording():
-      # listening radio and ongoing recording: toggle title-line
-      if self._title_toggle:
-        self._title_toggle = False
-        return self._app.recorder.get_title()      # delegate to recorder
-      else:
-        self._title_toggle = True
-        return (self._name,now.strftime("%H:%M"))  # provide title ourselves
-    elif self._name:
-      # no recording, just show current channel
-      return (self._name,now.strftime("%H:%M"))
-    elif self._app.recorder.is_recording():
-      # only recording: delegate to recorder
-      return self._app.recorder.get_title()
-    else:
-      # return date + time
-      return (now.strftime("%x"),now.strftime("%H:%M"))
-
-  # --- get content for display   -------------------------------------------
-
-  def get_content(self):
-    """ read icy-data if available """
-
-    lines = []
-    if self._app.mpg123.icy_data:
-      while True:
-        try:
-          line = self._app.mpg123.icy_data.get_nowait()
-          self.debug("get_content: line: %s" % line)
-          lines.append(line)
-        except queue.Empty:
-          break
-        except:
-          if self._debug:
-            traceback.print_exc()
-          break
-    return lines
+    return self._channels[int(nr-1)]
 
   # --- return channel-list   ------------------------------------------------
 
@@ -173,89 +107,81 @@ class Radio(Base):
 
     return self._channels
 
-  # --- switch channel   ------------------------------------------------------
+  # --- play given channel   --------------------------------------------------
 
-  def func_switch_channel(self,nr):
+  def radio_play_channel(self,nr=0):
     """ switch to given channel """
 
-    nr = int(nr)
-    self.debug("switch to channel %d" % nr)
+    if nr == 0:
+      if self._last_channel == 0:
+        nr = 1
+      else:
+        nr = self._last_channel
+
+    channel = app.api.radio_get_channel(nr)
+    self.debug("start playing channel %d (%s)" % (nr,channel['name']))
+
     # check if we have to do anything
-    if nr == (self._channel+1):
+    if nr == self._channel_nr:
       self.debug("already on channel %d" % nr)
       return
-
-    # kill current mpg123 process
-    self._name = None
-    self._channel = -1
-    self._app.mpg123.stop()
-
-    self._channel = min(nr-1,len(self._channels)-1)
-    self._last_channel = self._channel
-    channel_name = self._channels[self._channel][0]
-    channel_url  = self._channels[self._channel][1]
-
-    # display name of channel on display
-    self._name = channel_name
-    self.debug("starting new channel %s" % self._name)
-    self._app.mpg123.start(channel_url,True)
+    else:
+      self._channel_nr   = nr
+      self._last_channel = self._channel_nr
+      channel = self.radio_get_channel(nr)
+      self._backend.play(channel['url'])
 
   # --- switch to next channel   ----------------------------------------------
 
-  def func_next_channel(self,_):
+  def radio_play_next(self):
     """ switch to next channel """
 
     self.debug("switch to next channel")
-    # switch_channel expects a channel-number, while self._channel is
-    # a channel index
-    if self._channel == -1:
-      self.func_switch_channel(1)
+    if self._channel_nr == 0:
+      self.radio_play_channel(1)
+    elif self._channel_nr == len(self._channels):
+      self.radio_play_channel(1)
     else:
-      self.func_switch_channel(1+((self._channel+1) % len(self._channels)))
+      self.radio_play_channel(1+self._channel_nr)
 
   # --- switch to previous channel   ------------------------------------------
 
-  def func_prev_channel(self,_):
+
+  def radio_play_prev(self):
     """ switch to previous channel """
 
     self.debug("switch to previous channel")
-    # switch_channel expects a channel-number, while self._channel is
-    # a channel index
-    if self._channel == -1:
-      self.func_switch_channel(len(self._channels))
+    if self._channel_nr <= 1:
+      self.radio_play_channel(len(self._channels))
     else:
-      self.func_switch_channel(1+((self._channel-1) % len(self._channels)))
+      self.radio_play_channel(self._channel_nr-1)
 
   # --- turn radio off   ------------------------------------------------------
 
-  def func_radio_off(self,_):
+  def radio_off(self):
     """ turn radio off """
 
     self.debug("turning radio off")
-    self._name    = None
-    self._channel = -1
-    self._app.mpg123.stop()
+    self._channel_nr = 0
+    self._backend.stop()
 
   # --- turn radio on   -------------------------------------------------------
 
-  def func_radio_on(self,_):
+  def radio_on(self):
     """ turn radio on """
 
-    if self._channel == -1:
+    if self._channel_nr == 0:
       self.debug("turning radio on")
-      # if last_channel is -1, we just switch to the first channel
-      self.func_switch_channel(max(self._last_channel,0)+1)
+      self.radio_play_channel()
     else:
       self.debug("ignoring command, radio already on")
 
-  # --- toggle recording   ----------------------------------------------------
+  # --- toggle radio state   --------------------------------------------------
 
-  def func_toggle_record(self,_):
-    """ toggle recording """
+  def radio_toggle(self):
+    """ toggle radio state """
 
-    self.debug("toggle recording")
-
-    if self._app.recorder.is_recording():
-      self._app.recorder.stop_recording()
+    if self._channel_nr == 0:
+      self.radio_on()
     else:
-      self._app.recorder.start_recording(self.get_channel(self._channel))
+      self.radio_off()
