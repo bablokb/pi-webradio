@@ -59,9 +59,3 @@ class Base(object):
   def set_persistent_state(self,state_map):
     """ set state (implemented by subclasses) """
     pass
-
-  # --- return active-state of the object   -----------------------------------
-
-  def is_active(self):
-    """ return active-state (overriden by subclasses) """
-    return True
