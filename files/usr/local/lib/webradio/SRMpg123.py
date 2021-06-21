@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 # Pi-Webradio: implementation of class Mpg123
 #
-# The class Mpg123 encapsulates the mpg123-process for playing mp3s.
+# The class Mpg123 encapsulates the mpg123-process for playing MP3s.
 #
 # Author: Bernhard Bablok
 # License: GPL3
@@ -16,7 +16,7 @@ import threading, subprocess, signal, os, shlex, re, traceback
 from threading import Thread
 import queue, collections
 
-from SRBase import Base
+from webradio import Base
 
 class Mpg123(Base):
   """ mpg123 control-object """
@@ -25,7 +25,9 @@ class Mpg123(Base):
     """ initialization """
 
     self._app       = app
+    self._api       = app.api
     self._process   = None
+    self._pause     = False
     self._icy_event = None
 
     self.icy_data   = None
@@ -51,48 +53,58 @@ class Mpg123(Base):
 
     return self._process is not None and self._process.poll() is None
 
-  # --- start to play music   ------------------------------------------------
+  # --- start player in the background in remote-mode   ----------------------
 
-  def start(self,name,radio_mode):
+  def start(self):
     """ spawn new mpg123 process """
 
-    args = ["mpg123"]
+    args = ["mpg123","-R"]
     opts = shlex.split(self._mpg123_opts)
     args += opts
-    if name.endswith(".m3u"):
-      args += ["-@",name]
-    else:
-      args += [name]
 
-    self.debug("with args %r" % (args,))
+    self.debug("starting mpg123 with args %r" % (args,))
+    # start process with line-buffered stdin/stdout
     self._process = subprocess.Popen(args,bufsize=1,
-                                    stdout=subprocess.PIPE,
-                                    stderr=subprocess.STDOUT)
-    if radio_mode:
-      self.icy_data   = queue.Queue()
-      self._icy_event = threading.Event()
-      self._icy_thread = threading.Thread(target=self.read_icy_meta)
-      self._icy_thread.start()
-    else:
-      self._icy_event = None
+                                     universal_newlines=True,
+                                     stdin=subprocess.PIPE,
+                                     stdout=subprocess.PIPE,
+                                     stderr=subprocess.STDOUT)
+    self._reader_thread = Thread(target=self._process_stdout)
+    self._reader_thread.start()
+
+  # --- play URL/file   -------------------------------------------------------
+
+  def play(self,url):
+    """ start playing """
+
+    if self._process:
+      self.debug("starting to play %s" % url)
+      if url.endswith(".m3u"):
+        self._process.stdin.write("LOADLIST 0 %s\n" % url)
+      else:
+        self._process.stdin.write("LOAD %s\n" % url)
 
   # --- pause playing   -------------------------------------------------------
 
   def pause(self):
     """ pause playing """
 
-    self.debug("pausing playback")
-    if self.is_active():
-      self._process.send_signal(signal.SIGSTOP)
+    if self._process:
+      self.debug("pausing playback")
+      if not self._pause:
+        self._process.stdin.write("PAUSE\n")
+        self._pause = True
 
   # --- continue playing   ----------------------------------------------------
 
   def resume(self):
     """ continue playing """
 
-    self.debug("continuing playback")
-    if self.is_active():
-      self._process.send_signal(signal.SIGCONT)
+    if self._process:
+      self.debug("continuing playback")
+      if self._pause:
+        self._process.stdin.write("PAUSE\n")
+        self._pause = False
 
   # --- stop player   ---------------------------------------------------------
 
@@ -100,61 +112,18 @@ class Mpg123(Base):
     """ stop current player """
 
     if self._process:
-      self.debug("stopping player ...")
-      try:
-        self._process.terminate()
-      except:
-        pass
-      self._process = None
-      if self._icy_event:
-        self._icy_event.set()
-        self._icy_thread.join()
-        self._icy_event = None
-        self.icy_data   = None
-        self._app.display.clear_content()
-      self.debug("... done stopping player")
+      self.debug("stopping mpg123 ...")
+      self._process.stdin.write("QUIT\n")
 
-  # --- read ICY-meta-tags during playback   ----------------------------------
+  # --- process output of mpg123   --------------------------------------------
 
-  def read_icy_meta(self):
-    """ read ICY-meta-tags of current playback """
+  def _process_stdout(self):
+    """ read mpg123-output and process it """
 
-    self.debug("starting read_icy_meta")
-
-    regex = re.compile(r".*ICY-META.*?'(.*)';$")
-    try:
-      while True:
-        if self._icy_event.wait(0.01):
-          self.debug("terminating on stop request")
-          break
-        try:
-          data = self._process.stdout.readline()
-          data = data.decode('utf-8')
-        except:
-          self.debug("could not decode: '%s'" % data)
-          self.debug("ignoring data")
-          continue
-        if data == '' and self._process.poll() is not None:
-          # this is an error condition, bail out
-          self.debug("undefined error condition")
-          return
-        if data:
-          self.debug("read_icy_meta: data: %s" % data)
-          if 'error:' in data:
-            line = data.rstrip('\n')
-          else:
-            # parse line
-            (line,count) = regex.subn(r'\1',data)
-            if not count:
-              self.debug("ignoring data")
-              continue
-            else:
-              line = line.rstrip('\n')
-          self.icy_data.put(line)
-          self.icy_data.put(6*'*')
-
-    except:
-      # typically an IO-exception due to closing of stdout
-      if self._debug:
-        traceback.print_exc()
-      pass
+    self.debug("starting mpg123 reader-thread")
+    for line in iter(self._process.stdout.readline,''):
+      if line.startswith("@F"):
+        continue
+      else:
+        self.debug("mpg123: %s" % line)
+    self.debug("stopping mpg123 reader-thread")
