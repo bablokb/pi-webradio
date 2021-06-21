@@ -102,6 +102,7 @@ if __name__ == '__main__':
     app.api.rec_start(nr=int(options.channel))
   elif options.do_play:
     app.api.radio_play_channel(nr=int(options.channel))
+    signal.pause()
   else:
     app.run()
     signal.pause()
