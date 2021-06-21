@@ -118,7 +118,7 @@ class Radio(Base):
       else:
         nr = self._last_channel
 
-    channel = app.api.radio_get_channel(nr)
+    channel = self._api.radio_get_channel(nr)
     self.debug("start playing channel %d (%s)" % (nr,channel['name']))
 
     # check if we have to do anything
