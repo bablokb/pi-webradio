@@ -49,10 +49,12 @@ class WebRadio(Base):
       self._objects = [self,self.radio,self.recorder]
     elif options.do_play:
       self.backend  = Mpg123(self)
+      self.backend.start()
       self.radio    = Radio(self)
       self._objects = [self,self.radio,self.backend]
     elif options.do_list:
       self.backend  = None
+      self.backend.start()
       self.radio    = Radio(self)
       self._objects = [self,self.radio]
     else:
@@ -218,7 +220,8 @@ class WebRadio(Base):
     if hasattr(self,'backend') and self.backend:
       self.backend.stop()
     self.stop_event.set()
-    self.api.rec_stop()
+    if hasattr(self.api,'rec_stop'):
+      self.api.rec_stop()
     map(threading.Thread.join,self._threads)
     self._save_state()
     self.debug("... done stopping program")
