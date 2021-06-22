@@ -74,7 +74,7 @@ class Radio(Base):
     """ restore persistent state (overrides SRBase.set_pesistent_state()) """
 
     self.debug("Radio: restoring persistent state")
-    if 'channel_index' in state_map:
+    if 'channel_nr' in state_map:
       self._last_channel = state_map['channel_nr']
 
   # --- read channels   -------------------------------------------------------

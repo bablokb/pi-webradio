@@ -55,7 +55,7 @@ def get_parser():
     help='print this help')
 
   parser.add_argument('channel', nargs='?', metavar='channel',
-    default=None, help='channel number')
+    default=0, help='channel number')
   parser.add_argument('duration', nargs='?', metavar='duration',
     default=0, help='duration of recording')
   return parser
