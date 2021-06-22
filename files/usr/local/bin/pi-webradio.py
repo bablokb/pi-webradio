@@ -12,7 +12,7 @@
 
 VERSION = "0.1"
 
-import locale, os, sys, signal
+import locale, os, sys, signal, queue, threading
 from   argparse import ArgumentParser
 
 # --- application imports   --------------------------------------------------
@@ -70,6 +70,17 @@ def check_options(options):
     print("[ERROR] record-option (-r) needs channel nummber as argument")
     sys.exit(3)
 
+# --- process events   -------------------------------------------------------
+
+def process_events(queue):
+  while True:
+    ev = queue.get()
+    if ev:
+      print("event: %r" % (ev,))
+      queue.task_done()
+    else:
+      break
+
 # --- main program   ----------------------------------------------------------
 
 if __name__ == '__main__':
@@ -101,6 +112,9 @@ if __name__ == '__main__':
   elif options.do_record:
     app.api.rec_start(nr=int(options.channel))
   elif options.do_play:
+    ev_queue = queue.Queue()
+    app.api.add_consumer("main",ev_queue)
+    threading.Thread(target=process_events,args=(ev_queue,)).start()
     app.api.radio_play_channel(nr=int(options.channel))
     signal.pause()
   else:
