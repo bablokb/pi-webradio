@@ -13,6 +13,7 @@
 
 from . SRBase           import Base           as Base
 from . SRApi           import Api           as Api
+from . SRRadioEvents   import RadioEvents  as RadioEvents
 from . SRRadio           import Radio           as Radio
 from . SRRecorder           import Recorder           as Recorder
 from . SRMpg123           import Mpg123           as Mpg123
