@@ -75,8 +75,10 @@ class RadioEvents(Base):
       except queue.Empty:
         continue
       self.debug("received event: %r" % (event,))
-      for consumer in self._consumers:
+      for consumer in self._consumers.values():
         consumer.put(event)
       self._input_queue.task_done()
 
     self.debug("stopping event-processing")
+    for consumer in self._consumers.values():
+      consumer.put(None)
