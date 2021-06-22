@@ -124,6 +124,12 @@ class Mpg123(Base):
     for line in iter(self._process.stdout.readline,''):
       if line.startswith("@F"):
         continue
+      elif line.startswith("@I ICY-META"):
+        self._api.push_event({'type': 'icy-meta',
+                              'value': line[13:].rstrip("\n")})
+      elif line.startswith("@I ICY-NAME"):
+        self._api.push_event({'type': 'icy-name',
+                              'value': line[13:].rstrip("\n")})
       else:
         self.debug("mpg123: %s" % line)
     self.debug("stopping mpg123 reader-thread")
