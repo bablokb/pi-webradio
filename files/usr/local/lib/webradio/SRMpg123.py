@@ -121,17 +121,16 @@ class Mpg123(Base):
     """ read mpg123-output and process it """
 
     self.debug("starting mpg123 reader-thread")
-    regex = re.compile(r".*ICY-META.*?'([^']*)';.*")
+    regex = re.compile(r".*ICY-META.*?'([^']*)';?.*\n")
     for line in iter(self._process.stdout.readline,''):
       if line.startswith("@F"):
         continue
-      elif line.startswith("@I ICY-META"):
+      self.debug("mpg123: %s" % line)
+      if line.startswith("@I ICY-META"):
         (line,_) = regex.subn(r'\1',line)
         self._api.push_event({'type': 'icy-meta',
                               'value': line})
       elif line.startswith("@I ICY-NAME"):
         self._api.push_event({'type': 'icy-name',
                               'value': line[13:].rstrip("\n")})
-      else:
-        self.debug("mpg123: %s" % line)
     self.debug("stopping mpg123 reader-thread")
