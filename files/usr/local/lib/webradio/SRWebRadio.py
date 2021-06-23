@@ -55,7 +55,6 @@ class WebRadio(Base):
       self._objects = [self,self.radio,self.backend]
     elif options.do_list:
       self.backend  = None
-      self.backend.start()
       self.radio    = Radio(self)
       self._objects = [self,self.radio]
     else:
