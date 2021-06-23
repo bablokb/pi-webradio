@@ -51,6 +51,9 @@ def get_parser():
     dest='target_dir',
     help='target directory for recordings')
 
+  parser.add_argument('-d', '--debug', action='store_true',
+    dest='debug', default=False,
+    help="force debug-mode (overrides config-file)")
   parser.add_argument('-h', '--help', action='help',
     help='print this help')
 
