@@ -26,6 +26,7 @@ class Radio(Base):
 
     self._app          = app
     self._api          = app.api
+    self.debug         = app.debug
     self._backend      = app.backend
 
     self._channel_nr   = 0                  # current channel number
@@ -41,7 +42,6 @@ class Radio(Base):
     """ read configuration from config-file """
 
     # section [GLOBAL]
-    self._debug       = self.get_value(self._app.parser,"GLOBAL", "debug","0") == "1"
     default_path        = "/etc/pi-webradio.channels"
     self._channel_file  = self.get_value(self._app.parser,"GLOBAL","channel_file",
                                          default_path)
@@ -90,7 +90,7 @@ class Radio(Base):
       f.close()
     except:
       self.msg("Loading channels failed")
-      if self._debug:
+      if self. debug:
         traceback.print_exc()
 
   # --- get channel info   ----------------------------------------------------

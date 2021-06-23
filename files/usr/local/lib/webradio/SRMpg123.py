@@ -26,6 +26,7 @@ class Mpg123(Base):
 
     self._app       = app
     self._api       = app.api
+    self.debug      = app.debug
     self._process   = None
     self._pause     = False
     self._icy_event = None
@@ -37,10 +38,6 @@ class Mpg123(Base):
 
   def read_config(self):
     """ read configuration from config-file """
-
-    # section [GLOBAL]
-    self._debug       = self.get_value(self._app.parser,
-                                       "GLOBAL", "debug","0") == "1"
 
     # section [MPG123]
     self._mpg123_opts = self.get_value(self._app.parser,"MPG123",

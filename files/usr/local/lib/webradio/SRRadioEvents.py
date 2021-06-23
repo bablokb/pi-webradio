@@ -24,7 +24,7 @@ class RadioEvents(Base):
     """ initialization """
 
     self._api         = app.api
-    self._debug       = app._debug
+    self.debug        = app.debug
     self._stop_event  = app.stop_event
     self._input_queue = queue.Queue()
     self._consumers   = {}

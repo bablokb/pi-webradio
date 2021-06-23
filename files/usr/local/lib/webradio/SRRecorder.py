@@ -30,6 +30,7 @@ class Recorder(Thread,Base):
     super(Recorder,self).__init__(name="Recorder")
 
     self._app            = app
+    self.debug           = app.debug
     self._api            = app.api
     self._rec_stop_event = None
     self._rec_start_dt   = None
@@ -41,9 +42,6 @@ class Recorder(Thread,Base):
 
   def read_config(self):
     """ read configuration from config-file """
-
-    # section [GLOBAL]
-    self._debug = self.get_value(self._app.parser,"GLOBAL", "debug","0") == "1"
 
     # section [RECORD]
     if not self._app.options.target_dir is None:
@@ -106,7 +104,7 @@ class Recorder(Thread,Base):
         request = urllib.request.Request(url)
         filename += '.mp3'
       else:
-        self._debug("could not parse m3u-playlist")
+        self.msg("could not parse m3u-playlist")
         return
     else:
       self.msg('unknown content type %r. Assuming mp3' % content_type)

@@ -24,6 +24,7 @@ class Player(Base):
     """ initialization """
 
     self._app    = app
+    self.debug   = app.debug
     app.register_funcs(self.get_funcs())
 
     self.set_state(False)
@@ -33,9 +34,6 @@ class Player(Base):
 
   def read_config(self):
     """ read configuration from config-file """
-
-    # section [GLOBAL]
-    self._debug  = self.get_value(self._app.parser,"GLOBAL", "debug","0") == "1"
 
     # section [RECORD]
     if not self._app.options.target_dir is None:

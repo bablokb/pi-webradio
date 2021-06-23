@@ -22,7 +22,7 @@ class Base(object):
   def msg(self,text):
     """ print debug-message """
 
-    if self._debug:
+    if self.debug:
       sys.stderr.write("[DEBUG] %s\n" % text)
       sys.stderr.flush()
 

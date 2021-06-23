@@ -31,14 +31,14 @@ class WebRadio(Base):
     self.parser.optionxform = str
     self.parser.read('/etc/pi-webradio.conf')
 
-    self.read_config()
+    self.read_config(options)
     self._store = os.path.join(os.path.expanduser("~"),".pi-webradio.json")
 
     self._threads    = []                   # thread-store
     self.stop_event  = threading.Event()
 
     # create API-object and register our own functions
-    self.api = Api()
+    self.api = Api(self)
     self.register_apis()
 
     # create all objects
@@ -69,11 +69,14 @@ class WebRadio(Base):
 
   # --- read configuration   -------------------------------------------------
 
-  def read_config(self):
+  def read_config(self,options):
     """ read configuration from config-file """
 
-    # section [GLOBAL]
-    self._debug  = self.get_value(self.parser,"GLOBAL", "debug","0") == "1"
+    if options.debug:
+      self.debug = "1"
+    else:
+      # section [GLOBAL]
+      self.debug  = self.get_value(self.parser,"GLOBAL", "debug","0") == "1"
 
   # --- register APIs   ------------------------------------------------------
 
@@ -124,7 +127,7 @@ class WebRadio(Base):
 
     self.msg("processing sys_halt")
     self.backend.stop()
-    if not self._debug:
+    if not self.debug:
       try:
         os.system("sudo /sbin/halt &")
       except:
@@ -139,7 +142,7 @@ class WebRadio(Base):
 
     self.msg("processing sys_reboot")
     self.backend.stop()
-    if not self._debug:
+    if not self.debug:
       try:
         os.system("sudo /sbin/reboot &")
       except:
@@ -154,7 +157,7 @@ class WebRadio(Base):
 
     self.msg("processing sys_restart")
     self.backend.stop()
-    if not self._debug:
+    if not self.debug:
       try:
         os.system("sudo /bin/systemctl restart pi-webradio.service &")
       except:
@@ -169,7 +172,7 @@ class WebRadio(Base):
 
     self.msg("processing sys_stop")
     self.backend.stop()
-    if not self._debug:
+    if not self.debug:
       try:
         os.system("sudo /bin/systemctl stop pi-webradio.service &")
       except:
@@ -209,7 +212,7 @@ class WebRadio(Base):
       f.close()
     except:
       self.msg("Loading settings failed")
-      if self._debug:
+      if self.debug:
         traceback.print_exc()
 
   # --- setup signal handler   ------------------------------------------------
