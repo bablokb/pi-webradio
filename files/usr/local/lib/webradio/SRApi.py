@@ -17,6 +17,12 @@ from webradio import Base
 class Api(Base):
   """ The class holds References to all API-functions """
 
+  def __init__(self,app):
+    """ initialization """
+
+    self._app          = app
+    self.debug         = app.debug
+
   # --- execute API by name   -------------------------------------------------
 
   def exec(self,name,*args):
