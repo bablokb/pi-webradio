@@ -146,7 +146,7 @@ class Player(Base):
   def _read_recordings(self):
     """ read recordings from configured directory """
 
-    self.debug("reading recordings")
+    self.msg("reading recordings")
 
     self._recordings = []
     for f in os.listdir(self._target_dir):
@@ -178,7 +178,7 @@ class Player(Base):
       self.func_pause('_')
     else:
       # resume from pause
-      self.debug("resuming playback")
+      self.msg("resuming playback")
       self._play_pause = False
       now = datetime.datetime.now()
       self._play_start_dt += (now-self._play_pause_dt)
@@ -191,13 +191,13 @@ class Player(Base):
 
     if not self._app.mpg123.is_active():
       if not self._rec_index is None:
-        self.debug("starting playback")
+        self.msg("starting playback")
         self._play_pause = False
         self._play_start_dt = datetime.datetime.now()
         self._app.mpg123.start(self._recordings[self._rec_index],False)
     elif self._play_pause:
       # resume from pause
-      self.debug("resuming playback")
+      self.msg("resuming playback")
       self._play_pause = False
       now = datetime.datetime.now()
       self._play_start_dt += (now-self._play_pause_dt)
@@ -210,7 +210,7 @@ class Player(Base):
 
     if self._app.mpg123.is_active() and  not self._play_pause:
       # something is playing, so pause now
-      self.debug("pausing playback")
+      self.msg("pausing playback")
       self._play_pause = True
       self._app.mpg123.pause()
       self._play_pause_dt = datetime.datetime.now()
@@ -221,7 +221,7 @@ class Player(Base):
     """ stop playing """
 
     if self._play_start_dt:
-      self.debug("stopping playback")
+      self.msg("stopping playback")
       self._app.mpg123.stop()
       self._play_start_dt = None
 
@@ -231,14 +231,14 @@ class Player(Base):
     """ switch to previous recording """
 
     if self._app.mpg123.is_active():
-      self.debug("playback in progress, ignoring command")
+      self.msg("playback in progress, ignoring command")
     else:
-      self.debug("switch to previous recording")
+      self.msg("switch to previous recording")
       if self._rec_index is None:
         return
       else:
         self._rec_index = (self._rec_index-1) % len(self._recordings)
-        self.debug("current recording: %s" % self._recordings[self._rec_index])
+        self.msg("current recording: %s" % self._recordings[self._rec_index])
         self._set_recinfo()
 
   # --- next recording   ------------------------------------------------------
@@ -247,14 +247,14 @@ class Player(Base):
     """ switch to next recording """
 
     if self._app.mpg123.is_active():
-      self.debug("playback in progress, ignoring command")
-      self.debug("switch to next recording")
+      self.msg("playback in progress, ignoring command")
+      self.msg("switch to next recording")
     else:
       if self._rec_index is None:
         return
       else:
         self._rec_index = (self._rec_index+1) % len(self._recordings)
-        self.debug("current recording: %s" % self._recordings[self._rec_index])
+        self.msg("current recording: %s" % self._recordings[self._rec_index])
         self._set_recinfo()
 
   # --- delete recording   ----------------------------------------------------
@@ -264,9 +264,9 @@ class Player(Base):
 
     if self._rec_index is None:
       return
-    self.debug("deleting current recording")
+    self.msg("deleting current recording")
     self.func_stop_play('-')
-    self.debug("deleting %s" % self._recordings[self._rec_index])
+    self.msg("deleting %s" % self._recordings[self._rec_index])
     os.unlink(self._recordings[self._rec_index])
     del self._recordings[self._rec_index]
     if not len(self._recordings):

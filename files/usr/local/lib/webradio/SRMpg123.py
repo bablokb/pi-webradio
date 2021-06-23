@@ -62,7 +62,7 @@ class Mpg123(Base):
     opts = shlex.split(self._mpg123_opts)
     args += opts
 
-    self.debug("starting mpg123 with args %r" % (args,))
+    self.msg("starting mpg123 with args %r" % (args,))
     # start process with line-buffered stdin/stdout
     self._process = subprocess.Popen(args,bufsize=1,
                                      universal_newlines=True,
@@ -78,7 +78,7 @@ class Mpg123(Base):
     """ start playing """
 
     if self._process:
-      self.debug("starting to play %s" % url)
+      self.msg("starting to play %s" % url)
       if url.endswith(".m3u"):
         self._process.stdin.write("LOADLIST 0 %s\n" % url)
       else:
@@ -90,7 +90,7 @@ class Mpg123(Base):
     """ pause playing """
 
     if self._process:
-      self.debug("pausing playback")
+      self.msg("pausing playback")
       if not self._pause:
         self._process.stdin.write("PAUSE\n")
         self._pause = True
@@ -101,7 +101,7 @@ class Mpg123(Base):
     """ continue playing """
 
     if self._process:
-      self.debug("continuing playback")
+      self.msg("continuing playback")
       if self._pause:
         self._process.stdin.write("PAUSE\n")
         self._pause = False
@@ -112,7 +112,7 @@ class Mpg123(Base):
     """ stop current player """
 
     if self._process:
-      self.debug("stopping mpg123 ...")
+      self.msg("stopping mpg123 ...")
       self._process.stdin.write("QUIT\n")
 
   # --- process output of mpg123   --------------------------------------------
@@ -120,12 +120,12 @@ class Mpg123(Base):
   def _process_stdout(self):
     """ read mpg123-output and process it """
 
-    self.debug("starting mpg123 reader-thread")
+    self.msg("starting mpg123 reader-thread")
     regex = re.compile(r".*ICY-META.*?'([^']*)';?.*\n")
     for line in iter(self._process.stdout.readline,''):
       if line.startswith("@F"):
         continue
-      self.debug("mpg123: %s" % line)
+      self.msg("mpg123: %s" % line)
       if line.startswith("@I ICY-META"):
         (line,_) = regex.subn(r'\1',line)
         self._api.push_event({'type': 'icy-meta',
@@ -133,4 +133,4 @@ class Mpg123(Base):
       elif line.startswith("@I ICY-NAME"):
         self._api.push_event({'type': 'icy-name',
                               'value': line[13:].rstrip("\n")})
-    self.debug("stopping mpg123 reader-thread")
+    self.msg("stopping mpg123 reader-thread")

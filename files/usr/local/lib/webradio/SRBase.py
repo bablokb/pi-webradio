@@ -19,7 +19,7 @@ class Base(object):
 
   # --- print debug messages   ------------------------------------------------
 
-  def debug(self,text):
+  def msg(self,text):
     """ print debug-message """
 
     if self._debug:

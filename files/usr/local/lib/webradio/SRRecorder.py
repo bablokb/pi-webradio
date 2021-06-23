@@ -109,11 +109,11 @@ class Recorder(Thread,Base):
         self._debug("could not parse m3u-playlist")
         return
     else:
-      self.debug('unknown content type %r. Assuming mp3' % content_type)
+      self.msg('unknown content type %r. Assuming mp3' % content_type)
       filename += '.mp3'
 
     with open(filename, "wb") as stream:
-      self.debug('recording %s for %d minutes' % (name,self._duration))
+      self.msg('recording %s for %d minutes' % (name,self._duration))
       conn = urllib.request.urlopen(request)
       self._rec_start_dt = datetime.datetime.now()
       while(not self._rec_stop_event.is_set() and
@@ -121,7 +121,7 @@ class Recorder(Thread,Base):
                                                            60*self._duration):
         stream.write(conn.read(Recorder.RECORD_CHUNK))
 
-    self.debug('recording finished')
+    self.msg('recording finished')
     self._rec_stop_event.set()
 
   # --- start recording   -----------------------------------------------------
@@ -130,7 +130,7 @@ class Recorder(Thread,Base):
     """ start recording (argument is channel number) """
 
     channel = self._api.radio_get_channel(nr)
-    self.debug("start recording of channel %d (%s)" % (nr,channel['name']))
+    self.msg("start recording of channel %d (%s)" % (nr,channel['name']))
     if self._rec_stop_event is None:
       # no recording ongoing, start it
       self._rec_thread = Thread(target=self.record_stream,args=(channel,))
@@ -142,7 +142,7 @@ class Recorder(Thread,Base):
   def rec_stop(self):
     """ stop recording """
 
-    self.debug("stop recording")
+    self.msg("stop recording")
     if self._rec_stop_event:
       # recording is ongoing, so stop it
       self._rec_stop_event.set()

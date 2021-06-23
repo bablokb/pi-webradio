@@ -73,7 +73,7 @@ class Radio(Base):
   def set_persistent_state(self,state_map):
     """ restore persistent state (overrides SRBase.set_pesistent_state()) """
 
-    self.debug("Radio: restoring persistent state")
+    self.msg("Radio: restoring persistent state")
     if 'channel_nr' in state_map:
       self._last_channel = state_map['channel_nr']
 
@@ -84,12 +84,12 @@ class Radio(Base):
 
     self._channels = []
     try:
-      self.debug("Loading channels from %s" % self._channel_file)
+      self.msg("Loading channels from %s" % self._channel_file)
       f = open(self._channel_file,"r")
       self._channels = json.load(f)
       f.close()
     except:
-      self.debug("Loading channels failed")
+      self.msg("Loading channels failed")
       if self._debug:
         traceback.print_exc()
 
@@ -119,11 +119,11 @@ class Radio(Base):
         nr = self._last_channel
 
     channel = self._api.radio_get_channel(nr)
-    self.debug("start playing channel %d (%s)" % (nr,channel['name']))
+    self.msg("start playing channel %d (%s)" % (nr,channel['name']))
 
     # check if we have to do anything
     if nr == self._channel_nr:
-      self.debug("already on channel %d" % nr)
+      self.msg("already on channel %d" % nr)
       return
     else:
       self._api.push_event({'type': 'radio_play_channel', 'value': channel})
@@ -137,7 +137,7 @@ class Radio(Base):
   def radio_play_next(self):
     """ switch to next channel """
 
-    self.debug("switch to next channel")
+    self.msg("switch to next channel")
     if self._channel_nr == 0:
       self.radio_play_channel(1)
     elif self._channel_nr == len(self._channels):
@@ -151,7 +151,7 @@ class Radio(Base):
   def radio_play_prev(self):
     """ switch to previous channel """
 
-    self.debug("switch to previous channel")
+    self.msg("switch to previous channel")
     if self._channel_nr <= 1:
       self.radio_play_channel(len(self._channels))
     else:
@@ -162,7 +162,7 @@ class Radio(Base):
   def radio_off(self):
     """ turn radio off """
 
-    self.debug("turning radio off")
+    self.msg("turning radio off")
     self._channel_nr = 0
     self._backend.stop()
 
@@ -172,10 +172,10 @@ class Radio(Base):
     """ turn radio on """
 
     if self._channel_nr == 0:
-      self.debug("turning radio on")
+      self.msg("turning radio on")
       self.radio_play_channel()
     else:
-      self.debug("ignoring command, radio already on")
+      self.msg("ignoring command, radio already on")
 
   # --- toggle radio state   --------------------------------------------------
 

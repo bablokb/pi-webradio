@@ -23,7 +23,7 @@ class Api(Base):
     """ execute an API by name """
 
     if hasattr(self,name):
-      self.debug("executing: %s(%r)" % (name,(*args,)))
+      self.msg("executing: %s(%r)" % (name,(*args,)))
       getattr(self,name)(*args)
     else:
       raise NotImplementedError("API %s not implemented" % name)

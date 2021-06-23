@@ -93,7 +93,7 @@ class WebRadio(Base):
   def play_mode_start(self):
     """ start player mode """
 
-    self.debug("starting player mode")
+    self.msg("starting player mode")
     self._play_mode = True
     self.api.radio_off()
 
@@ -102,7 +102,7 @@ class WebRadio(Base):
   def play_mode_exit(self):
     """ stop player mode, start radio mode """
 
-    self.debug("stopping player mode")
+    self.msg("stopping player mode")
     self._play_mode = False
     self.api.play_stop()
 
@@ -111,7 +111,7 @@ class WebRadio(Base):
   def play_mode_toggle(self):
     """ toggle player mode """
 
-    self.debug("processing play_mode_toggle")
+    self.msg("processing play_mode_toggle")
     if self._play_mode:
       self.play_mode_exit()
     else:
@@ -122,7 +122,7 @@ class WebRadio(Base):
   def sys_halt(self):
     """ shutdown system """
 
-    self.debug("processing sys_halt")
+    self.msg("processing sys_halt")
     self.backend.stop()
     if not self._debug:
       try:
@@ -130,14 +130,14 @@ class WebRadio(Base):
       except:
         pass
     else:
-      self.debug("no shutdown in debug-mode")
+      self.msg("no shutdown in debug-mode")
 
   # --- reboot system   -----------------------------------------------------
 
   def sys_reboot(self):
     """ reboot system """
 
-    self.debug("processing sys_reboot")
+    self.msg("processing sys_reboot")
     self.backend.stop()
     if not self._debug:
       try:
@@ -145,14 +145,14 @@ class WebRadio(Base):
       except:
         pass
     else:
-      self.debug("no reboot in debug-mode")
+      self.msg("no reboot in debug-mode")
 
   # --- restart service   -----------------------------------------------------
 
   def sys_restart(self):
     """ restart service """
 
-    self.debug("processing sys_restart")
+    self.msg("processing sys_restart")
     self.backend.stop()
     if not self._debug:
       try:
@@ -160,14 +160,14 @@ class WebRadio(Base):
       except:
         pass
     else:
-      self.debug("no restart in debug-mode")
+      self.msg("no restart in debug-mode")
 
   # --- stop service   --------------------------------------------------------
 
   def sys_stop(self):
     """ stop service """
 
-    self.debug("processing sys_stop")
+    self.msg("processing sys_stop")
     self.backend.stop()
     if not self._debug:
       try:
@@ -175,7 +175,7 @@ class WebRadio(Base):
       except:
         pass
     else:
-      self.debug("no restart in debug-mode")
+      self.msg("no restart in debug-mode")
 
   # --- query state of objects and save   -------------------------------------
 
@@ -187,7 +187,7 @@ class WebRadio(Base):
       state[obj.__module__] = obj.get_persistent_state()
 
     f = open(self._store,"w")
-    self.debug("Saving settings to %s" % self._store)
+    self.msg("Saving settings to %s" % self._store)
     json.dump(state,f,indent=2,sort_keys=True)
     f.close()
 
@@ -200,7 +200,7 @@ class WebRadio(Base):
       if not os.path.exists(self._store):
         self._play_mode = False
         return
-      self.debug("Loading settings from %s" % self._store)
+      self.msg("Loading settings from %s" % self._store)
       f = open(self._store,"r")
       state = json.load(f)
       for obj in self._objects:
@@ -208,7 +208,7 @@ class WebRadio(Base):
           obj.set_persistent_state(state[obj.__module__])
       f.close()
     except:
-      self.debug("Loading settings failed")
+      self.msg("Loading settings failed")
       if self._debug:
         traceback.print_exc()
 
@@ -217,7 +217,7 @@ class WebRadio(Base):
   def signal_handler(self,_signo, _stack_frame):
     """ signal-handler for clean shutdown """
 
-    self.debug("received signal, stopping program ...")
+    self.msg("received signal, stopping program ...")
     if hasattr(self,'backend') and self.backend:
       self.backend.stop()
     self.stop_event.set()
@@ -225,7 +225,7 @@ class WebRadio(Base):
       self.api.rec_stop()
     map(threading.Thread.join,self._threads)
     self._save_state()
-    self.debug("... done stopping program")
+    self.msg("... done stopping program")
 
   # --- run method   ----------------------------------------------------------
 
