@@ -104,6 +104,7 @@ if __name__ == '__main__':
   signal.signal(signal.SIGTERM, app.signal_handler)
   signal.signal(signal.SIGINT,  app.signal_handler)
 
+  app.msg("pi-webradio version %s" % app.api.get_version(),force=True)
   if options.do_list:
     channels = app.api.radio_get_channels()
     PRINT_CHANNEL_FMT="{0:2d} {1:14.14s}: {2:s}"
@@ -111,7 +112,6 @@ if __name__ == '__main__':
     for channel in channels:
       print(PRINT_CHANNEL_FMT.format(i,channel['name'],channel['url']))
       i += 1
-
   elif options.do_record:
     app.api.rec_start(nr=int(options.channel))
   elif options.do_play:
