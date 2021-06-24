@@ -72,17 +72,19 @@ class WebRadio(Base):
   def read_config(self,options):
     """ read configuration from config-file """
 
+    # section [GLOBAL]
     if options.debug:
-      self.debug = "1"
+      self.debug = True
     else:
-      # section [GLOBAL]
       self.debug  = self.get_value(self.parser,"GLOBAL", "debug","0") == "1"
+    self._version = self.get_value(self.parser,"GLOBAL", "version","0")
 
   # --- register APIs   ------------------------------------------------------
 
   def register_apis(self):
     """ register API-functions """
 
+    self.api.get_version      = self._get_version
     self.api.sys_restart      = self.sys_restart
     self.api.sys_stop         = self.sys_stop
     self.api.sys_reboot       = self.sys_reboot
@@ -90,6 +92,14 @@ class WebRadio(Base):
     self.api.play_mode_start  = self.play_mode_start
     self.api.play_mode_exit   = self.play_mode_exit
     self.api.play_mode_toggle = self.play_mode_toggle
+
+  # --- return version   ---------------------------------------------------
+
+  def _get_version(self):
+    """ return version """
+
+    self.msg("returning version: %s" % self._version)
+    return self._version
 
   # --- switch to player mode   -----------------------------------------------
 
