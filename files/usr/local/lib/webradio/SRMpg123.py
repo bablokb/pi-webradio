@@ -125,9 +125,9 @@ class Mpg123(Base):
       self.msg("mpg123: %s" % line)
       if line.startswith("@I ICY-META"):
         (line,_) = regex.subn(r'\1',line)
-        self._api.push_event({'type': 'icy-meta',
+        self._api._push_event({'type': 'icy-meta',
                               'value': line})
       elif line.startswith("@I ICY-NAME"):
-        self._api.push_event({'type': 'icy-name',
+        self._api._push_event({'type': 'icy-name',
                               'value': line[13:].rstrip("\n")})
     self.msg("stopping mpg123 reader-thread")

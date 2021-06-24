@@ -126,7 +126,7 @@ class Radio(Base):
       self.msg("already on channel %d" % nr)
       return
     else:
-      self._api.push_event({'type': 'radio_play_channel', 'value': channel})
+      self._api._push_event({'type': 'radio_play_channel', 'value': channel})
       self._channel_nr   = nr
       self._last_channel = self._channel_nr
       channel = self.radio_get_channel(nr)

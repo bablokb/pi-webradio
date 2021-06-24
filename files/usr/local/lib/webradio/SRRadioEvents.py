@@ -36,9 +36,9 @@ class RadioEvents(Base):
   def register_apis(self):
     """ register API-functions """
 
-    self._api.push_event   = self.push_event
-    self._api.add_consumer = self.add_consumer
-    self._api.del_consumer = self.del_consumer
+    self._api._push_event   = self.push_event
+    self._api._add_consumer = self.add_consumer
+    self._api._del_consumer = self.del_consumer
 
   # --- push an event to the input queue   -----------------------------------
 
