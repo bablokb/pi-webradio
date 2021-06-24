@@ -19,12 +19,14 @@ class Base(object):
 
   # --- print debug messages   ------------------------------------------------
 
-  def msg(self,text):
+  def msg(self,text,force=False):
     """ print debug-message """
 
     if self.debug:
       sys.stderr.write("[DEBUG] %s\n" % text)
-      sys.stderr.flush()
+    elif force:
+      sys.stderr.write("%s\n" % text)
+    sys.stderr.flush()
 
   # --- read configuration value   --------------------------------------------
 
