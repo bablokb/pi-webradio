@@ -81,6 +81,15 @@ class Mpg123(Base):
       else:
         self._process.stdin.write("LOAD %s\n" % url)
 
+  # --- stop playing current URL/file   ---------------------------------------
+
+  def stop(self):
+    """ stop playing """
+
+    if self._process:
+      self.msg("Mpg123: stopping current url/file")
+      self._process.stdin.write("STOP\n")
+
   # --- pause playing   -------------------------------------------------------
 
   def pause(self):
@@ -111,6 +120,13 @@ class Mpg123(Base):
     if self._process:
       self.msg("Mpg123: stopping mpg123 ...")
       self._process.stdin.write("QUIT\n")
+      try:
+        self._process.wait(5)
+        self.msg("Mpg123: ... done")
+      except TimeoutExpired:
+        # can't do anything about it
+        self.msg("Mpg123: ... failed stopping mpg123")
+        pass
 
   # --- process output of mpg123   --------------------------------------------
 
