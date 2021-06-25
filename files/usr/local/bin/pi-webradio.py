@@ -10,8 +10,6 @@
 #
 # ----------------------------------------------------------------------------
 
-VERSION = "0.1"
-
 import locale, os, sys, signal, queue, threading
 from   argparse import ArgumentParser
 
@@ -32,8 +30,7 @@ class Options(object):
 def get_parser():
   """ configure cmdline-parser """
 
-  parser = ArgumentParser(add_help=False,
-    description='Pi-Webradio (version: %s)' % VERSION)
+  parser = ArgumentParser(add_help=False,description='Pi-Webradio')
 
   parser.add_argument('-p', '--play', action='store_true',
     dest='do_play', default=False,
@@ -75,7 +72,7 @@ def check_options(options):
 
 # --- process events   -------------------------------------------------------
 
-def process_events(queue):
+def process_events(app,queue):
   while True:
     ev = queue.get()
     if ev:
@@ -83,6 +80,7 @@ def process_events(queue):
       queue.task_done()
     else:
       break
+  app.msg("pi-webradio: finished processing events")
 
 # --- main program   ----------------------------------------------------------
 
@@ -94,7 +92,6 @@ if __name__ == '__main__':
   # parse commandline-arguments
   opt_parser     = get_parser()
   options        = opt_parser.parse_args(namespace=Options)
-  options.version = VERSION
   options.pgm_dir = os.path.dirname(os.path.abspath(__file__))
   check_options(options)
 
@@ -117,7 +114,7 @@ if __name__ == '__main__':
   elif options.do_play:
     ev_queue = queue.Queue()
     app.api._add_consumer("main",ev_queue)
-    threading.Thread(target=process_events,args=(ev_queue,)).start()
+    threading.Thread(target=process_events,args=(app,ev_queue)).start()
     app.api.radio_play_channel(nr=int(options.channel))
     signal.pause()
   else:
