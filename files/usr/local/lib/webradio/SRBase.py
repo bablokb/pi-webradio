@@ -22,10 +22,10 @@ class Base(object):
   def msg(self,text,force=False):
     """ print debug-message """
 
-    if self.debug:
-      sys.stderr.write("[DEBUG] %s\n" % text)
-    elif force:
+    if force:
       sys.stderr.write("%s\n" % text)
+    elif self.debug:
+      sys.stderr.write("[DEBUG] %s\n" % text)
     sys.stderr.flush()
 
   # --- read configuration value   --------------------------------------------
