@@ -61,6 +61,7 @@ class WebRadio(Base):
       self._events  = RadioEvents(self)
       self._server  = WebServer(self)
       self.backend  = Mpg123(self)
+      self.backend.start()
       self.radio    = Radio(self)
 #      self.player   = Player(self)
       self.player   = None
