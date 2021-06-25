@@ -59,11 +59,15 @@ class WebRadio(Base):
       self._objects = [self,self.radio]
     else:
       self._events  = RadioEvents(self)
+      self._server  = WebServer(self)
       self.backend  = Mpg123(self)
       self.radio    = Radio(self)
-      self.player   = Player(self)
+#      self.player   = Player(self)
+      self.player   = None
       self.recorder = Recorder(self)
-      self._objects = [self,self.radio,self.player,
+#      self._objects = [self,self.radio,self.player,
+#                       self.recorder,self.backend]
+      self._objects = [self,self.radio,
                        self.recorder,self.backend]
     self._load_state()
 
@@ -98,7 +102,7 @@ class WebRadio(Base):
   def _get_version(self):
     """ return version """
 
-    self.msg("returning version: %s" % self._version)
+    self.msg("WebRadio: version: %s" % self._version)
     return self._version
 
   # --- switch to player mode   -----------------------------------------------
@@ -106,7 +110,7 @@ class WebRadio(Base):
   def play_mode_start(self):
     """ start player mode """
 
-    self.msg("starting player mode")
+    self.msg("Webradio: starting player mode")
     self._play_mode = True
     self.api.radio_off()
 
@@ -115,7 +119,7 @@ class WebRadio(Base):
   def play_mode_exit(self):
     """ stop player mode, start radio mode """
 
-    self.msg("stopping player mode")
+    self.msg("Webradio: stopping player mode")
     self._play_mode = False
     self.api.play_stop()
 
@@ -124,7 +128,7 @@ class WebRadio(Base):
   def play_mode_toggle(self):
     """ toggle player mode """
 
-    self.msg("processing play_mode_toggle")
+    self.msg("Webradio: processing play_mode_toggle")
     if self._play_mode:
       self.play_mode_exit()
     else:
@@ -135,7 +139,7 @@ class WebRadio(Base):
   def sys_halt(self):
     """ shutdown system """
 
-    self.msg("processing sys_halt")
+    self.msg("Webradio: processing sys_halt")
     self.backend.stop()
     if not self.debug:
       try:
@@ -143,14 +147,14 @@ class WebRadio(Base):
       except:
         pass
     else:
-      self.msg("no shutdown in debug-mode")
+      self.msg("Webradio: no shutdown in debug-mode")
 
   # --- reboot system   -----------------------------------------------------
 
   def sys_reboot(self):
     """ reboot system """
 
-    self.msg("processing sys_reboot")
+    self.msg("Webradio: processing sys_reboot")
     self.backend.stop()
     if not self.debug:
       try:
@@ -158,14 +162,14 @@ class WebRadio(Base):
       except:
         pass
     else:
-      self.msg("no reboot in debug-mode")
+      self.msg("Webradio: no reboot in debug-mode")
 
   # --- restart service   -----------------------------------------------------
 
   def sys_restart(self):
     """ restart service """
 
-    self.msg("processing sys_restart")
+    self.msg("Webradio: processing sys_restart")
     self.backend.stop()
     if not self.debug:
       try:
@@ -173,14 +177,14 @@ class WebRadio(Base):
       except:
         pass
     else:
-      self.msg("no restart in debug-mode")
+      self.msg("Webradio: no restart in debug-mode")
 
   # --- stop service   --------------------------------------------------------
 
   def sys_stop(self):
     """ stop service """
 
-    self.msg("processing sys_stop")
+    self.msg("Webradio: processing sys_stop")
     self.backend.stop()
     if not self.debug:
       try:
@@ -188,7 +192,7 @@ class WebRadio(Base):
       except:
         pass
     else:
-      self.msg("no restart in debug-mode")
+      self.msg("Webradio: no restart in debug-mode")
 
   # --- query state of objects and save   -------------------------------------
 
@@ -200,7 +204,7 @@ class WebRadio(Base):
       state[obj.__module__] = obj.get_persistent_state()
 
     f = open(self._store,"w")
-    self.msg("Saving settings to %s" % self._store)
+    self.msg("WebRadio: Saving settings to %s" % self._store)
     json.dump(state,f,indent=2,sort_keys=True)
     f.close()
 
@@ -213,7 +217,7 @@ class WebRadio(Base):
       if not os.path.exists(self._store):
         self._play_mode = False
         return
-      self.msg("Loading settings from %s" % self._store)
+      self.msg("Webradio: Loading settings from %s" % self._store)
       f = open(self._store,"r")
       state = json.load(f)
       for obj in self._objects:
@@ -221,7 +225,7 @@ class WebRadio(Base):
           obj.set_persistent_state(state[obj.__module__])
       f.close()
     except:
-      self.msg("Loading settings failed")
+      self.msg("Webradio: Loading settings failed")
       if self.debug:
         traceback.print_exc()
 
@@ -230,18 +234,22 @@ class WebRadio(Base):
   def signal_handler(self,_signo, _stack_frame):
     """ signal-handler for clean shutdown """
 
-    self.msg("received signal, stopping program ...")
+    self.msg("Webradio: received signal, stopping program ...")
     if hasattr(self,'backend') and self.backend:
       self.backend.stop()
+    if hasattr(self,'_server') and self._server:
+      self._server.stop()
     self.stop_event.set()
     if hasattr(self.api,'rec_stop'):
       self.api.rec_stop()
     map(threading.Thread.join,self._threads)
     self._save_state()
-    self.msg("... done stopping program")
+    self.msg("Webradio: ... done stopping program")
 
   # --- run method   ----------------------------------------------------------
 
   def run(self):
     """ start all threads and return """
-    pass
+
+    threading.Thread(target=self._server.run).start()
+    self.msg("WebRadio: started web-server")
