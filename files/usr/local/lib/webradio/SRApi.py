@@ -30,6 +30,7 @@ class Api(Base):
 
     if hasattr(self,name):
       self.msg("executing: %s(%r)" % (name,(*args,)))
-      getattr(self,name)(*args)
+      return getattr(self,name)(*args)
     else:
+      self.msg("unknown API-method %s" % name)
       raise NotImplementedError("API %s not implemented" % name)
