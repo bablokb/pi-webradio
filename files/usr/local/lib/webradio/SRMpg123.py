@@ -50,9 +50,9 @@ class Mpg123(Base):
 
     return self._process is not None and self._process.poll() is None
 
-  # --- start player in the background in remote-mode   ----------------------
+  # --- create player in the background in remote-mode   ----------------------
 
-  def start(self):
+  def create(self):
     """ spawn new mpg123 process """
 
     args = ["mpg123","-R"]
@@ -105,8 +105,8 @@ class Mpg123(Base):
 
   # --- stop player   ---------------------------------------------------------
 
-  def stop(self):
-    """ stop current player """
+  def destroy(self):
+    """ destroy current player """
 
     if self._process:
       self.msg("Mpg123: stopping mpg123 ...")

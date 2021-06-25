@@ -50,7 +50,7 @@ class WebRadio(Base):
     elif options.do_play:
       self._events  = RadioEvents(self)
       self.backend  = Mpg123(self)
-      self.backend.start()
+      self.backend.create()
       self.radio    = Radio(self)
       self._objects = [self,self.radio,self.backend]
     elif options.do_list:
@@ -61,7 +61,7 @@ class WebRadio(Base):
       self._events  = RadioEvents(self)
       self._server  = WebServer(self)
       self.backend  = Mpg123(self)
-      self.backend.start()
+      self.backend.create()
       self.radio    = Radio(self)
 #      self.player   = Player(self)
       self.player   = None
@@ -141,7 +141,7 @@ class WebRadio(Base):
     """ shutdown system """
 
     self.msg("Webradio: processing sys_halt")
-    self.backend.stop()
+    self.backend.destroy()
     if not self.debug:
       try:
         os.system("sudo /sbin/halt &")
@@ -156,7 +156,7 @@ class WebRadio(Base):
     """ reboot system """
 
     self.msg("Webradio: processing sys_reboot")
-    self.backend.stop()
+    self.backend.destroy()
     if not self.debug:
       try:
         os.system("sudo /sbin/reboot &")
@@ -171,7 +171,7 @@ class WebRadio(Base):
     """ restart service """
 
     self.msg("Webradio: processing sys_restart")
-    self.backend.stop()
+    self.backend.destroy()
     if not self.debug:
       try:
         os.system("sudo /bin/systemctl restart pi-webradio.service &")
@@ -186,7 +186,7 @@ class WebRadio(Base):
     """ stop service """
 
     self.msg("Webradio: processing sys_stop")
-    self.backend.stop()
+    self.backend.destroy()
     if not self.debug:
       try:
         os.system("sudo /bin/systemctl stop pi-webradio.service &")
@@ -237,7 +237,7 @@ class WebRadio(Base):
 
     self.msg("Webradio: received signal, stopping program ...")
     if hasattr(self,'backend') and self.backend:
-      self.backend.stop()
+      self.backend.destroy()
     if hasattr(self,'_server') and self._server:
       self._server.stop()
     self.stop_event.set()
