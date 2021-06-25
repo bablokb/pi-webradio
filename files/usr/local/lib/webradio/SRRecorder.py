@@ -67,7 +67,7 @@ class Recorder(Thread,Base):
 
     self._api.rec_start  = self.rec_start
     self._api.rec_stop   = self.rec_stop
-    #self._api.rec_toggle = self.rec_toggle
+    self._api.rec_toggle = self.rec_toggle
 
   # --- return status of recorder   -------------------------------------------
 
@@ -147,3 +147,14 @@ class Recorder(Thread,Base):
       self._rec_thread.join()
       self._rec_stop_event = None
       self._rec_start_dt   = None
+
+  # --- toggle recording   ----------------------------------------------------
+
+  def rec_toggle(self,nr=0):
+    """ toggle recording """
+
+    if self._rec_stop_event:
+      # recording is ongoing, so stop it
+      self.rec_stop()
+    else:
+      self.rec_start(nr)
