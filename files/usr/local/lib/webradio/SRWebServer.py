@@ -13,21 +13,77 @@
 # --- System-Imports   -------------------------------------------------------
 
 import os, bottle, json
-from bottle import route
-from gevent import monkey; monkey.patch_all()
+from bottle import route, ServerAdapter
 
-class WebServer(object):
+from webradio import Base
+
+# --- helper class to enable stopping   --------------------------------------
+# (this works around a shortcoming of Bottle)
+
+class StoppableServer(ServerAdapter):
+
+  def run(self, app): # pragma: no cover
+    from wsgiref.simple_server import WSGIRequestHandler, WSGIServer
+    from wsgiref.simple_server import make_server
+    import socket
+
+    class FixedHandler(WSGIRequestHandler):
+      def address_string(self): # Prevent reverse DNS lookups please.
+        return self.client_address[0]
+      def log_request(*args, **kw):
+        if not self.quiet:
+          return WSGIRequestHandler.log_request(*args, **kw)
+
+    handler_cls = self.options.get('handler_class', FixedHandler)
+    server_cls  = self.options.get('server_class', WSGIServer)
+
+    if ':' in self.host: # Fix wsgiref for IPv6 addresses.
+      if getattr(server_cls, 'address_family') == socket.AF_INET:
+        class server_cls(server_cls):
+          address_family = socket.AF_INET6
+
+    self._server = make_server(self.host, self.port, app, server_cls, handler_cls)
+    self._server.serve_forever()
+
+  def stop(self):
+    if hasattr(self,'_server'):
+      self._server.server_close()
+      self._server.shutdown()
+
+# ----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
+
+# --- application web-server class   -----------------------------------------
+
+class WebServer(Base):
   """ Serve GUI and process API-requests """
 
   # --- constructor   --------------------------------------------------------
 
-  def __init__(self,options):
+  def __init__(self,app):
     """ constructor """
 
-    self._options = options
-    self._options.web_root = os.path.realpath(
-      os.path.join(self._options.pgm_dir,"..","lib","pi-webradio","web"))
+    self._app          = app
+    self._api          = app.api
+    self.debug         = app.debug
+
+    self.stop_event    = app.stop_event
+    self.read_config(app.options.pgm_dir)
     self._set_routes()
+
+  # --- read configuration   --------------------------------------------------
+
+  def read_config(self,pgm_dir):
+    """ read configuration from config-file """
+
+    # section [WEB]
+    self._port = int(self.get_value(self._app.parser,"WEB","port",9026))
+    self._host = self.get_value(self._app.parser,"WEB","host","0.0.0.0")
+
+    default_web_root = os.path.realpath(
+      os.path.join(pgm_dir,"..","lib","pi-webradio","web"))
+    self._web_root  = self.get_value(self._app.parser,"WEB","web_root",
+                                         default_web_root)
 
   # --- set up routing   -----------------------------------------------------
 
@@ -41,17 +97,11 @@ class WebServer(object):
     bottle.get('/js/<filepath:path>',callback=self.js_pages)
     bottle.get('/api/<api:path>',callback=self.process_api)
 
-    # utilities and api
-    bottle.get('/version',callback=self.version)
-    bottle.get('/shutdown',callback=self.shutdown)
-    bottle.get('/reboot',callback=self.reboot)
-    bottle.get('/restart',callback=self.restart)
-
   # --- return absolute path of web-files   ----------------------------------
 
   def _get_path(self,path):
     """ absolute path of web-file """
-    return os.path.join(self._options.web_root,path)
+    return os.path.join(self._web_root,path)
 
   # --- static routes   ------------------------------------------------------
 
@@ -70,67 +120,51 @@ class WebServer(object):
     tpl = bottle.SimpleTemplate(name="index.html",lookup=[WEB_ROOT])
     return tpl.render()
 
-  # --- shutdown system   ----------------------------------------------------
-
-  def shutdown(self):
-    """ shutdowne the system """
-
-    if self._options.debug:
-      print("DEBUG: shutting down the system """)
-      os.system("sudo /sbin/halt &")
-
-  # --- rebooting the system   ---------------------------------------------
-
-  def reboot(self):
-    """ rebooting the system """
-
-    if self._options.debug:
-      print("DEBUG: rebooting the system")
-      os.system("sudo /sbin/reboot &")
-
-  # --- restart the service   ------------------------------------------------
-
-  def restart(self):
-    """ restart the service """
-
-    if self._options.debug:
-      print("DEBUG: restarting pi-webradio.service")
-      os.system("sudo /sbin/systemctl restart pi-webradio.service &")
-
-  # --- return version   ---------------------------------------------------
-
-  def version(self):
-    """ return version """
-
-    if self._options.debug:
-      print("DEBUG: method: SRWeb.version()")
-    bottle.response.content_type = 'application/json'
-    return json.dumps(self._options.version)
-
   # --- process API-call   -------------------------------------------------
 
   def process_api(self,api):
     """ process api """
 
-    if self._options.debug:
-      print("DEBUG: processing api-call: %s" % api)
-    bottle.response.content_type = 'application/json'
-    return json.dumps(api)
+    if api.startswith("_"):
+      # internal API, illegal request!
+      self.msg("illegal api-call: %s" % api)
+      pass
+    else:
+      self.msg("processing api-call: %s" % api)
+      try:
+        response = self._api.exec(api)
+        bottle.response.content_type = 'application/json'
+        return json.dumps(response)
+      except NotImplementedError as err:
+        # illegal request!
+        pass
+
+  # --- stop web-server   --------------------------------------------------
+
+  def stop(self):
+    """ stop the web-server """
+
+    self.msg("WebServer: process stop-request")
+    self._server.stop()
 
   # --- service-loop   -----------------------------------------------------
 
   def run(self):
     """ start and run the webserver """
 
-    if self._options.debug:
-      print("DEBUG: web-root directory: %s" % self._options.web_root)
-      print("DEBUG: starting the webserver in debug-mode")
+    self._server = StoppableServer()
+    if self.debug:
+      self.msg("WebServer: starting the web-server in debug-mode")
+      self.msg("WebServer: listening on port %s" % self._port)
+      self.msg("WebServer: using web-root: %s" % self._web_root)
       bottle.run(host='localhost',
-             port=self._options.port[0],
-             debug=True,reloader=True,
-             server='gevent')
+                 port=self._port,
+                 server=self._server,
+                 debug=True,reloader=True)
     else:
-      bottle.run(host=self._options.host[0],
-             port=self._options.port[0],
-             debug=False,reloader=False,
-             server='gevent')
+      bottle.run(host=self._host,
+                 port=self._port,
+                 server=self._server,
+                 debug=False,reloader=False)
+
+    self.msg("WebServer: finished")
