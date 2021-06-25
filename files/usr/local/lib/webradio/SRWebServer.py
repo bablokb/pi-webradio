@@ -152,7 +152,7 @@ class WebServer(Base):
   def run(self):
     """ start and run the webserver """
 
-    self._server = StoppableServer()
+    self._server = StoppableServer(host=self._host,port=self._port)
     if self.debug:
       self.msg("WebServer: starting the web-server in debug-mode")
       self.msg("WebServer: listening on port %s" % self._port)
