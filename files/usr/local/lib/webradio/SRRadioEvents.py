@@ -68,17 +68,18 @@ class RadioEvents(Base):
   def _process_events(self):
     """ pull events from the input-queue and distribute to the consumer queues """
 
-    self.msg("starting event-processing")
+    self.msg("RadioEvents: starting event-processing")
     while not self._stop_event.is_set():
       try:
         event = self._input_queue.get(block=True,timeout=1)   # block 1s
       except queue.Empty:
         continue
-      self.msg("received event: %r" % (event,))
+      self.msg("RadioEvents: received event: %r" % (event,))
       for consumer in self._consumers.values():
         consumer.put(event)
       self._input_queue.task_done()
 
-    self.msg("stopping event-processing")
+    self.msg("RadioEvents: stopping event-processing")
     for consumer in self._consumers.values():
       consumer.put(None)
+    self.msg("RadioEvents: event-processing finished")
