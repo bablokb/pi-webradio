@@ -95,10 +95,16 @@ class Radio(Base):
 
   # --- get channel info   ----------------------------------------------------
 
-  def radio_get_channel(self,nr):
+  def radio_get_channel(self,nr=0):
     """ return info-dict {name,url,logo} for channel nr """
 
-    return self._channels[int(nr-1)]
+    if nr == 0:
+      if self._last_channel == 0:
+        nr = 1
+      else:
+        nr = self._last_channel
+
+    return (nr,self._channels[int(nr-1)])
 
   # --- return channel-list   ------------------------------------------------
 
@@ -112,13 +118,7 @@ class Radio(Base):
   def radio_play_channel(self,nr=0):
     """ switch to given channel """
 
-    if nr == 0:
-      if self._last_channel == 0:
-        nr = 1
-      else:
-        nr = self._last_channel
-
-    channel = self._api.radio_get_channel(nr)
+    nr,channel = self.radio_get_channel(nr)
     self.msg("Radio: start playing channel %d (%s)" % (nr,channel['name']))
 
     # check if we have to do anything
@@ -129,7 +129,6 @@ class Radio(Base):
       self._api._push_event({'type': 'radio_play_channel', 'value': channel})
       self._channel_nr   = nr
       self._last_channel = self._channel_nr
-      channel = self.radio_get_channel(nr)
       self._backend.play(channel['url'])
 
   # --- switch to next channel   ----------------------------------------------
