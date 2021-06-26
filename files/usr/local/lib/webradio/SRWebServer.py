@@ -128,7 +128,10 @@ class WebServer(Base):
     if api.startswith("_"):
       # internal API, illegal request!
       self.msg("illegal api-call: %s" % api)
-      pass
+      msg = '"illegal request /api/%s" % api'
+      bottle.response.content_type = 'application/json'
+      bottle.response.status       = 400                 # bad request
+      return '{"msg": ' + msg +'}'
     else:
       self.msg("processing api-call: %s" % api)
       try:
@@ -136,8 +139,11 @@ class WebServer(Base):
         bottle.response.content_type = 'application/json'
         return json.dumps(response)
       except NotImplementedError as err:
-        # illegal request!
-        pass
+        self.msg("illegal request: /api/%s" % api)
+        msg = '"/api/%s not implemented" % api'
+        bottle.response.content_type = 'application/json'
+        bottle.response.status       = 400                 # bad request
+        return '{"msg": ' + msg +'}'
 
   # --- stop web-server   --------------------------------------------------
 
