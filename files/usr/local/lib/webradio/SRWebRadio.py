@@ -50,7 +50,6 @@ class WebRadio(Base):
     elif options.do_play:
       self._events  = RadioEvents(self)
       self.backend  = Mpg123(self)
-      self.backend.create()
       self.radio    = Radio(self)
       self._objects = [self,self.radio,self.backend]
     elif options.do_list:
@@ -61,7 +60,6 @@ class WebRadio(Base):
       self._events  = RadioEvents(self)
       self._server  = WebServer(self)
       self.backend  = Mpg123(self)
-      self.backend.create()
       self.radio    = Radio(self)
 #      self.player   = Player(self)
       self.player   = None
@@ -71,6 +69,8 @@ class WebRadio(Base):
       self._objects = [self,self.radio,
                        self.recorder,self.backend]
     self._load_state()
+    if self.backend:
+      self.backend.create()
 
   # --- read configuration   -------------------------------------------------
 
