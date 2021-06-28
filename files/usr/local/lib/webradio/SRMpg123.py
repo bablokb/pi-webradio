@@ -29,10 +29,11 @@ class Mpg123(Base):
     self.debug      = app.debug
     self._process   = None
     self._pause     = False
-    self._icy_event = None
+    self._volume    = -1
+    self._mute      = False
 
-    self.icy_data   = None
     self.read_config()
+    self.register_apis()
 
   # --- read configuration   --------------------------------------------------
 
@@ -40,8 +41,44 @@ class Mpg123(Base):
     """ read configuration from config-file """
 
     # section [MPG123]
+    self._vol_default = int(self.get_value(self._app.parser,"MPG123",
+                                       "vol_default",30))
+    self._vol_delta   = int(self.get_value(self._app.parser,"MPG123",
+                                       "vol_delta",5))
     self._mpg123_opts = self.get_value(self._app.parser,"MPG123",
                                        "mpg123_opts","-b 1024")
+
+  # --- register APIs   ------------------------------------------------------
+
+  def register_apis(self):
+    """ register API-functions """
+
+    self._api.vol_up          = self.vol_up
+    self._api.vol_down        = self.vol_down
+    self._api.vol_set         = self.vol_set
+    self._api.vol_mute_on     = self.vol_mute_on
+    self._api.vol_mute_off    = self.vol_mute_off
+    self._api.vol_mute_toggle = self.vol_mute_toggle
+
+  # --- return persistent state of this class   -------------------------------
+
+  def get_persistent_state(self):
+    """ return persistent state (overrides SRBase.get_pesistent_state()) """
+    return {
+      'volume': self._volume
+      }
+
+  # --- restore persistent state of this class   ------------------------------
+
+  def set_persistent_state(self,state_map):
+    """ restore persistent state (overrides SRBase.set_pesistent_state()) """
+
+    self.msg("Mpg123: restoring persistent state")
+    if 'volume' in state_map:
+      self._volume = state_map['volume']
+    else:
+      self._volume = self._vol_default
+    self.msg("Mpg123: volume is: %d" % self._volume)
 
   # --- active-state (return true if playing)   --------------------------------
 
@@ -68,6 +105,7 @@ class Mpg123(Base):
                                      stderr=subprocess.STDOUT)
     self._reader_thread = Thread(target=self._process_stdout)
     self._reader_thread.start()
+    self.vol_set(self._volume)
 
   # --- play URL/file   -------------------------------------------------------
 
@@ -147,3 +185,69 @@ class Mpg123(Base):
         self._api._push_event({'type': 'icy-name',
                               'value': line[13:].rstrip("\n")})
     self.msg("Mpg123: stopping mpg123 reader-thread")
+
+  # --- increase volume   ----------------------------------------------------
+
+  def vol_up(self,by=None):
+    """ increase volume by amount or the pre-configured value """
+
+    if by:
+      amount = max(0,int(by))     # only accept positive values
+    else:
+      amount = self._vol_delta        # use default
+    self._volume = min(100,self._volume + amount)
+    self.vol_set(self._volume)
+
+  # --- decrease volume   ----------------------------------------------------
+
+  def vol_down(self,by=None):
+    """ decrease volume by amount or the pre-configured value """
+
+    if by:
+      amount = max(0,int(amount))     # only accept positive values
+    else:
+      amount = self._vol_delta        # use default
+    self._volume = max(0,self._volume - amount)
+    self.vol_set(self._volume)
+
+  # --- set volume   ---------------------------------------------------------
+
+  def vol_set(self,val):
+    """ set volume """
+
+    val = min(max(0,int(val)),100)
+    self._volume = val
+    if self._process:
+      self.msg("Mpg123: setting current volume to: %d%%" % val)
+      self._process.stdin.write("VOLUME %d\n" % val)
+      self._api._push_event({'type': 'vol_set',
+                              'value': self._volume})
+
+  # --- mute on  -------------------------------------------------------------
+
+  def vol_mute_on(self):
+    """ activate mute (i.e. set volume to zero) """
+
+    if not self._mute:
+      self._vol_old = self._volume
+      self._mute    = True
+      self.vol_set(0)
+
+  # --- mute off  ------------------------------------------------------------
+
+  def vol_mute_off(self):
+    """ deactivate mute (i.e. set volume to last value) """
+
+    if self._mute:
+      self._mute = False
+      self.vol_set(self._vol_old)
+
+  # --- mute toggle   --------------------------------------------------------
+
+  def vol_mute_toggle(self):
+    """ toggle mute """
+
+    if self._mute:
+      self.vol_mute_off()
+    else:
+      self.vol_mute_on()
