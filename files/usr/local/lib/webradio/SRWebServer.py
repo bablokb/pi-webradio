@@ -12,7 +12,7 @@
 
 # --- System-Imports   -------------------------------------------------------
 
-import os, bottle, json
+import os, bottle, json, traceback
 from bottle import route, ServerAdapter
 
 from webradio import Base
@@ -135,7 +135,7 @@ class WebServer(Base):
     else:
       self.msg("processing api-call: %s" % api)
       try:
-        response = self._api.exec(api)
+        response = self._api.exec(api,**bottle.request.query)
         bottle.response.content_type = 'application/json'
         return json.dumps(response)
       except NotImplementedError as err:
@@ -143,6 +143,13 @@ class WebServer(Base):
         msg = '"/api/%s not implemented" % api'
         bottle.response.content_type = 'application/json'
         bottle.response.status       = 400                 # bad request
+        return '{"msg": ' + msg +'}'
+      except Exception as ex:
+        self.msg("exception while calling: /api/%s" % api)
+        traceback.print_exc()
+        msg = '"internal server error"'
+        bottle.response.content_type = 'application/json'
+        bottle.response.status       = 500                 # internal error
         return '{"msg": ' + msg +'}'
 
   # --- stop web-server   --------------------------------------------------
