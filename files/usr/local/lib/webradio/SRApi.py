@@ -25,12 +25,12 @@ class Api(Base):
 
   # --- execute API by name   -------------------------------------------------
 
-  def exec(self,name,*args):
+  def exec(self,name,**args):
     """ execute an API by name """
 
     if hasattr(self,name):
-      self.msg("executing: %s(%r)" % (name,(*args,)))
-      return getattr(self,name)(*args)
+      self.msg("executing: %s(%r)" % (name,dict(**args)))
+      return getattr(self,name)(**args)
     else:
       self.msg("unknown API-method %s" % name)
       raise NotImplementedError("API %s not implemented" % name)
