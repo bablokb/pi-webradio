@@ -14,15 +14,7 @@ $fs = 0.4;
 w4 = 1.67;    // wall thickness 4 layers
 fuzz = 0.001; // fuzzing to ensure overlap
 
-// --- module cyl_00: noncentered cylinder   -----------------------------------
-
-module cyl_00(h,d,plane="xy") {
-  r00 = d/2.0;
-  if (plane == "xy")
-    translate([r00,r00,0]) cylinder(h=h,r=r00,center=false);
-  else if (plane == "yz")
-    translate([0,h,0]) rotate([90,0,0]) cyl_00(h,d);
-}
+use <cyl_00.scad>
 
 // --- module screw_plate: inner plate for screw   -----------------------------
 
