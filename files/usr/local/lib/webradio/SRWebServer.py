@@ -81,7 +81,7 @@ class WebServer(Base):
     self._host = self.get_value(self._app.parser,"WEB","host","0.0.0.0")
 
     default_web_root = os.path.realpath(
-      os.path.join(pgm_dir,"..","lib","pi-webradio","web"))
+      os.path.join(pgm_dir,"..","lib","webradio","web"))
     self._web_root  = self.get_value(self._app.parser,"WEB","web_root",
                                          default_web_root)
 
@@ -93,6 +93,7 @@ class WebServer(Base):
     # web-interface (GUI)
     bottle.get('/',callback=self.main_page)
     bottle.get('/css/<filepath:path>',callback=self.css_pages)
+    bottle.get('/webfonts/<filepath:path>',callback=self.webfonts)
     bottle.get('/images/<filepath:path>',callback=self.images)
     bottle.get('/js/<filepath:path>',callback=self.js_pages)
     bottle.get('/api/<api:path>',callback=self.process_api)
@@ -107,17 +108,20 @@ class WebServer(Base):
 
   def css_pages(self,filepath):
     return bottle.static_file(filepath, root=self._get_path('css'))
+
+  def webfonts(self,filepath):
+    return bottle.static_file(filepath, root=self._get_path('webfonts'))
   
   def images(self,filepath):
-      return bottle.static_file(filepath, root=self._get_path('images'))
+    return bottle.static_file(filepath, root=self._get_path('images'))
   
   def js_pages(self,filepath):
-      return bottle.static_file(filepath, root=self._get_path('js'))
+    return bottle.static_file(filepath, root=self._get_path('js'))
   
   # --- main page   ----------------------------------------------------------
 
   def main_page(self):
-    tpl = bottle.SimpleTemplate(name="index.html",lookup=[WEB_ROOT])
+    tpl = bottle.SimpleTemplate(name="index.html",lookup=[self._web_root])
     return tpl.render()
 
   # --- process API-call   -------------------------------------------------
