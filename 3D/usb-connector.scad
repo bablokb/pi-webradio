@@ -40,5 +40,3 @@ module usb_conn() {
     translate([4.17,11+7+15-4*fuzz,6.6+fuzz]) cube([13,7.5+5*fuzz,7.7]);
   }
 }
-
-usb_conn();

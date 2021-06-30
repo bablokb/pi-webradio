@@ -23,5 +23,3 @@ module hdmi_conn() {
     translate([8.25,26.5-fuzz/2,6.6-fuzz/2]) cube([15.30,1.67+fuzz,6.4+fuzz]);
   }
 }
-
-hdmi_conn();
