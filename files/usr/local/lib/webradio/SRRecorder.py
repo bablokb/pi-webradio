@@ -111,7 +111,10 @@ class Recorder(Thread,Base):
       filename += '.mp3'
 
     with open(filename, "wb") as stream:
-      self.msg('Recorder: recording %s for %d minutes' % (name,self._duration))
+      msg = 'recording %s for %d minutes' % (name,self._duration)
+      self.msg('Recorder: %s' % msg)
+      self._api._push_event({'type': 'rec_start',
+                             'value': msg})
       conn = urllib.request.urlopen(request)
       self._rec_start_dt = datetime.datetime.now()
       while(not self._rec_stop_event.is_set() and
