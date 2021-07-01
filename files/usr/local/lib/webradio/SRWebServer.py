@@ -177,7 +177,7 @@ class WebServer(Base):
       bottle.run(host='localhost',
                  port=self._port,
                  server=self._server,
-                 debug=True,reloader=True)
+                 debug=True,reloader=False)
     else:
       bottle.run(host=self._host,
                  port=self._port,
