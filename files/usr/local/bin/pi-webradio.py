@@ -109,15 +109,16 @@ if __name__ == '__main__':
     for channel in channels:
       print(PRINT_CHANNEL_FMT.format(i,channel['name'],channel['url']))
       i += 1
-  elif options.do_record:
-    app.api.rec_start(nr=int(options.channel))
-  elif options.do_play:
+  else:
     ev_queue = queue.Queue()
     app.api._add_consumer("main",ev_queue)
     threading.Thread(target=process_events,args=(app,ev_queue)).start()
-    app.api.radio_play_channel(nr=int(options.channel))
-    signal.pause()
-  else:
-    app.run()
-    signal.pause()
+    if options.do_record:
+      app.api.rec_start(nr=int(options.channel))
+    elif options.do_play:
+      app.api.radio_play_channel(nr=int(options.channel))
+      signal.pause()
+    else:
+      app.run()
+      signal.pause()
   sys.exit(0)
