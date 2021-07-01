@@ -111,10 +111,10 @@ class Recorder(Thread,Base):
       filename += '.mp3'
 
     with open(filename, "wb") as stream:
-      msg = 'recording %s for %d minutes' % (name,self._duration)
-      self.msg('Recorder: %s' % msg)
+      self.msg('Recorder: recording %s for %d minutes' % (name,self._duration))
       self._api._push_event({'type': 'rec_start',
-                             'value': msg})
+                             'value': {'name': name,
+                                       'duration': self._duration}})
       conn = urllib.request.urlopen(request)
       self._rec_start_dt = datetime.datetime.now()
       while(not self._rec_stop_event.is_set() and
@@ -122,7 +122,11 @@ class Recorder(Thread,Base):
                                                            60*self._duration):
         stream.write(conn.read(Recorder.RECORD_CHUNK))
 
+    duration = int((datetime.datetime.now()-self._rec_start_dt).total_seconds()/60)
     self.msg('Recorder: recording finished')
+    self._api._push_event({'type': 'rec_stop',
+                             'value': {'file': filename,
+                                       'duration': duration}})
     self._rec_stop_event.set()
 
   # --- start recording   -----------------------------------------------------
