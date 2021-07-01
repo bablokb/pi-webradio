@@ -51,6 +51,9 @@ def get_parser():
   parser.add_argument('-d', '--debug', action='store_true',
     dest='debug', default=False,
     help="force debug-mode (overrides config-file)")
+  parser.add_argument('-q', '--quiet', action='store_true',
+    dest='quiet', default=False,
+    help="don't print messages")
   parser.add_argument('-h', '--help', action='help',
     help='print this help')
 
@@ -110,9 +113,10 @@ if __name__ == '__main__':
       print(PRINT_CHANNEL_FMT.format(i,channel['name'],channel['url']))
       i += 1
   else:
-    ev_queue = queue.Queue()
-    app.api._add_consumer("main",ev_queue)
-    threading.Thread(target=process_events,args=(app,ev_queue)).start()
+    if not options.quiet:
+      ev_queue = queue.Queue()
+      app.api._add_consumer("main",ev_queue)
+      threading.Thread(target=process_events,args=(app,ev_queue)).start()
     if options.do_record:
       app.api.rec_start(nr=int(options.channel))
     elif options.do_play:
