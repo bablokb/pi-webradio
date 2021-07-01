@@ -13,11 +13,7 @@ $fs = 0.4;
 
 fuzz = 0.001;
 
-use <MCAD/triangles.scad>
-
-module prism(x,y,h) {
-  triangle(y,x,h);
-}
+use <prism.scad>
 
 module trapez() {
   difference() {
