@@ -125,4 +125,6 @@ if __name__ == '__main__':
     else:
       app.run()
       signal.pause()
+    if not options.quiet:
+      app.api._del_consumer("main")
   sys.exit(0)
