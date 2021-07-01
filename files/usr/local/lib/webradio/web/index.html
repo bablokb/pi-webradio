@@ -1,0 +1,43 @@
+<!doctype html>
+<!--
+# ----------------------------------------------------------------------------
+# Web-interface for pi-webradio.
+#
+# This file defines the single page application.
+#
+# Author: Bernhard Bablok
+# License: GPL3
+#
+# Website: https://github.com/bablokb/pi-webradio
+#
+# ----------------------------------------------------------------------------
+-->
+
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Pi-Webradio">
+
+    <title>Pi-Webradio</title>
+
+    <link rel="stylesheet" type="text/css" href="css/all.css"/>
+
+     <!-- jquery and special functions -->
+     <script src="js/jquery-min.js"></script>
+     <script src="js/utils.js"></script>
+
+  </head>
+
+  <body">
+    <div id="layout">
+      %include('menu.tpl')
+    </div>
+
+    <div id="main">
+        %include('content_clock.tpl')
+        %include('content_channels.tpl')
+        %include('content_player.tpl')
+    </div>
+  </body>
+</html>
