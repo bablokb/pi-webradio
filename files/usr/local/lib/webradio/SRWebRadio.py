@@ -43,6 +43,7 @@ class WebRadio(Base):
 
     # create all objects
     if options.do_record:
+      self._events  = RadioEvents(self)
       self.backend  = None
       self.radio    = Radio(self)
       self.recorder = Recorder(self)
