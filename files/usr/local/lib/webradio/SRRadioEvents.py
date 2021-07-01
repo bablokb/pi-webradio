@@ -61,6 +61,7 @@ class RadioEvents(Base):
     """ delete a consumer from the list of consumers """
 
     if id in self._consumers:
+      self._consumers[id].put(None)
       del self._consumers[id]
 
   # --- multiplex events   ---------------------------------------------------
