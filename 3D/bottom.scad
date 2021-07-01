@@ -16,6 +16,12 @@ fuzz = 0.001; // fuzzing to ensure overlap
 
 use <cyl_00.scad>
 
+use <usb-connector.scad>
+use <hdmi-connector.scad>
+use <power-connector.scad>
+use <ir-connector.scad>
+use <touch-connector.scad>
+
 // --- module screw_plate: inner plate for screw   -----------------------------
 
 module screw_plate(s,d) {
@@ -75,3 +81,13 @@ color("brown") translate([230.20,0,2-fuzz]) cube([w4,12.14,67]);
 color("brown") translate([18.23,9.67,2-fuzz]) cube([28.77,w4,67]);
 color("brown") translate([203,10.47,2-fuzz]) cube([28.87,w4,67]);
 
+// --- ir and touch connector   ------------------------------------------------
+
+color("pink") translate([10.3,1.67,49]) ir_conn();
+color("pink") translate([231.87,1.67,45.58]) touch_conn();
+
+// --- backside connectors   ---------------------------------------------------
+
+translate([87.91,159.5,2-fuzz]) usb_conn();
+translate([109.25-fuzz,171.83,2-fuzz]) hdmi_conn();
+translate([140.75-2*fuzz,198.33,2-fuzz]) power_conn();
