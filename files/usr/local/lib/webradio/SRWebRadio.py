@@ -142,7 +142,6 @@ class WebRadio(Base):
     """ shutdown system """
 
     self.msg("Webradio: processing sys_halt")
-    self.backend.destroy()
     if not self.debug:
       try:
         os.system("sudo /sbin/halt &")
@@ -157,7 +156,6 @@ class WebRadio(Base):
     """ reboot system """
 
     self.msg("Webradio: processing sys_reboot")
-    self.backend.destroy()
     if not self.debug:
       try:
         os.system("sudo /sbin/reboot &")
@@ -172,7 +170,6 @@ class WebRadio(Base):
     """ restart service """
 
     self.msg("Webradio: processing sys_restart")
-    self.backend.destroy()
     if not self.debug:
       try:
         os.system("sudo /bin/systemctl restart pi-webradio.service &")
@@ -187,7 +184,6 @@ class WebRadio(Base):
     """ stop service """
 
     self.msg("Webradio: processing sys_stop")
-    self.backend.destroy()
     if not self.debug:
       try:
         os.system("sudo /bin/systemctl stop pi-webradio.service &")
