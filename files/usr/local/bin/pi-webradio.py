@@ -118,7 +118,8 @@ if __name__ == '__main__':
       app.api._add_consumer("main",ev_queue)
       threading.Thread(target=process_events,args=(app,ev_queue)).start()
     if options.do_record:
-      app.api.rec_start(nr=int(options.channel))
+      app.api.rec_start(nr=int(options.channel),async=False)
+      app.cleanup()
     elif options.do_play:
       app.api.radio_play_channel(nr=int(options.channel))
       signal.pause()
