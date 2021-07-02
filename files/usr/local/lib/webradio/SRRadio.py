@@ -88,6 +88,10 @@ class Radio(Base):
       f = open(self._channel_file,"r")
       self._channels = json.load(f)
       f.close()
+      nr=1
+      for channel in self._channels:
+        channel['nr'] = nr
+        nr += 1
     except:
       self.msg("Radio: Loading channels failed")
       if self. debug:
@@ -104,7 +108,7 @@ class Radio(Base):
       else:
         nr = self._last_channel
 
-    return (nr,self._channels[int(nr-1)])
+    return self._channels[int(nr-1)]
 
   # --- return channel-list   ------------------------------------------------
 
