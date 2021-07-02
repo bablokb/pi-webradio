@@ -102,13 +102,17 @@ class Radio(Base):
   def radio_get_channel(self,nr=0):
     """ return info-dict {name,url,logo} for channel nr """
 
+    try:
+      nr = int(nr)
+    except:
+      nr = 0
     if nr == 0:
       if self._last_channel == 0:
         nr = 1
       else:
         nr = self._last_channel
 
-    return self._channels[int(nr-1)]
+    return self._channels[nr-1]
 
   # --- return channel-list   ------------------------------------------------
 
