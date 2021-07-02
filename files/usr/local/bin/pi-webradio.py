@@ -108,10 +108,9 @@ if __name__ == '__main__':
   if options.do_list:
     channels = app.api.radio_get_channels()
     PRINT_CHANNEL_FMT="{0:2d} {1:14.14s}: {2:s}"
-    i = 1
     for channel in channels:
-      print(PRINT_CHANNEL_FMT.format(i,channel['name'],channel['url']))
-      i += 1
+      print(PRINT_CHANNEL_FMT.format(channel['nr'],
+                                     channel['name'],channel['url']))
   else:
     if not options.quiet:
       ev_queue = queue.Queue()
