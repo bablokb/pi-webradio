@@ -233,6 +233,13 @@ class WebRadio(Base):
     """ signal-handler for clean shutdown """
 
     self.msg("Webradio: received signal, stopping program ...")
+    self.cleanup()
+
+  # --- cleanup of ressources   -----------------------------------------------
+
+  def cleanup(self):
+    """ cleanup of ressources """
+
     if hasattr(self,'backend') and self.backend:
       self.backend.destroy()
     if hasattr(self,'_server') and self._server:
