@@ -97,6 +97,7 @@ class WebServer(Base):
     bottle.get('/images/<filepath:path>',callback=self.images)
     bottle.get('/js/<filepath:path>',callback=self.js_pages)
     bottle.get('/api/radio_get_channel',callback=self.get_channel)
+    bottle.get('/api/radio_get_channels',callback=self.get_channels)
     bottle.get('/api/<api:path>',callback=self.process_api)
 
   # --- return absolute path of web-files   ----------------------------------
@@ -125,6 +126,16 @@ class WebServer(Base):
     tpl = bottle.SimpleTemplate(name="index.html",lookup=[self._web_root])
     return tpl.render()
 
+  # --- update logo with correct path   ------------------------------------
+
+  def _update_logo(self,channel):
+    """ update logo in channel-dict """
+    if os.path.exists(self._get_path('images',channel['logo'])):
+      channel['logo'] = 'images/'+channel['logo']
+    else:
+      channel['logo'] = None
+    return channel
+
   # --- get channel   ------------------------------------------------------
 
   def get_channel(self):
@@ -132,14 +143,29 @@ class WebServer(Base):
 
     try:
       response = dict(self._api.radio_get_channel(**bottle.request.query))
-      if os.path.exists(self._get_path('images',response['logo'])):
-        response['logo'] = 'images/'+response['logo']
-      else:
-        response['logo'] = None
+      self._update_logo(response)
       bottle.response.content_type = 'application/json'
       return json.dumps(response)
     except Exception as ex:
       self.msg("exception while calling: /api/radio_get_channel")
+      traceback.print_exc()
+      msg = '"internal server error"'
+      bottle.response.content_type = 'application/json'
+      bottle.response.status       = 500                 # internal error
+      return '{"msg": ' + msg +'}'
+
+  # --- get channels   -----------------------------------------------------
+
+  def get_channels(self):
+    """ return channel-info, replacing logo if necessary """
+
+    try:
+      channels = self._api.radio_get_channels()
+      response = [self._update_logo(dict(c)) for c in channels]
+      bottle.response.content_type = 'application/json'
+      return json.dumps(response)
+    except Exception as ex:
+      self.msg("exception while calling: /api/radio_get_channels")
       traceback.print_exc()
       msg = '"internal server error"'
       bottle.response.content_type = 'application/json'
