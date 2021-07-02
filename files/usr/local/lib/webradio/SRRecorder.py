@@ -32,6 +32,7 @@ class Recorder(Thread,Base):
     self._app            = app
     self.debug           = app.debug
     self._api            = app.api
+    self._rec_thread     = None
     self._rec_stop_event = None
     self._rec_start_dt   = None
 
@@ -131,16 +132,19 @@ class Recorder(Thread,Base):
 
   # --- start recording   -----------------------------------------------------
 
-  def rec_start(self,nr=0):
+  def rec_start(self,nr=0,async=True):
     """ start recording (argument is channel number) """
 
     nr,channel = self._api.radio_get_channel(nr)
     self.msg("Recorder: start recording of channel %d (%s)" % (nr,channel['name']))
     if self._rec_stop_event is None:
       # no recording ongoing, start it
-      self._rec_thread = Thread(target=self.record_stream,args=(channel,))
       self._rec_stop_event = threading.Event()
-      self._rec_thread.start()
+      if async:
+        self._rec_thread = Thread(target=self.record_stream,args=(channel,))
+        self._rec_thread.start()
+      else:
+        self.record_stream(channel)
 
   # --- stop recording   ------------------------------------------------------
 
@@ -151,7 +155,9 @@ class Recorder(Thread,Base):
       # recording is ongoing, so stop it
       self.msg("Recorder: stop recording")
       self._rec_stop_event.set()
-      self._rec_thread.join()
+      if self._rec_thread:
+        self._rec_thread.join()
+      self._rec_thread     = None
       self._rec_stop_event = None
       self._rec_start_dt   = None
 
