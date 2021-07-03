@@ -126,7 +126,8 @@ class Radio(Base):
   def radio_play_channel(self,nr=0):
     """ switch to given channel """
 
-    nr,channel = self.radio_get_channel(int(nr))
+    channel = self.radio_get_channel(int(nr))
+    nr      = channel['nr']
     self.msg("Radio: start playing channel %d (%s)" % (nr,channel['name']))
 
     # check if we have to do anything
