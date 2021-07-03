@@ -19,9 +19,14 @@
     "logo": "BR-Klassik.png"
   },
 
-  { "name": "B5 aktuell",
-    "url":  "http://br-b5aktuell-live.cast.addradio.de/br/b5aktuell/live/mp3/mid",
-    "logo": "B5-Aktuell.png"
+  { "name": "BR24",
+    "url":  "http://br-br24-live.cast.addradio.de/br/br24/live/mp3/mid",
+    "logo": "BR24.png"
+  },
+
+  { "name": "BR24live",
+    "url":  "http://br-br24live-live.cast.addradio.de/br/br24live/live/mp3/mid",
+    "logo": "BR24live.png"
   },
 
   { "name": "MDR KLASSIK",
@@ -66,16 +71,6 @@
 
   { "name": "WDR 3",
     "url":  "http://wdr-wdr3-live.icecast.wdr.de/wdr/wdr3/live/mp3/128/stream.mp3",
-    "logo": "logo.jpg"
-  },
-
-  { "name": "B 5 plus",
-    "url":  "http://br-b5plus-live.cast.addradio.de/br/b5plus/live/mp3/mid",
-    "logo": "logo.jpg"
-  },
-
-  { "name": "Bayern plus",
-    "url":  "http://br-bayernplus-live.cast.addradio.de/br/bayernplus/live/mp3/mid",
     "logo": "logo.jpg"
   }
 ]
