@@ -105,8 +105,9 @@ if __name__ == '__main__':
   signal.signal(signal.SIGTERM, app.signal_handler)
   signal.signal(signal.SIGINT,  app.signal_handler)
 
-  app.msg("pi-webradio version %s" % app.api.get_version(),force=True)
   if options.do_list:
+    if not options.quiet:
+      app.msg("pi-webradio version %s" % app.api.get_version(),force=True)
     channels = app.api.radio_get_channels()
     PRINT_CHANNEL_FMT="{0:2d}: {1}"
     for channel in channels:
