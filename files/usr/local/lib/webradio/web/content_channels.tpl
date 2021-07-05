@@ -15,7 +15,7 @@
 <style>
 .ch_grid {
   display: grid;
-  grid-gap: 15px; 
+  grid-gap: 15px;
   overflow: hidden;
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   grid-auto-flow: dense;
