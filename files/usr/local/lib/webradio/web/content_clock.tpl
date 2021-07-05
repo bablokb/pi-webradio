@@ -15,10 +15,6 @@
 -->
 
 <style>
-body {
-  background: #000;
-}
-
 .container {
   position: absolute;
   top: 50%;
