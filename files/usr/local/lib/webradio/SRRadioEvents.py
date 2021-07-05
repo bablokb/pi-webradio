@@ -77,7 +77,11 @@ class RadioEvents(Base):
         continue
       self.msg("RadioEvents: received event: %r" % (event,))
       for consumer in self._consumers.values():
-        consumer.put(event)
+        try:
+          consumer.put(event)
+        except queue.Full:
+          # remove stale consumers
+          del self._consumers[consumer['id']]
       self._input_queue.task_done()
 
     self.msg("RadioEvents: stopping event-processing")
