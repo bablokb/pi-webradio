@@ -108,10 +108,9 @@ if __name__ == '__main__':
   app.msg("pi-webradio version %s" % app.api.get_version(),force=True)
   if options.do_list:
     channels = app.api.radio_get_channels()
-    PRINT_CHANNEL_FMT="{0:2d} {1:14.14s}: {2:s}"
+    PRINT_CHANNEL_FMT="{0:2d}: {1}"
     for channel in channels:
-      print(PRINT_CHANNEL_FMT.format(channel['nr'],
-                                     channel['name'],channel['url']))
+      print(PRINT_CHANNEL_FMT.format(channel['nr'],channel['name']))
   else:
     if not options.quiet:
       ev_queue = queue.Queue()
