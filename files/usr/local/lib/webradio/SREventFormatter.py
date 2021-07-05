@@ -18,6 +18,7 @@ class EventFormatter(object):
 
   # --- format map: type:format   ---------------------------------------------
   _FMT_MAP = {
+    'version': 'pi-webradio version {value}',
     'icy-meta': '{value}',
     'icy-name': 'current station: {value}',
     'rec_start': 'recording {name} for {duration} minutes',
