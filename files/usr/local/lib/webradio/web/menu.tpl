@@ -69,9 +69,12 @@ body {margin:0}
         onclick="openTab(event,'wr_channels')"><i class="fas fa-broadcast-tower"></i></a>
   <a class="tablink" href="#"
         onclick="openTab(event,'wr_player')"><i class="fas fa-file-audio"></i></a>
-  <a class="tablink" href="api/sys_stop"><i class="fas fa-wrench"></i></a>
-  <a class="tablink" href="api/sys_reboot"><i class="fas fa-undo"></i></a>
-  <a class="tablink" href="api/sys_halt"><i class="fas fa-power-off"></i></a>
+  <a class="tablink" href="#"
+        onclick="doStop()"><i class="fas fa-wrench"></i></a>
+  <a class="tablink" href="#"
+        onclick="doReboot()><i class="fas fa-undo"></i></a>
+  <a class="tablink" href="#"
+        onclick="doHalt()><i class="fas fa-power-off"></i></a>
 </div>
 
 <!--
