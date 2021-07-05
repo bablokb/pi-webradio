@@ -53,7 +53,12 @@ class RadioEvents(Base):
     """ add a consumer to the list of consumers """
 
     if not id in self._consumers:
+      self.msg("RadioEvents: adding consumer with id %s" % id)
       self._consumers[id] = queue
+      try:
+        queue.put_nowait({'type': 'version','value': self._api.get_version()})
+      except:
+        del self._consumers[id]
 
   # --- remove a consumer   --------------------------------------------------
 
