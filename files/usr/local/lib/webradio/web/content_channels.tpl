@@ -34,9 +34,10 @@
 }
 
 .ch_item {
-  height: auto;
   max-height: 180px;
   max-width: 180px;
+  min-height: 100px;
+  min-width: 100px;
   width: inherit;
   display: flex;
   align-items: center;
@@ -52,7 +53,7 @@ img {
 }
 </style>
 
-<div id="wr_channels" style="display: none" class="container tabcontent">
+<div id="wr_channels" style="width: 80%; display: none" class="container tabcontent">
   <div id="channel_grid" class="ch_grid">
       <div id="ch_0" class="ch_item"></div>
   </div>

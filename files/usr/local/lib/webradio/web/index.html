@@ -31,16 +31,22 @@
 
   <style>
     body {
-      background: black
+      background: black;
+      height: 100%;
+      width: 100%;
+    }
+    .main {
+      margin-left: 90px; /* Same as the width of the sidenav */
+      padding: 0px 10px;
     }
   </style>
 
-  <body">
-    <div id="layout">
+  <body>
+    <div id="menu">
       %include('menu.tpl')
     </div>
 
-    <div id="main">
+    <div id="main" class="main">
         %include('content_clock.tpl')
         %include('content_channels.tpl')
         %include('content_player.tpl')
