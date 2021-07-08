@@ -24,7 +24,8 @@ class EventFormatter(object):
     'rec_start': 'recording {name} for {duration} minutes',
     'rec_stop': 'finished recording. File {filename}, duration: {duration}m',
     'vol_set': 'setting current volume to {value}',
-    'radio_play_channel': 'start playing channel {nr} ({name})'
+    'radio_play_channel': 'start playing channel {nr} ({name})',
+    'player_play': 'playing file: {value}'
     }
 
   # --- format event   --------------------------------------------------------
