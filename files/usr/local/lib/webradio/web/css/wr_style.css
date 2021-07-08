@@ -1,0 +1,58 @@
+/* ---------------------------------------------------------------------------
+* Web-interface for pi-webradio.
+*
+* CSS-styles.
+*
+* Author: Bernhard Bablok
+* License: GPL3
+*
+* Website: https://github.com/bablokb/pi-webradio
+*
+* ------------------------------------------------------------------------- */
+
+body {
+  background: black;
+  height: 380px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  border: 0;
+}
+
+#content {
+  display: flex;
+  flex-direction: row;
+}
+
+/* left-side menu   ------------------------------------------------------- */
+
+#menu {
+  flex: 0 0 90px;
+  background: yellow;
+}
+
+#menu a {
+  display: block;
+  text-align: center;
+  padding: 16px;
+  transition: all 0.3s ease;
+  color: blue;
+  font-size: 36px;
+}
+
+#menu a:hover {
+  background: white;
+}
+
+.menu_active {
+  background-color: #e0e0e0;   /* light gray */
+}
+
+/* content container   ---------------------------------------------------- */
+
+main {
+  flex: 1;
+  background: green;    /* for layout test */
+  padding: 0px 10px;
+  height: inherit;
+}
