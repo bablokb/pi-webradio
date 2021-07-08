@@ -33,10 +33,10 @@ getChannels=function() {
           .appendTo("#channel_grid");
         if (channel.logo) {
           // create image
-          item.html("<img src=\""+channel.logo+"\"/>");
+          item.html("<img class=\"ch_img\" src=\""+channel.logo+"\"/>");
           } else {
             // create text
-          item.html("<div class=\"txt\">"+channel.name+"</div>");
+          item.html("<div class=\"ch_txt\">"+channel.name+"</div>");
           }
         });
       $("#ch_0").remove();   // remove template
