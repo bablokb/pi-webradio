@@ -14,7 +14,7 @@
 
 import sys
 
-class Base(object):
+class Base:
   """ base class with common methods """
 
   # --- print debug messages   ------------------------------------------------
