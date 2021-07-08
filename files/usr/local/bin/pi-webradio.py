@@ -121,7 +121,11 @@ if __name__ == '__main__':
       app.api.rec_start(nr=int(options.channel),async=False)
       app.cleanup()
     elif options.do_play:
-      app.api.radio_play_channel(nr=int(options.channel))
+      try:
+        nr = int(options.channel)
+        app.api.radio_play_channel(nr)
+      except ValueError:
+        app.api.player_play(options.channel)   # assume argument is a filename
       signal.pause()
     else:
       app.run()
