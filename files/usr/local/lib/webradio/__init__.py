@@ -15,6 +15,7 @@ from . SRBase           import Base           as Base
 from . SRApi            import Api            as Api
 from . SRRadioEvents    import RadioEvents    as RadioEvents
 from . SRRadio          import Radio          as Radio
+from . SRPlayer         import Player         as Player
 from . SRRecorder       import Recorder       as Recorder
 from . SRMpg123         import Mpg123         as Mpg123
 from . SRWebServer      import WebServer      as WebServer
