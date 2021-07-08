@@ -57,6 +57,11 @@ main {
   height: inherit;
 }
 
+.content_area {
+  margin-top: 5px;
+  margin-left: 5px;
+}
+
 /* channel grid   --------------------------------------------------------- */
 
 .ch_grid {
