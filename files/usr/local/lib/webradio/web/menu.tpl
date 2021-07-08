@@ -23,47 +23,20 @@ function openTab(evt, tabId) {
     tabcontent[i].style.display = "none";
   }
 
-  // Get all elements with class="tablink" and remove the class "active"
+  // Get all elements with class="tablink" and remove the class "menu_active"
   tablinks = document.getElementsByClassName("tablink");
   for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" active", "");
+    tablinks[i].className = tablinks[i].className.replace(" menu_active", "");
   }
 
-  // Show the current tab, and add an "active" class to the link that opened the tab
+  // Show the current tab, and add an "menu_active" class to the link that opened the tab
   document.getElementById(tabId).style.display = "block";
-  evt.currentTarget.className += " active";
+  evt.currentTarget.className += " menu_active";
 }
 </script>
 
-<style>
-body {margin:0}
-
-.icon-bar {
-  width: 90px;
-  background-color: black;
-}
-
-.icon-bar a {
-  display: block;
-  text-align: center;
-  padding: 16px;
-  transition: all 0.3s ease;
-  color: blue;
-  font-size: 36px;
-}
-
-.icon-bar a:hover {
-  background-color: white;
-}
-
-.active {
-  background-color: #e0e0e0;
-}
-</style>
-
-
-<div class="icon-bar">
-  <a class="tablink active" href="#"
+<div id="menu">
+  <a class="tablink menu_active" href="#"
          onclick="openTab(event,'wr_clock')"><i class="fas fa-clock"></i></a>
   <a class="tablink" href="#"
         onclick="openTab(event,'wr_channels')"><i class="fas fa-broadcast-tower"></i></a>
@@ -72,9 +45,9 @@ body {margin:0}
   <a class="tablink" href="#"
         onclick="doStop()"><i class="fas fa-wrench"></i></a>
   <a class="tablink" href="#"
-        onclick="doReboot()><i class="fas fa-undo"></i></a>
+        onclick="doReboot()"><i class="fas fa-undo"></i></a>
   <a class="tablink" href="#"
-        onclick="doHalt()><i class="fas fa-power-off"></i></a>
+        onclick="doHalt()"><i class="fas fa-power-off"></i></a>
 </div>
 
 <!--

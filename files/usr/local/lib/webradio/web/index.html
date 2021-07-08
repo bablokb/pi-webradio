@@ -21,6 +21,9 @@
 
     <title>Pi-Webradio</title>
 
+    <!-- webradio styles -->
+    <link rel="stylesheet" type="text/css" href="css/wr_style.css"/>
+    <!-- Fontawesome -->
     <link rel="stylesheet" type="text/css" href="css/all.css"/>
 
      <!-- jquery and special functions -->
@@ -29,27 +32,18 @@
 
   </head>
 
-  <style>
-    body {
-      background: black;
-      height: 100%;
-      width: 100%;
-    }
-    .main {
-      margin-left: 90px; /* Same as the width of the sidenav */
-      padding: 0px 10px;
-    }
-  </style>
-
   <body>
-    <div id="menu">
+    <!-- flexbox with single row -->
+    <div id="content">
+      <!-- first element -->
       %include('menu.tpl')
-    </div>
 
-    <div id="main" class="main">
+      <!-- second element -->
+      <main>
         %include('content_clock.tpl')
         %include('content_channels.tpl')
         %include('content_player.tpl')
+      </main>
     </div>
   </body>
 </html>
