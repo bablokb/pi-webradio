@@ -12,7 +12,7 @@
 # ----------------------------------------------------------------------------
 -->
 
-<div id="wr_channels" style="display: none" class="tabcontent">
+<div id="wr_channels" style="display: none" class="content_area">
   <div id="channel_grid" class="ch_grid">
       <div id="ch_0" class="ch_item"></div>
   </div>

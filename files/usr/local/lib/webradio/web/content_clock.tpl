@@ -180,7 +180,7 @@
 }
 </style>
 
-<div id="wr_clock" class="container tabcontent">
+<div id="wr_clock" class="container content_area">
   <div class="rim"></div>
   <div class="outer"></div>
   <div class="inner">

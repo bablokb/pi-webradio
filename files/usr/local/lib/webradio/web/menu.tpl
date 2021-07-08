@@ -15,12 +15,12 @@
 <script>
 function openTab(evt, tabId) {
   // Declare all variables
-  var i, tabcontent, tablinks;
+  var i, content_area, tablinks;
 
-  // Get all elements with class="tabcontent" and hide them
-  tabcontent = document.getElementsByClassName("tabcontent");
-  for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
+  // Get all elements with class="content_area" and hide them
+  content_area = document.getElementsByClassName("content_area");
+  for (i = 0; i < content_area.length; i++) {
+    content_area[i].style.display = "none";
   }
 
   // Get all elements with class="tablink" and remove the class "menu_active"

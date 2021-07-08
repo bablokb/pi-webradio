@@ -12,6 +12,6 @@
 # ----------------------------------------------------------------------------
 -->
 
-<div id="wr_player" style="display: none" class="container tabcontent">
+<div id="wr_player" style="display: none" class="content_area">
   <h1>Placeholder Player</h1>
 </div>
