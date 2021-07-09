@@ -16,6 +16,7 @@ import queue
 import threading
 
 from webradio import Base
+from webradio import EventFormatter
 
 class RadioEvents(Base):
   """ Multiplex events to consumers """
@@ -28,6 +29,7 @@ class RadioEvents(Base):
     self._stop_event  = app.stop_event
     self._input_queue = queue.Queue()
     self._consumers   = {}
+    self._formatter   = EventFormatter()
     self.register_apis()
     threading.Thread(target=self._process_events).start()
 
@@ -56,7 +58,9 @@ class RadioEvents(Base):
       self.msg("RadioEvents: adding consumer with id %s" % id)
       self._consumers[id] = queue
       try:
-        queue.put_nowait({'type': 'version','value': self._api.get_version()})
+        ev = {'type': 'version','value': self._api.get_version()}
+        ev['text'] = self._formatter.format(ev)
+        queue.put_nowait(ev)
       except:
         del self._consumers[id]
 
@@ -81,6 +85,7 @@ class RadioEvents(Base):
       except queue.Empty:
         continue
       self.msg("RadioEvents: received event: %r" % (event,))
+      event['text'] = self._formatter.format(event)
       for consumer in self._consumers.values():
         try:
           consumer.put(event)

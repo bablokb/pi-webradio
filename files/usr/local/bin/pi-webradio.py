@@ -76,11 +76,10 @@ def check_options(options):
 # --- process events   -------------------------------------------------------
 
 def process_events(app,queue):
-  formatter = EventFormatter()
   while True:
     ev = queue.get()
     if ev:
-      print(formatter.format(ev))
+      print(ev['text'])
       queue.task_done()
       if ev['type'] == 'eof':
         break
