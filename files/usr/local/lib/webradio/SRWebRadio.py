@@ -174,7 +174,7 @@ class WebRadio(Base):
       except:
         pass
     else:
-      self.msg("Webradio: no restart in debug-mode")
+      self.msg("Webradio: no application restart in debug-mode")
 
   # --- stop service   --------------------------------------------------------
 
@@ -188,7 +188,7 @@ class WebRadio(Base):
       except:
         pass
     else:
-      self.msg("Webradio: no restart in debug-mode")
+      self.msg("Webradio: no application stop in debug-mode")
 
   # --- query state of objects and save   -------------------------------------
 
