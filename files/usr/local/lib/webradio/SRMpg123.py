@@ -46,7 +46,7 @@ class Mpg123(Base):
     self._vol_delta   = int(self.get_value(self._app.parser,"MPG123",
                                        "vol_delta",5))
     self._mpg123_opts = self.get_value(self._app.parser,"MPG123",
-                                       "mpg123_opts","-b 1024")
+                                       "mpg123_opts","")
 
   # --- register APIs   ------------------------------------------------------
 
