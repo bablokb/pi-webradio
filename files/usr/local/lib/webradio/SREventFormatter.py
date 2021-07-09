@@ -40,4 +40,4 @@ class EventFormatter(object):
       else:
         return EventFormatter._FMT_MAP[key].format(**event)
     else:
-      return "%r" % (event.value,)
+      return "%r" % event
