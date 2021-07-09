@@ -98,5 +98,9 @@ class Player(Base):
 
     if fname:
       self._file = fname
+    total_secs = int(subprocess.check_output(["mp3info", "-p","%S",self._file]))
     self._api._push_event({'type': 'player_play', 'value': self._file})
+    self._api._push_event({'type': 'file_info',
+                           'value': {'name': self._file,
+                                     'duration': total_secs}})
     self._backend.play(self._file)
