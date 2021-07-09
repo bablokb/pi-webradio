@@ -65,6 +65,15 @@ setup_SSE=function() {
 };
 
 /**
+  Handle restart
+*/
+
+doRestart=function() {
+  $.get("/api/sys_restart");
+  showMsg("Restarting the application ...",2000);
+};
+
+/**
   Handle stop
 */
 
