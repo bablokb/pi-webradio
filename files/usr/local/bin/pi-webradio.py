@@ -82,9 +82,13 @@ def process_events(app,queue):
     if ev:
       print(formatter.format(ev))
       queue.task_done()
+      if ev['type'] == 'eof':
+        break
     else:
       break
   app.msg("pi-webradio: finished processing events")
+  if ev['type'] == 'eof':
+    os.kill(os.getpid(), signal.SIGTERM)
 
 # --- main program   ----------------------------------------------------------
 
