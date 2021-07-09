@@ -28,7 +28,7 @@ body {
 
 #menu {
   flex: 0 0 90px;
-  background: yellow;
+  /* background: yellow; */
 }
 
 #menu a {
@@ -45,14 +45,15 @@ body {
 }
 
 .menu_active {
-  background-color: #e0e0e0;   /* light gray */
+  color: black !important;
+  background-color: blue;   /* light gray */
 }
 
 /* content container   ---------------------------------------------------- */
 
 main {
   flex: 1;
-  background: green;    /* for layout test */
+  /* background: green;    /* for layout test */
   padding: 0px 10px;
   height: inherit;
 }
@@ -95,4 +96,23 @@ main {
   transform: translate(-50%, -50%);
   color: #B0C5FF;
   text-shadow: 0 1px 1px #26145F;
+}
+
+/* --- special functions   ------------------------------------------------ */
+
+.content_special {
+  display: flex;
+  height: inherit;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.content_special a {
+  display: block;
+  text-align: center;
+  padding: 16px;
+  color: black;
+  background-color: blue;
+  transition: all 0.3s ease;
+  font-size: 72px;
 }
