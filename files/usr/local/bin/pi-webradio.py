@@ -86,7 +86,7 @@ def process_events(app,queue):
     else:
       break
   app.msg("pi-webradio: finished processing events")
-  if ev['type'] == 'eof':
+  if ev and ev['type'] == 'eof':
     os.kill(os.getpid(), signal.SIGTERM)
 
 # --- main program   ----------------------------------------------------------
