@@ -91,6 +91,18 @@ class Player(Base):
     if 'player_file' in state_map:
       self._file = state_map['player_file']
 
+  # --- pretty print duration/time   ----------------------------------------
+
+  def _pp_time(self,seconds):
+    """ pritty-print time as mm:ss or hh:mm """
+
+    m, s = divmod(seconds,60)
+    h, m = divmod(m,60)
+    if h > 0:
+      return "{0:02d}:{1:02d}:{2:02d}".format(h,m,s)
+    else:
+      return "00:{0:02d}:{1:02d}".format(m,s)
+
   # --- start playing   -------------------------------------------------------
 
   def player_play(self,fname=None):
@@ -102,5 +114,5 @@ class Player(Base):
     self._api._push_event({'type': 'player_play', 'value': self._file})
     self._api._push_event({'type': 'file_info',
                            'value': {'name': self._file,
-                                     'duration': total_secs}})
+                                     'duration': self._pp_time(total_secs)}})
     self._backend.play(self._file)
