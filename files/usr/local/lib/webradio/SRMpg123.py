@@ -31,6 +31,7 @@ class Mpg123(Base):
     self._pause     = False
     self._volume    = -1
     self._mute      = False
+    self._url       = None
 
     self.read_config()
     self.register_apis()
@@ -114,6 +115,7 @@ class Mpg123(Base):
 
     if self._process:
       self.msg("Mpg123: starting to play %s" % url)
+      self._url = url
       if url.endswith(".m3u"):
         self._process.stdin.write("LOADLIST 0 %s\n" % url)
       else:
@@ -127,6 +129,8 @@ class Mpg123(Base):
     if self._process:
       self.msg("Mpg123: stopping current url/file")
       self._process.stdin.write("STOP\n")
+      # might need time.sleep(x) here?!
+      self._url = None
 
   # --- pause playing   -------------------------------------------------------
 
@@ -189,6 +193,10 @@ class Mpg123(Base):
         self._api._push_event({'type': 'id3',
                                'value': {'tag': tag[0],
                                          'value': tag[1]}})
+      elif line.startswith("@P 0"):
+        self._api._push_event({'type': 'eof',
+                              'value': self._url})
+
     self.msg("Mpg123: stopping mpg123 reader-thread")
 
   # --- increase volume   ----------------------------------------------------
