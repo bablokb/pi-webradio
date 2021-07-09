@@ -34,7 +34,7 @@ def get_parser():
 
   parser.add_argument('-p', '--play', action='store_true',
     dest='do_play', default=False,
-    help="play radio (direct, no web-interface, needs channel as argument)")
+    help="play radio/file (direct, no web-interface, needs channel/file as argument)")
 
   parser.add_argument('-l', '--list', action='store_true',
     dest='do_list', default=False,
@@ -58,7 +58,7 @@ def get_parser():
     help='print this help')
 
   parser.add_argument('channel', nargs='?', metavar='channel',
-    default=0, help='channel number')
+    default=0, help='channel number/filename')
   parser.add_argument('duration', nargs='?', metavar='duration',
     default=0, help='duration of recording')
   return parser
