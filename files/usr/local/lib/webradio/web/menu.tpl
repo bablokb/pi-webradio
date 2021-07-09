@@ -39,15 +39,14 @@ function openTab(evt, tabId) {
   <a class="tablink menu_active" href="#"
          onclick="openTab(event,'wr_clock')"><i class="fas fa-clock"></i></a>
   <a class="tablink" href="#"
-        onclick="openTab(event,'wr_channels')"><i class="fas fa-broadcast-tower"></i></a>
+        onclick="openTab(event,'wr_channels')">
+        <i class="fas fa-broadcast-tower"></i></a>
+  <a class="tablink" href="#"
+        onclick="openTab(event,'wr_play')"><i class="fas fa-play"></i></a>
   <a class="tablink" href="#"
         onclick="openTab(event,'wr_player')"><i class="fas fa-file-audio"></i></a>
   <a class="tablink" href="#"
-        onclick="doStop()"><i class="fas fa-wrench"></i></a>
-  <a class="tablink" href="#"
-        onclick="doReboot()"><i class="fas fa-undo"></i></a>
-  <a class="tablink" href="#"
-        onclick="doHalt()"><i class="fas fa-power-off"></i></a>
+        onclick="openTab(event,'wr_special')"><i class="fas fa-wrench"></i></a>
 </div>
 
 <!--
@@ -55,4 +54,6 @@ function openTab(evt, tabId) {
   <a href="#"><i class="fas fa-pause-circle"></i></a>
   <a href="#"><i class="fas fa-stop-circle"></i></a>
   <a href="#"><i class="fas fa-microphone-alt"></i></a>
+  <a href="#"><i class="fas fa-undo"></i></a>
+  <a href="#"><i class="fas fa-power-off"></i></a>
 -->
