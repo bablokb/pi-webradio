@@ -18,7 +18,7 @@
       <div class="clock play_clock">
         <i>14:42</i>
       </div>
-      <img  class="play_img" src="/images/default.png"/>
+      <img  id="wr_play_logo" class="play_img" src="/images/default.png"/>
       <div class="play_buttons">
         <a href="#"><i class="fas fa-play-circle"></i></a>
         <a href="#"><i class="fas fa-pause-circle"></i></a>
