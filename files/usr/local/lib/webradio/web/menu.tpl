@@ -31,7 +31,9 @@ function openTab(evt, tabId) {
 
   // Show the current tab, and add an "menu_active" class to the link that opened the tab
   document.getElementById(tabId).style.display = "block";
-  evt.currentTarget.className += " menu_active";
+  if (evt) {
+    evt.currentTarget.className += " menu_active";
+  }
 }
 </script>
 
@@ -41,7 +43,7 @@ function openTab(evt, tabId) {
   <a class="tablink" href="#"
         onclick="openTab(event,'wr_channels')">
         <i class="fas fa-broadcast-tower"></i></a>
-  <a class="tablink" href="#"
+  <a id="wr_play_link" class="tablink" href="#"
         onclick="openTab(event,'wr_play')"><i class="fas fa-play"></i></a>
   <a class="tablink" href="#"
         onclick="openTab(event,'wr_player')"><i class="fas fa-file-audio"></i></a>
