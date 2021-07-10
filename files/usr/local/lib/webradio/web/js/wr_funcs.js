@@ -56,8 +56,10 @@ playChannel=function(data) {
   $('#wr_play_link').addClass('menu_active');
   if (channel.logo) {
     $('#wr_play_logo').attr('src',channel.logo);
+    $('#wr_play_name').empty();
   } else {
     $('#wr_play_logo').attr('src','/images/default.png');
+    $('#wr_play_name').html(channel.name);
   }
   $.get('/api/radio_play_channel',data);
 };

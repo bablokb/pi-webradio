@@ -121,8 +121,16 @@ main {
 }
 
 .play_img {
+  position: relative;
   flex-shrink: 1;
-  width: 80%;
+}
+
+.play_name {
+  position: absolute;
+  bottom: 8px;
+  left: 16px;
+  color: white;
+  font-size: 22px;
 }
 
 .play_buttons {
