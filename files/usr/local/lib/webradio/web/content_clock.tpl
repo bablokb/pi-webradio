@@ -19,7 +19,7 @@
   <div class="outer"></div>
   <div class="inner">
   </div>
-  <div id="clock"></div>
+  <i id="clock" class="clock"></i>
 </div>
 
 <script>
@@ -27,13 +27,13 @@
     var today = new Date();
     var h = today.getHours();
     var m = today.getMinutes();
-    m = checkTime(m);
-    document.getElementById('clock').innerHTML =
-    h + ":" + m;
+    h = formatTime(h);
+    m = formatTime(m);
+    $('.clock').text(h + ":" + m);
     var t = setTimeout(startTime, 2000);
 })();
 
-function checkTime(i) {
+function formatTime(i) {
   if (i < 10) {i = "0" + i};
   return i;
 }
