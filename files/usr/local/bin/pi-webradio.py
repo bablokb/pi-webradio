@@ -75,13 +75,14 @@ def check_options(options):
 
 # --- process events   -------------------------------------------------------
 
-def process_events(app,queue):
+def process_events(app,options,queue):
   while True:
     ev = queue.get()
     if ev:
-      print(ev['text'])
+      if not options.quiet:
+        print(ev['text'])
       queue.task_done()
-      if ev['type'] == 'eof':
+      if ev['type'] == 'eof' and options.do_play:
         break
     else:
       break
@@ -116,10 +117,9 @@ if __name__ == '__main__':
     for channel in channels:
       print(PRINT_CHANNEL_FMT.format(channel['nr'],channel['name']))
   else:
-    if not options.quiet:
-      ev_queue = queue.Queue()
-      app.api._add_consumer("main",ev_queue)
-      threading.Thread(target=process_events,args=(app,ev_queue)).start()
+    ev_queue = queue.Queue()
+    app.api._add_consumer("main",ev_queue)
+    threading.Thread(target=process_events,args=(app,options,ev_queue)).start()
     if options.do_record:
       app.api.rec_start(nr=int(options.channel),async=False)
       app.cleanup()
@@ -133,6 +133,5 @@ if __name__ == '__main__':
     else:
       app.run()
       signal.pause()
-    if not options.quiet:
-      app.api._del_consumer("main")
+    app.api._del_consumer("main")
   sys.exit(0)
