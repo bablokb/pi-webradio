@@ -24,9 +24,12 @@ showMsg=function(text,time) {
    Query channels and create content
 */
 
+channels = null;
+
 getChannels=function() {
   $.getJSON('/api/radio_get_channels',
     function(channelInfo) {
+      channels = channelInfo;
       $.each(channelInfo,function(index,channel) {
         var item = $("#ch_0").clone(true).attr({"id": "ch_"+channel.nr,
                   "onclick": "playChannel({'nr': "+channel.nr+"})"})
@@ -48,6 +51,14 @@ getChannels=function() {
 */
 
 playChannel=function(data) {
+  channel = channels[data.nr-1];
+  openTab(null,'wr_play');
+  $('#wr_play_link').addClass('menu_active');
+  if (channel.logo) {
+    $('#wr_play_logo').attr('src',channel.logo);
+  } else {
+    $('#wr_play_logo').attr('src','/images/default.png');
+  }
   $.get('/api/radio_play_channel',data);
 };
 
