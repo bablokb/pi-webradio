@@ -98,6 +98,57 @@ main {
   text-shadow: 0 1px 1px #26145F;
 }
 
+/* --- player   ----------------------------------------------------------- */
+
+.play {                           /* single row flex-container */
+  display: flex;
+  height: inherit;
+  justify-content: flex-start;
+}
+
+.play_left {                      /* single column flex-container */
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.play_clock {
+  display: flex;
+  justify-content: center;
+  font-size: 78px;
+  color: blue;
+}
+
+.play_img {
+  flex-shrink: 1;
+  width: 80%;
+}
+
+.play_buttons {
+  display: flex;
+  justify-content: center;
+  font-size: 36px;
+}
+
+.play_buttons i {
+  font-size: 48px;
+  padding-left: 5px;
+  color: blue;
+}
+
+.play_info {
+  height: inherit;
+  flex-grow: 1;
+  box-sizing: border-box;
+  margin-left: 15px;
+  padding: 16px;
+  border-style: double;
+  border-width: 5px;
+  border-color: blue;
+  border-radius: 5px;
+}
+
 /* --- special functions   ------------------------------------------------ */
 
 .content_special {
