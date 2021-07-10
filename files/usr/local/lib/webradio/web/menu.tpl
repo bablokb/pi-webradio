@@ -48,12 +48,3 @@ function openTab(evt, tabId) {
   <a class="tablink" href="#"
         onclick="openTab(event,'wr_special')"><i class="fas fa-wrench"></i></a>
 </div>
-
-<!--
-  <a href="#"><i class="fas fa-play-circle"></i></a>
-  <a href="#"><i class="fas fa-pause-circle"></i></a>
-  <a href="#"><i class="fas fa-stop-circle"></i></a>
-  <a href="#"><i class="fas fa-microphone-alt"></i></a>
-  <a href="#"><i class="fas fa-undo"></i></a>
-  <a href="#"><i class="fas fa-power-off"></i></a>
--->
