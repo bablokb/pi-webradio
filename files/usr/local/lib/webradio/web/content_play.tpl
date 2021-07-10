@@ -12,6 +12,21 @@
 # ----------------------------------------------------------------------------
 -->
 
-<div id="wr_play" style="display: none" class="content_area">
-  <h1>Placeholder Play</h1>
+<div id="wr_play" style="height: 100%; display: none" class="content_area">
+  <div class="play">                   <!-- flex-row with two columns -->
+    <div class="play_left">            <!-- first column              -->
+      <div class="clock play_clock">
+        <i>14:42</i>
+      </div>
+      <img  class="play_img" src="/images/default.png"/>
+      <div class="play_buttons">
+        <a href="#"><i class="fas fa-play-circle"></i></a>
+        <a href="#"><i class="fas fa-pause-circle"></i></a>
+        <a href="#"><i class="fas fa-stop-circle"></i></a>
+        <a href="#"><i class="fas fa-volume-mute"></i></a>
+      </div>
+    </div>
+    <div class="play_info">            <!-- second column            -->
+    </div>
+  </div>
 </div>
