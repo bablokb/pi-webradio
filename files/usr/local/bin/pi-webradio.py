@@ -1,7 +1,13 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 # ----------------------------------------------------------------------------
-# Web-interface for the pi-webradio project
+# Main application program for the pi-webradio.
+#
+# This program starts the application either in synchronous mode or in
+# server mode. The latter is usually done from a systemd-service.
+# Synchronous mode is for listing channels, direct recording and direct
+# playing. Note that direct playing does not allow any interaction, so
+# this feature is mainly useful for development and debugging.
 #
 # Author: Bernhard Bablok
 # License: GPL3
