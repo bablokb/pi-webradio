@@ -36,46 +36,50 @@
 
   { "name": "MDR KLASSIK",
     "url":  "http://mdr-284350-0.cast.mdr.de/mdr/284350/0/mp3/high/stream.mp3",
-    "logo": "logo.jpg"
+    "logo": "MDR-Klassik.png"
   },
 
   { "name": "NDR Kultur",
     "url":  "http://ndr-ndrkultur-live.cast.addradio.de/ndr/ndrkultur/live/mp3/128/stream.mp3",
-    "logo": "logo.jpg"
+    "logo": "NDR-Kultur.png"
   },
 
   { "name": "hr2-kultur",
     "url":  "http://hr-hr2-live.cast.addradio.de/hr/hr2/live/mp3/128/stream.mp3",
-    "logo": "logo.jpg"
+    "logo": "hr2-Kultur.png"
   },
 
   { "name": "SR 2 Kultur",
-    "url":  "http://sr2m.akacast.akamaistream.net/7/375/142686/v1/gnl.akacast.akamaistream.net/sr2m",
-    "logo": "logo.jpg"
+    "url":  "http://streaming01.sr-online.de/sr2_2.m3u",
+    "logo": "SR2.png"
   },
 
   { "name": "DLF Kultur",
     "url":  "http://st02.dlf.de/dlf/02/128/mp3/stream.mp3",
-    "logo": "logo.jpg"
+    "logo": "DLF-Kultur.png"
   },
 
   { "name": "Klassik im Konzert",
     "url":  "http://mdr-284311-0.cast.mdr.de/mdr/284311/0/mp3/high/stream.mp3",
-    "logo": "logo.jpg"
+    "logo": "Klassik-im-Konzert.png"
   },
 
   { "name": "Kulturradio",
-    "url":  "http://rbb-kulturradio-live.cast.addradio.de/rbb/kulturradio/live/mp3/128/stream.mp3",
-    "logo": "logo.jpg"
+    "url":  "http://rbb-rbbkultur-live.cast.addradio.de/rbb/rbbkultur/live/mp3/high",
+    "logo": "rbb-Kultur.png"
   },
 
   { "name": "SWR 2",
     "url":  "http://mp3-live.swr.de/swr2_m.m3u",
-    "logo": "logo.jpg"
+    "logo": "SWR2.png"
   },
 
   { "name": "WDR 3",
     "url":  "http://wdr-wdr3-live.icecast.wdr.de/wdr/wdr3/live/mp3/128/stream.mp3",
     "logo": "logo.jpg"
+  },
+  { "name": "NDR Info",
+    "url": "http://ndr-edge-30c1-dus-ts-cdn.cast.addradio.de/ndr/ndrinfo/niedersachsen/mp3/128/stream.mp3",
+    "logo": "NDR-Info.png"
   }
 ]
