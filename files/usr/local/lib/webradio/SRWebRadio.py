@@ -147,6 +147,7 @@ class WebRadio(Base):
         pass
     else:
       self.msg("Webradio: no shutdown in debug-mode")
+    self.api._push_event({'type': 'sys', 'value': 'halt'})
 
   # --- reboot system   -----------------------------------------------------
 
@@ -161,6 +162,7 @@ class WebRadio(Base):
         pass
     else:
       self.msg("Webradio: no reboot in debug-mode")
+    self.api._push_event({'type': 'sys', 'value': 'reboot'})
 
   # --- restart service   -----------------------------------------------------
 
@@ -175,6 +177,7 @@ class WebRadio(Base):
         pass
     else:
       self.msg("Webradio: no application restart in debug-mode")
+    self.api._push_event({'type': 'sys', 'value': 'restart'})
 
   # --- stop service   --------------------------------------------------------
 
@@ -189,6 +192,7 @@ class WebRadio(Base):
         pass
     else:
       self.msg("Webradio: no application stop in debug-mode")
+    self.api._push_event({'type': 'sys', 'value': 'stop'})
 
   # --- query state of objects and save   -------------------------------------
 
