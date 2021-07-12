@@ -76,7 +76,7 @@
 
   { "name": "WDR 3",
     "url":  "http://wdr-wdr3-live.icecast.wdr.de/wdr/wdr3/live/mp3/128/stream.mp3",
-    "logo": "logo.jpg"
+    "logo": "WDR3.png"
   },
   { "name": "NDR Info",
     "url": "http://ndr-edge-30c1-dus-ts-cdn.cast.addradio.de/ndr/ndrinfo/niedersachsen/mp3/128/stream.mp3",
