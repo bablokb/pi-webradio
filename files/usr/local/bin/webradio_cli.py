@@ -13,7 +13,7 @@
 DEFAULT_HOST = 'localhost'
 DEFAULT_PORT = 8026
 
-import locale, os, sys
+import locale, os, sys, json
 from   argparse import ArgumentParser
 
 # --- application imports   --------------------------------------------------
@@ -70,6 +70,16 @@ def get_parser():
     help='api arguments')
   return parser
 
+# --- dump output of API   ----------------------------------------------------
+
+def dump(response):
+  """ write response to stderr and stdout """
+
+  sys.stderr.write("%d %s\n" % (response[0],response[1]))
+  sys.stderr.flush()
+  obj = json.loads(response[2])
+  print(json.dumps(obj,indent=2,sort_keys=True))
+
 # --- main program   ----------------------------------------------------------
 
 if __name__ == '__main__':
@@ -81,9 +91,12 @@ if __name__ == '__main__':
   opt_parser     = get_parser()
   options        = opt_parser.parse_args(namespace=Options)
 
+  # process cmdline
   cli     = RadioClient(options.host[0],options.port[0])
   qstring = None
   if len(options.args):
     qstring = '&'.join(options.args)
   resp = cli.exec(options.api,qstring=qstring)
-  print(resp)
+  dump(resp)
+
+  # process stdin
