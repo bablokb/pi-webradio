@@ -69,7 +69,7 @@ class Player(Base):
   def register_apis(self):
     """ register API-functions """
 
-    self._api.player_play = self.player_play
+    self._api.player_play_file = self.player_play_file
 
   # --- return persistent state of this class   -------------------------------
 
@@ -105,13 +105,13 @@ class Player(Base):
 
   # --- start playing   -------------------------------------------------------
 
-  def player_play(self,fname=None):
+  def player_play_file(self,fname=None):
     """ start playing """
 
     if fname:
       self._file = fname
     total_secs = int(subprocess.check_output(["mp3info", "-p","%S",self._file]))
-    self._api._push_event({'type': 'player_play', 'value': self._file})
+    self._api._push_event({'type': 'play_file', 'value': self._file})
     self._api._push_event({'type': 'file_info',
                            'value': {'name': self._file,
                                      'duration': self._pp_time(total_secs)}})

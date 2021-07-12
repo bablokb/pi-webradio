@@ -137,7 +137,7 @@ if __name__ == '__main__':
         nr = int(options.channel)
         app.api.radio_play_channel(nr)
       except ValueError:
-        app.api.player_play(options.channel)   # assume argument is a filename
+        app.api.player_play_file(options.channel) # assume argument is a filename
       signal.pause()
     else:
       app.run()
