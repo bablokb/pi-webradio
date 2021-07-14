@@ -23,10 +23,10 @@
         <div id="wr_play_name" class="play_name"></div>
       </div>
       <div class="play_buttons">
-        <a href="#"><i class="fas fa-play-circle"></i></a>
-        <a href="#"><i class="fas fa-pause-circle"></i></a>
-        <a href="#"><i class="fas fa-stop-circle"></i></a>
-        <a href="#"><i class="fas fa-volume-mute"></i></a>
+        <a href="#" onclick="radio_on()"><i class="fas fa-play-circle"></i></a>
+        <a href="#" onclick="radio_toggle()"><i class="fas fa-pause-circle"></i></a>
+        <a href="#" onclick="radio_off()"><i class="fas fa-stop-circle"></i></a>
+        <a href="#" onclick="vol_mute_toggle()"><i class="fas fa-volume-mute"></i></a>
       </div>
     </div>
     <div class="play_info">            <!-- second column            -->

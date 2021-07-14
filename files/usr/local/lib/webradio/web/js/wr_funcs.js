@@ -113,3 +113,34 @@ doReboot=function() {
   showMsg("Rebooting the system ...",2000);
 };
 
+/**
+  turn radio on
+*/
+
+function radio_on() {
+  $.get("/api/radio_on");
+};
+
+/**
+  turn radio off
+*/
+
+function radio_off() {
+  $.get("/api/radio_off");
+};
+
+/**
+  toggle radio-state
+*/
+
+function radio_toggle() {
+  $.get("/api/radio_toggle");
+};
+
+/**
+  toggle mute
+*/
+
+function vol_mute_toggle() {
+  $.get("/api/vol_mute_toggle");
+};
