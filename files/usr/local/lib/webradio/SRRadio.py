@@ -112,14 +112,14 @@ class Radio(Base):
       else:
         nr = self._last_channel
 
-    return self._channels[nr-1]
+    return dict(self._channels[nr-1])
 
   # --- return channel-list   ------------------------------------------------
 
   def radio_get_channels(self):
     """ return complete channel-list """
 
-    return self._channels
+    return [dict(c) for c in self._channels]
 
   # --- play given channel   --------------------------------------------------
 
@@ -133,12 +133,12 @@ class Radio(Base):
     # check if we have to do anything
     if nr == self._channel_nr:
       self.msg("Radio: already on channel %d" % nr)
-      return
     else:
       self._api._push_event({'type': 'radio_play_channel', 'value': channel})
       self._channel_nr   = nr
       self._last_channel = self._channel_nr
       self._backend.play(channel['url'])
+    return dict(channel)
 
   # --- switch to next channel   ----------------------------------------------
 
