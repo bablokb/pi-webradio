@@ -177,7 +177,14 @@ class Mpg123(Base):
 
     self.msg("Mpg123: starting mpg123 reader-thread")
     regex = re.compile(r".*ICY-META.*?'([^']*)';?.*\n")
-    for line in iter(self._process.stdout.readline,''):
+    while True:
+      try:
+        line = self._process.stdout.readline()
+        if not line:
+          break;
+      except:
+        # catch e.g. decode-error
+        pass
       if line.startswith("@F"):
         continue
       self.msg("Mpg123: processing line: %s" % line)
