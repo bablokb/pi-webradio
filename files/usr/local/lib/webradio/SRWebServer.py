@@ -196,6 +196,6 @@ class WebServer(Base):
       bottle.run(host=self._host,
                  port=self._port,
                  server=self._server,
-                 debug=False,reloader=False)
+                 debug=False,quiet=True,reloader=False)
 
     self.msg("WebServer: finished")
