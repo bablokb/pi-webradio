@@ -22,7 +22,7 @@ class EventFormatter(object):
     'icy-meta': '{value}',
     'icy-name': 'current station: {value}',
     'rec_start': 'recording {name} for {duration} minutes',
-    'rec_stop': 'finished recording. File {filename}, duration: {duration}m',
+    'rec_stop': 'finished recording. File {file}, duration: {duration}m',
     'vol_set': 'setting current volume to {value}',
     'radio_play_channel': 'start playing channel {nr} ({name})',
     'play_file': 'playing file: {value}',
