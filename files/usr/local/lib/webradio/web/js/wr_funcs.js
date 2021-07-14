@@ -144,3 +144,12 @@ function radio_toggle() {
 function vol_mute_toggle() {
   $.get("/api/vol_mute_toggle");
 };
+
+/**
+  toggle recording
+*/
+
+function rec_toggle() {
+  $.get("/api/rec_toggle");
+};
+
