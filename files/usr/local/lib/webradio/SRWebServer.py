@@ -96,8 +96,6 @@ class WebServer(Base):
     bottle.get('/webfonts/<filepath:path>',callback=self.webfonts)
     bottle.get('/images/<filepath:path>',callback=self.images)
     bottle.get('/js/<filepath:path>',callback=self.js_pages)
-    bottle.get('/api/radio_get_channel',callback=self.get_channel)
-    bottle.get('/api/radio_get_channels',callback=self.get_channels)
     bottle.get('/api/<api:path>',callback=self.process_api)
 
   # --- return absolute path of web-files   ----------------------------------
@@ -136,42 +134,6 @@ class WebServer(Base):
       channel['logo'] = None
     return channel
 
-  # --- get channel   ------------------------------------------------------
-
-  def get_channel(self):
-    """ return channel-info, replacing logo if necessary """
-
-    try:
-      response = dict(self._api.radio_get_channel(**bottle.request.query))
-      self._update_logo(response)
-      bottle.response.content_type = 'application/json'
-      return json.dumps(response)
-    except Exception as ex:
-      self.msg("exception while calling: /api/radio_get_channel")
-      traceback.print_exc()
-      msg = '"internal server error"'
-      bottle.response.content_type = 'application/json'
-      bottle.response.status       = 500                 # internal error
-      return '{"msg": ' + msg +'}'
-
-  # --- get channels   -----------------------------------------------------
-
-  def get_channels(self):
-    """ return channel-info, replacing logo if necessary """
-
-    try:
-      channels = self._api.radio_get_channels()
-      response = [self._update_logo(dict(c)) for c in channels]
-      bottle.response.content_type = 'application/json'
-      return json.dumps(response)
-    except Exception as ex:
-      self.msg("exception while calling: /api/radio_get_channels")
-      traceback.print_exc()
-      msg = '"internal server error"'
-      bottle.response.content_type = 'application/json'
-      bottle.response.status       = 500                 # internal error
-      return '{"msg": ' + msg +'}'
-
   # --- process API-call   -------------------------------------------------
 
   def process_api(self,api):
@@ -189,6 +151,10 @@ class WebServer(Base):
       try:
         response = self._api.exec(api,**bottle.request.query)
         bottle.response.content_type = 'application/json'
+        if api in ['radio_play_channel','radio_get_channel']:
+          self._update_logo(response)
+        elif api == 'radio_get_channels':
+          response = [self._update_logo(c) for c in response]
         return json.dumps(response)
       except NotImplementedError as err:
         self.msg("illegal request: /api/%s" % api)
