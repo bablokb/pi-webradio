@@ -151,5 +151,7 @@ function vol_mute_toggle() {
 
 function rec_toggle() {
   $.get("/api/rec_toggle");
+  // toggle solid/regular btn
+  $('#wr_rec_btn').toggleClass('fas').toggleClass('far');
 };
 
