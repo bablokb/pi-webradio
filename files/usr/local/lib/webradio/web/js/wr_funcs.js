@@ -24,15 +24,12 @@ showMsg=function(text,time) {
    Query channels and create content
 */
 
-channels = null;
-
 getChannels=function() {
   $.getJSON('/api/radio_get_channels',
     function(channelInfo) {
-      channels = channelInfo;
       $.each(channelInfo,function(index,channel) {
         var item = $("#ch_0").clone(true).attr({"id": "ch_"+channel.nr,
-                  "onclick": "playChannel({'nr': "+channel.nr+"})"})
+                  "onclick": "radio_play_channel({'nr': "+channel.nr+"})"})
           .appendTo("#channel_grid");
         if (channel.logo) {
           // create image
@@ -50,18 +47,20 @@ getChannels=function() {
   Switch to given channel (data should be {'nr': value})
 */
 
-playChannel=function(data) {
-  channel = channels[data.nr-1];
-  openTab(null,'wr_play');
-  $('#wr_play_link').addClass('menu_active');
-  if (channel.logo) {
-    $('#wr_play_logo').attr('src',channel.logo);
-    $('#wr_play_name').empty();
-  } else {
-    $('#wr_play_logo').attr('src','/images/default.png');
-    $('#wr_play_name').html(channel.name);
-  }
-  $.get('/api/radio_play_channel',data);
+function radio_play_channel(data) {
+  $.getJSON('/api/radio_play_channel',data,
+    function(channel) {
+      openTab(null,'wr_play');
+      $('#wr_play_link').addClass('menu_active');
+      if (channel.logo) {
+        $('#wr_play_logo').attr('src',channel.logo);
+        $('#wr_play_name').empty();
+      } else {
+        $('#wr_play_logo').attr('src','/images/default.png');
+        $('#wr_play_name').html(channel.name);
+      }
+    }
+  );
 };
 
 /**
