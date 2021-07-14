@@ -81,5 +81,9 @@
   { "name": "NDR Info",
     "url": "http://ndr-edge-30c1-dus-ts-cdn.cast.addradio.de/ndr/ndrinfo/niedersachsen/mp3/128/stream.mp3",
     "logo": "NDR-Info.png"
-  }
+  },
+  { "name": "Ö1",
+    "url": "http://orf-live.ors-shoutcast.at/oe1-q2a",
+    "logo": "OE1.png"
+  }       
 ]
