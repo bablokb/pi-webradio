@@ -116,7 +116,7 @@ main {
 .play_clock {
   display: flex;
   justify-content: center;
-  font-size: 78px;
+  font-size: 72px;
   color: blue;
 }
 
