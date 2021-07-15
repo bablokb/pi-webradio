@@ -23,18 +23,5 @@
 </div>
 
 <script>
-(function startTime() {
-    var today = new Date();
-    var h = today.getHours();
-    var m = today.getMinutes();
-    h = formatTime(h);
-    m = formatTime(m);
-    $('.clock').text(h + ":" + m);
-    var t = setTimeout(startTime, 2000);
-})();
-
-function formatTime(i) {
-  if (i < 10) {i = "0" + i};
-  return i;
-}
+startTime();
 </script>

@@ -8,6 +8,55 @@
 //
 // ---------------------------------------------------------------------------
 
+/**
+  Tab navigation
+*/
+
+function openTab(evt, tabId) {
+  // Declare all variables
+  var i, content_area, tablinks;
+
+  // Get all elements with class="content_area" and hide them
+  content_area = document.getElementsByClassName("content_area");
+  for (i = 0; i < content_area.length; i++) {
+    content_area[i].style.display = "none";
+  }
+
+  // Get all elements with class="tablink" and remove the class "menu_active"
+  tablinks = document.getElementsByClassName("tablink");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" menu_active", "");
+  }
+
+  // Show the current tab, and add an "menu_active" class to the link that opened the tab
+  document.getElementById(tabId).style.display = "block";
+  if (evt) {
+    evt.currentTarget.className += " menu_active";
+  }
+};
+
+/**
+  Update functions for all clocks
+*/
+
+function startTime() {
+  var today = new Date();
+  var h = today.getHours();
+  var m = today.getMinutes();
+  h = formatTime(h);
+  m = formatTime(m);
+  $('.clock').text(h + ":" + m);
+  var t = setTimeout(startTime, 2000);
+};
+
+/**
+  Format digits
+*/
+
+function formatTime(i) {
+  if (i < 10) {i = "0" + i};
+  return i;
+}
 
 /**
   Show message in message-area
