@@ -30,7 +30,7 @@
         <a href="#" onclick="rec_toggle()"><i id="wr_rec_btn" class="fas fa-dot-circle"></i></a>
       </div>
     </div>
-    <div class="play_info">            <!-- second column            -->
+    <div id="wr_infos" class="play_info">    <!-- second column            -->
     </div>
   </div>
 </div>

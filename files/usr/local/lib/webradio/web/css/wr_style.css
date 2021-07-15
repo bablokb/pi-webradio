@@ -147,6 +147,7 @@ main {
 
 .play_info {
   height: inherit;
+  max-height: 390px;
   flex-grow: 1;
   box-sizing: border-box;
   margin-left: 15px;
@@ -155,6 +156,9 @@ main {
   border-width: 5px;
   border-color: blue;
   border-radius: 5px;
+  color: blue;
+  font-size: 64px;
+  overflow-y: auto;
 }
 
 /* --- special functions   ------------------------------------------------ */

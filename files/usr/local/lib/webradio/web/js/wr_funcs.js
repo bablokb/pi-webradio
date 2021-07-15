@@ -74,6 +74,45 @@ showMsg=function(text,time) {
              }, time);
 };
 
+
+/**
+  Add event to info-area
+*/
+
+
+function addInfo(txt) {
+  var info_div = $('#wr_infos');
+  info_div.append('<div>'+txt+'</div>');
+  shouldScroll = info_div[0].scrollTop +
+        info_div[0].clientHeight === info_div[0].scrollHeight;
+  if (!shouldScroll) {
+    info_div.find(':first-child').remove();
+    scrollToBottom(info_div[0]);
+  }
+};
+
+/**
+  Scroll info-area
+*/
+
+function scrollToBottom(div) {
+  div.scrollTop = div.scrollHeight;
+}
+
+/**
+  Setup SSE
+*/
+
+setup_SSE=function() {
+  if (!!window.EventSource) {
+    var source = new EventSource('/get_events');
+    source.addEventListener('message', function(e) {
+      data = JSON.parse(e.data);
+     }, false);
+  }
+};
+
+
 /**
    Query channels and create content
 */
@@ -115,19 +154,6 @@ function radio_play_channel(data) {
       }
     }
   );
-};
-
-/**
-  Setup SSE
-*/
-
-setup_SSE=function() {
-  if (!!window.EventSource) {
-    var source = new EventSource('/get_events');
-    source.addEventListener('message', function(e) {
-      data = JSON.parse(e.data);
-     }, false);
-  }
 };
 
 /**
