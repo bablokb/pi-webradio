@@ -87,17 +87,8 @@ function addInfo(txt) {
         info_div[0].clientHeight === info_div[0].scrollHeight;
   if (!shouldScroll) {
     info_div.find(':first-child').remove();
-    scrollToBottom(info_div[0]);
   }
 };
-
-/**
-  Scroll info-area
-*/
-
-function scrollToBottom(div) {
-  div.scrollTop = div.scrollHeight;
-}
 
 /**
   Setup SSE
