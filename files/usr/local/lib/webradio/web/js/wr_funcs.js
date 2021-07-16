@@ -213,6 +213,7 @@ function radio_toggle() {
 
 function vol_mute_toggle() {
   $.get("/api/vol_mute_toggle");
+  $('#wr_mute_btn').toggleClass('fa-volume-mute').toggleClass('fa-volume-off');
 };
 
 /**

@@ -26,7 +26,8 @@
         <a href="#" onclick="radio_on()"><i class="fas fa-play-circle"></i></a>
         <a href="#" onclick="radio_toggle()"><i class="fas fa-pause-circle"></i></a>
         <a href="#" onclick="radio_off()"><i class="fas fa-stop-circle"></i></a>
-        <a href="#" onclick="vol_mute_toggle()"><i class="fas fa-volume-mute"></i></a>
+        <a href="#" onclick="vol_mute_toggle()">
+                <i id="wr_mute_btn" class="fas fa-volume-mute"></i></a>
         <a href="#" onclick="rec_toggle()"><i id="wr_rec_btn" class="fas fa-dot-circle"></i></a>
       </div>
     </div>
