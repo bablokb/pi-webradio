@@ -110,15 +110,14 @@ class WebServer(Base):
     if api.startswith("_"):
       # internal API, illegal request!
       self.msg("illegal api-call: %s" % api)
-      msg = '"illegal request /api/%s" % api'
-#       bottle.response.content_type = 'application/json'
-#       bottle.response.status       = 400                 # bad request
-      return '{"msg": ' + msg +'}'
+      msg = '"illegal request /api/%s"' % api
+      response = make_response(('{"msg": ' + msg +'}',400))
+      response.content_type = 'application/json'
+      return response
     else:
       self.msg("processing api-call: %s" % api)
       try:
-#         response = self._api.exec(api,**bottle.request.query)
-#         bottle.response.content_type = 'application/json'
+        response = self._api.exec(api,**request.args)
         if api in ['radio_play_channel','radio_get_channel']:
           self._update_logo(response)
         elif api == 'radio_get_channels':
@@ -126,17 +125,17 @@ class WebServer(Base):
         return json.dumps(response)
       except NotImplementedError as err:
         self.msg("illegal request: /api/%s" % api)
-        msg = '"/api/%s not implemented" % api'
-#         bottle.response.content_type = 'application/json'
-#         bottle.response.status       = 400                 # bad request
-        return '{"msg": ' + msg +'}'
+        msg = '"/api/%s not implemented"' % api
+        response = make_response(('{"msg": ' + msg +'}',400))
+        response.content_type = 'application/json'
+        return response
       except Exception as ex:
         self.msg("exception while calling: /api/%s" % api)
         traceback.print_exc()
         msg = '"internal server error"'
-#         bottle.response.content_type = 'application/json'
-#         bottle.response.status       = 500                 # internal error
-        return '{"msg": ' + msg +'}'
+        response = make_response(('{"msg": ' + msg +'}',500))
+        response.content_type = 'application/json'
+        return response
 
   # --- stream SSE (server sent events)   ----------------------------------
 
