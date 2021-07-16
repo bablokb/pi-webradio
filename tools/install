@@ -11,7 +11,7 @@
 
 # --- defaults used during installation   ----------------------------------
 
-PACKAGES="python3-bottle mpg123 mp3info"
+PACKAGES="python3-flask mpg123 mp3info"
 PROJECT="pi-webradio"
 
 # --- check user parameter   -----------------------------------------------
