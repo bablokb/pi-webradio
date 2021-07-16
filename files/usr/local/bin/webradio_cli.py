@@ -77,8 +77,11 @@ def dump(response):
 
   sys.stderr.write("%d %s\n" % (response[0],response[1]))
   sys.stderr.flush()
-  obj = json.loads(response[2])
-  print(json.dumps(obj,indent=2,sort_keys=True))
+  try:
+    obj = json.loads(response[2])
+    print(json.dumps(obj,indent=2,sort_keys=True))
+  except:
+    print("response: " + response[2])
 
 # --- main program   ----------------------------------------------------------
 
