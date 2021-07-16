@@ -15,6 +15,8 @@
 import os, json, queue, traceback
 
 from flask import Flask, render_template as template, request, make_response
+from flask import send_from_directory
+
 from werkzeug.serving import make_server
 
 from webradio import Base
@@ -33,6 +35,7 @@ class WebServer(Base):
 
     self.stop_event    = app.stop_event
     self.read_config(app.options.pgm_dir)
+    self._flask = Flask('pi-webradio',root_path=self._web_root)
     self._set_routes()
 
   # --- read configuration   --------------------------------------------------
@@ -55,13 +58,13 @@ class WebServer(Base):
     """ set up routing (decorators don't seem to work for methods within a class """
 
     # web-interface (GUI)
-#     bottle.get('/',callback=self.main_page)
-#     bottle.get('/css/<filepath:path>',callback=self.css_pages)
-#     bottle.get('/webfonts/<filepath:path>',callback=self.webfonts)
-#     bottle.get('/images/<filepath:path>',callback=self.images)
-#     bottle.get('/js/<filepath:path>',callback=self.js_pages)
-#     bottle.get('/api/get_events',callback=self.get_events)
-#     bottle.get('/api/<api:path>',callback=self.process_api)
+    self._flask.add_url_rule('/','main',self.main_page)
+    self._flask.add_url_rule('/css/<path:filepath>','css',self.css_pages)
+    self._flask.add_url_rule('/webfonts/<path:filepath>','webfonts',self.webfonts)
+    self._flask.add_url_rule('/images/<path:filepath>','images',self.images)
+    self._flask.add_url_rule('/js/<path:filepath>','js',self.js_pages)
+    self._flask.add_url_rule('/api/get_events','get_events',self.get_events)
+    self._flask.add_url_rule('/api/<path:api>','api',self.process_api)
 
   # --- return absolute path of web-files   ----------------------------------
 
@@ -71,21 +74,22 @@ class WebServer(Base):
 
   # --- static routes   ------------------------------------------------------
 
-#   def css_pages(self,filepath):
-#     return bottle.static_file(filepath, root=self._get_path('css'))
+  def css_pages(self,filepath):
+    return send_from_directory(self._get_path('css'),filepath)
 
-#   def webfonts(self,filepath):
-#     return bottle.static_file(filepath, root=self._get_path('webfonts'))
+  def webfonts(self,filepath):
+    return send_from_directory(self._get_path('webfonts'),filepath)
   
-#   def images(self,filepath):
-#     return bottle.static_file(filepath, root=self._get_path('images'))
+  def images(self,filepath):
+    return send_from_directory(self._get_path('images'),filepath)
   
-#   def js_pages(self,filepath):
-#     return bottle.static_file(filepath, root=self._get_path('js'))
+  def js_pages(self,filepath):
+    return send_from_directory(self._get_path('js'),filepath)
   
   # --- main page   ----------------------------------------------------------
 
-#   def main_page(self):
+  def main_page(self):
+    pass
 #     tpl = bottle.SimpleTemplate(name="index.html",lookup=[self._web_root])
 #     return tpl.render()
 
@@ -176,9 +180,8 @@ class WebServer(Base):
   def run(self):
     """ start and run the webserver """
 
-    app = Flask('pi-webradio')
-    self._server = make_server(self._host,self._port,app)
-    ctx = app.app_context()
+    self._server = make_server(self._host,self._port,self._flask)
+    ctx = self._flask.app_context()
     ctx.push()
 
     self.msg("WebServer: starting the web-server in debug-mode")
