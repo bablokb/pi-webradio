@@ -38,15 +38,15 @@
     <!-- flexbox with single row -->
     <div id="content">
       <!-- first element -->
-      %include('menu.tpl')
+      {% include 'menu.tpl' %}
 
       <!-- second element -->
       <main>
-        %include('content_clock.tpl')
-        %include('content_channels.tpl')
-        %include('content_play.tpl')
-        %include('content_player.tpl')
-        %include('content_special.tpl')
+        {% include 'content_clock.tpl' %}
+        {% include 'content_channels.tpl' %}
+        {% include 'content_play.tpl' %}
+        {% include 'content_player.tpl' %}
+        {% include 'content_special.tpl' %}
       </main>
     </div>
   </body>

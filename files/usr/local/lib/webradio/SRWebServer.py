@@ -14,7 +14,7 @@
 
 import os, json, queue, traceback
 
-from flask import Flask, render_template as template, request, make_response
+from flask import Flask, render_template, request, make_response
 from flask import send_from_directory
 
 from werkzeug.serving import make_server
@@ -35,7 +35,8 @@ class WebServer(Base):
 
     self.stop_event    = app.stop_event
     self.read_config(app.options.pgm_dir)
-    self._flask = Flask('pi-webradio',root_path=self._web_root)
+    self._flask = Flask('pi-webradio',template_folder=self._web_root,
+                        root_path=self._web_root)
     self._set_routes()
 
   # --- read configuration   --------------------------------------------------
@@ -89,9 +90,7 @@ class WebServer(Base):
   # --- main page   ----------------------------------------------------------
 
   def main_page(self):
-    pass
-#     tpl = bottle.SimpleTemplate(name="index.html",lookup=[self._web_root])
-#     return tpl.render()
+    return render_template("index.html")
 
   # --- update logo with correct path   ------------------------------------
 
