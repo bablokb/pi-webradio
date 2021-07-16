@@ -135,6 +135,9 @@ function radio_play_channel(data) {
   $.getJSON('/api/radio_play_channel',data,
     function(channel) {
       openTab(null,'wr_play');
+      $('#wr_on_btn').removeClass('fas').addClass('far');
+      $('#wr_off_btn').removeClass('far').addClass('fas');
+      $('#wr_pause_btn').removeClass('far').addClass('fas');
       $('#wr_play_link').addClass('menu_active');
       if (channel.logo) {
         $('#wr_play_logo').attr('src',channel.logo);
@@ -187,8 +190,13 @@ doReboot=function() {
   turn radio on
 */
 
+var radio_state = "on";
 function radio_on() {
   $.get("/api/radio_on");
+  radio_state = "on";
+  $('#wr_on_btn').removeClass('fas').addClass('far');
+  $('#wr_off_btn').removeClass('far').addClass('fas');
+  $('#wr_pause_btn').removeClass('far').addClass('fas');
 };
 
 /**
@@ -197,6 +205,10 @@ function radio_on() {
 
 function radio_off() {
   $.get("/api/radio_off");
+  radio_state = "off";
+  $('#wr_off_btn').removeClass('fas').addClass('far');
+  $('#wr_on_btn').removeClass('far').addClass('fas');
+  $('#wr_pause_btn').removeClass('far').addClass('fas');
 };
 
 /**
@@ -204,7 +216,22 @@ function radio_off() {
 */
 
 function radio_toggle() {
+  if (radio_state == "off") {
+    return;
+  }
   $.get("/api/radio_toggle");
+  $('#wr_pause_btn').toggleClass('fas').toggleClass('far');
+  if (radio_state == "on") {
+    // pause, remove play or stop icon
+    $('#wr_on_btn').removeClass('far').addClass('fas');
+    $('#wr_off_btn').removeClass('far').addClass('fas');
+    radio_state = "pause";
+  } else {
+    // resume playing
+    $('#wr_off_btn').removeClass('far').addClass('fas');
+    $('#wr_on_btn').removeClass('fas').addClass('far');
+    radio_state = "on";
+  }
 };
 
 /**
