@@ -12,7 +12,7 @@
 
 # --- System-Imports   -------------------------------------------------------
 
-import os, bottle, json, traceback
+import os, bottle, json, queue, traceback
 from bottle import route, ServerAdapter
 
 from webradio import Base
@@ -96,6 +96,7 @@ class WebServer(Base):
     bottle.get('/webfonts/<filepath:path>',callback=self.webfonts)
     bottle.get('/images/<filepath:path>',callback=self.images)
     bottle.get('/js/<filepath:path>',callback=self.js_pages)
+    bottle.get('/api/get_events',callback=self.get_events)
     bottle.get('/api/<api:path>',callback=self.process_api)
 
   # --- return absolute path of web-files   ----------------------------------
@@ -169,6 +170,34 @@ class WebServer(Base):
         bottle.response.content_type = 'application/json'
         bottle.response.status       = 500                 # internal error
         return '{"msg": ' + msg +'}'
+
+  # --- stream SSE (server sent events)   ----------------------------------
+
+  def get_events(self):
+    """ stream SSE """
+
+    ev_queue = queue.Queue()
+    self._api._add_consumer("web",ev_queue)
+
+    try:
+      bottle.response.content_type = 'text/event-stream'
+      bottle.response.set_header('Cache-Control','no-cache')
+      bottle.response.set_header('Connection','keep-alive')
+      while True:
+        ev = ev_queue.get()
+        ev_queue.task_done()
+        if ev:
+          sse = "data: %s\n\n" % json.dumps(ev)
+          self.msg("WebServer: serving event %s" % sse)
+          bottle.response.status = 200                 # OK
+          # send data using SSE
+          yield sse
+        else:
+          break
+    except:
+      traceback.print_exc()
+  bottle.response.content_type = 'text/plain'
+  bottle.response.status = 404
 
   # --- stop web-server   --------------------------------------------------
 
