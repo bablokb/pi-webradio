@@ -28,6 +28,7 @@ class RadioEvents(Base):
     self.debug        = app.debug
     self._stop_event  = app.stop_event
     self._input_queue = queue.Queue()
+    self._lock        = threading.Lock()
     self._consumers   = {}
     self._formatter   = EventFormatter()
     self.register_apis()
@@ -56,13 +57,15 @@ class RadioEvents(Base):
 
     if not id in self._consumers:
       self.msg("RadioEvents: adding consumer with id %s" % id)
-      self._consumers[id] = queue
+      with self._lock:
+        self._consumers[id] = queue
       try:
         ev = {'type': 'version','value': self._api.get_version()}
         ev['text'] = self._formatter.format(ev)
         queue.put_nowait(ev)
       except:
-        del self._consumers[id]
+        with self._lock:
+          del self._consumers[id]
 
   # --- remove a consumer   --------------------------------------------------
 
@@ -71,7 +74,8 @@ class RadioEvents(Base):
 
     if id in self._consumers:
       self._consumers[id].put(None)
-      del self._consumers[id]
+      with self._lock:
+        del self._consumers[id]
 
   # --- multiplex events   ---------------------------------------------------
 
@@ -86,13 +90,18 @@ class RadioEvents(Base):
         continue
       self.msg("RadioEvents: received event: %r" % (event,))
       event['text'] = self._formatter.format(event)
+      stale_consumers = []
       for consumer in self._consumers.values():
         try:
-          consumer.put(event)
+          consumer.put_nowait(event)
         except queue.Full:
-          # remove stale consumers
-          del self._consumers[consumer['id']]
+          stale_consumers.append(consumer['id'])
       self._input_queue.task_done()
+
+      # delete stale consumers
+      with self._lock:
+        for id in stale_consumers:
+          del self._consumers[id]
 
     self.msg("RadioEvents: stopping event-processing")
     for consumer in self._consumers.values():
