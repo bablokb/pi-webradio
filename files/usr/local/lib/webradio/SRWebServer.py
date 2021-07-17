@@ -17,7 +17,7 @@ import os, json, queue, traceback
 from flask import Flask, render_template, request, make_response
 from flask import send_from_directory
 
-from werkzeug.serving import make_server
+from werkzeug.serving import make_server, WSGIRequestHandler
 
 from webradio import Base
 
@@ -37,6 +37,7 @@ class WebServer(Base):
     self.read_config(app.options.pgm_dir)
     self._flask = Flask('pi-webradio',template_folder=self._web_root,
                         root_path=self._web_root)
+    self._flask.debug = self.debug
     self._set_routes()
 
   # --- read configuration   --------------------------------------------------
@@ -178,7 +179,15 @@ class WebServer(Base):
   def run(self):
     """ start and run the webserver """
 
-    self._server = make_server(self._host,self._port,self._flask)
+    class QuietHandler(WSGIRequestHandler):
+      def log_request(*args, **kw):
+        pass
+
+    if self.debug:
+      self._server = make_server(self._host,self._port,self._flask,threaded=True)
+    else:
+      self._server = make_server(self._host,self._port,self._flask,
+                                 request_handler=QuietHandler,threaded=True)
     ctx = self._flask.app_context()
     ctx.push()
 
