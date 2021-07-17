@@ -14,7 +14,7 @@
 
 import os, json, queue, traceback
 
-from flask import Flask, render_template, request, make_response
+from flask import Flask, Response, render_template, request, make_response
 from flask import send_from_directory
 
 from werkzeug.serving import make_server, WSGIRequestHandler
@@ -143,28 +143,24 @@ class WebServer(Base):
   def get_events(self):
     """ stream SSE """
 
-    ev_queue = queue.Queue()
-    self._api._add_consumer("web",ev_queue)
-
     try:
-#       bottle.response.content_type = 'text/event-stream'
-#       bottle.response.set_header('Cache-Control','no-cache')
-#       bottle.response.set_header('Connection','keep-alive')
-      while True:
-        ev = ev_queue.get()
-        ev_queue.task_done()
-        if ev:
-          sse = "data: %s\n\n" % json.dumps(ev)
-          self.msg("WebServer: serving event %s" % sse)
-#           bottle.response.status = 200                 # OK
-          # send data using SSE
-          yield sse
-        else:
-          break
+      ev_queue = queue.Queue()
+      self._api._add_consumer("web",ev_queue)   # TODO: use session-id
+
+      def stream():
+        while True:
+          ev = ev_queue.get()
+          ev_queue.task_done()
+          if ev:
+            sse = "data: %s\n\n" % json.dumps(ev)
+            self.msg("WebServer: serving event %s" % sse)
+            yield sse
+          else:
+            break
+
+      return Response(stream(), mimetype='text/event-stream')
     except:
       traceback.print_exc()
-#   bottle.response.content_type = 'text/plain'
-#   bottle.response.status = 404
 
   # --- stop web-server   --------------------------------------------------
 

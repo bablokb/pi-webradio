@@ -94,11 +94,13 @@ function addInfo(txt) {
   Setup SSE
 */
 
-setup_SSE=function() {
+function get_events() {
   if (!!window.EventSource) {
-    var source = new EventSource('/get_events');
+    var source = new EventSource('/api/get_events');
     source.addEventListener('message', function(e) {
       data = JSON.parse(e.data);
+      console.log(data);
+      addInfo(data.text);
      }, false);
   }
 };

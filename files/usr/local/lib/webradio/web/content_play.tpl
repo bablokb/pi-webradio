@@ -41,11 +41,5 @@
 </div>
 
 <script>
-var bla_count = 1;
-function add_bla() {
-  addInfo("bla bla " + bla_count);
-  bla_count += 1;
-  setTimeout(add_bla,2000);
-};
-//add_bla();
+get_events();
 </script>
