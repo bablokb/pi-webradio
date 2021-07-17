@@ -156,9 +156,10 @@ main {
   border-width: 5px;
   border-color: blue;
   border-radius: 5px;
-  color: blue;
-  font-size: 64px;
+  color: lightblue;
+  font-size: 36px;
   overflow-y: auto;
+  white-space: nowrap;
 }
 
 /* --- special functions   ------------------------------------------------ */
