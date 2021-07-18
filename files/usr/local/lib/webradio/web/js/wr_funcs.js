@@ -83,10 +83,15 @@ showMsg=function(text,time) {
 function addInfo(txt) {
   var info_div = $('#wr_infos');
   info_div.append('<div>'+txt+'</div>');
-  shouldScroll = info_div[0].scrollTop +
-        info_div[0].clientHeight === info_div[0].scrollHeight;
-  if (!shouldScroll) {
-    info_div.find(':first-child').remove();
+  shouldScroll = false;
+  while (!shouldScroll) {
+    shouldScroll = info_div[0].scrollTop +
+      info_div[0].clientHeight === info_div[0].scrollHeight;
+    if (!shouldScroll) {
+      info_div.find(':first-child').remove();
+    } else {
+      break;
+    }
   }
 };
 
