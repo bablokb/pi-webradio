@@ -105,7 +105,9 @@ function get_events() {
     source.addEventListener('message', function(e) {
       data = JSON.parse(e.data);
       console.log(data);
-      addInfo(data.text);
+      if (data.type === 'icy-meta') {
+        addInfo(data.text);
+      }
      }, false);
   }
 };
