@@ -140,6 +140,8 @@ getChannels=function() {
   Switch to given channel (data should be {'nr': value})
 */
 
+var last_channel = 0;
+
 function radio_play_channel(data) {
   $.getJSON('/api/radio_play_channel',data,
     function(channel) {
@@ -154,6 +156,13 @@ function radio_play_channel(data) {
       } else {
         $('#wr_play_logo').attr('src','/images/default.png');
         $('#wr_play_name').html(channel.name);
+      }
+      // check if channel is new
+      if (channel.nr != last_channel) {
+        last_channel = channel.nr;
+        $('#wr_infos').empty();
+      } else {
+        // do nothing
       }
     }
   );
