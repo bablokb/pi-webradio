@@ -99,7 +99,14 @@ if __name__ == '__main__':
   qstring = None
   if len(options.args):
     qstring = '&'.join(options.args)
-  resp = cli.exec(options.api,qstring=qstring)
-  dump(resp)
+
+  # execute api
+  if options.api == "get_events":
+    events = cli.get_events()
+    for event in events:
+      print(json.dumps(json.loads(event.data),indent=2,sort_keys=True))
+  else:
+    resp = cli.exec(options.api,qstring=qstring)
+    dump(resp)
 
   # process stdin
