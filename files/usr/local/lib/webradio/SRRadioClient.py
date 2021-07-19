@@ -12,6 +12,8 @@
 #
 # ----------------------------------------------------------------------------
 
+import requests
+import sseclient
 import http.client as httplib
 
 class RadioClient:
@@ -22,9 +24,10 @@ class RadioClient:
   def __init__(self,host,port,timeout=10):
     """ constructor """
 
-    self._host = host
-    self._port = port
+    self._host    = host
+    self._port    = port
     self._request = httplib.HTTPConnection(host,port,timeout)
+    self._client  = None
 
   # --- close request object   -----------------------------------------------
 
@@ -32,6 +35,8 @@ class RadioClient:
     """ close internal request object """
 
     self._request.close()
+    if self._client:
+      self._client.close()
 
   # --- execute request   ----------------------------------------------------
 
@@ -62,3 +67,14 @@ class RadioClient:
       self.close()
 
     return data
+
+  # --- set up SSE and return generator   ------------------------------------
+
+  def get_events(self):
+    """ set up SSE client and return event-queue """
+
+    url = 'http://{0}:{1}/api/get_events'.format(self._host,self._port)
+    headers = {'Accept': 'text/event-stream'}
+    response = requests.get(url, stream=True, headers=headers)
+    self._client = sseclient.SSEClient(response)
+    return self._client.events();
