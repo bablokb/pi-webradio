@@ -12,7 +12,7 @@
 
 # --- System-Imports   -------------------------------------------------------
 
-import os, json, queue, traceback
+import os, json, queue, traceback, uuid
 
 from flask import Flask, Response, render_template, request, make_response
 from flask import send_from_directory
@@ -144,21 +144,22 @@ class WebServer(Base):
     """ stream SSE """
 
     try:
-      ev_queue = queue.Queue()
-      self._api._add_consumer("web",ev_queue)   # TODO: use session-id
+      ev_queue = queue.Queue(3)
+      id = uuid.uuid4().hex
+      ev_queue = self._api._add_consumer(id,ev_queue)   # TODO: use session-id
 
-      def stream():
+      def event_stream():
         while True:
           ev = ev_queue.get()
           ev_queue.task_done()
           if ev:
             sse = "data: %s\n\n" % json.dumps(ev)
-            self.msg("WebServer: serving event %s" % sse)
+            self.msg("WebServer: serving event '%s'" % sse)
             yield sse
           else:
             break
 
-      return Response(stream(), mimetype='text/event-stream')
+      return Response(event_stream(), mimetype='text/event-stream')
     except:
       traceback.print_exc()
 
