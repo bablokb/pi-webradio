@@ -12,7 +12,7 @@
 #
 # ----------------------------------------------------------------------------
 
-import requests
+import urllib3
 import sseclient
 import http.client as httplib
 
@@ -73,8 +73,10 @@ class RadioClient:
   def get_events(self):
     """ set up SSE client and return event-queue """
 
-    url = 'http://{0}:{1}/api/get_events'.format(self._host,self._port)
-    headers = {'Accept': 'text/event-stream'}
-    response = requests.get(url, stream=True, headers=headers)
+    url      = 'http://{0}:{1}/api/get_events'.format(self._host,self._port)
+    headers  = {'Accept': 'text/event-stream'}
+    http     = urllib3.PoolManager()
+    response = http.request('GET', url, preload_content=False, headers=headers)
+
     self._client = sseclient.SSEClient(response)
     return self._client.events();
