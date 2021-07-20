@@ -55,7 +55,10 @@ class RadioEvents(Base):
   def add_consumer(self,id,queue):
     """ add a consumer to the list of consumers """
 
-    if not id in self._consumers:
+    if id in self._consumers:
+      self.msg("RadioEvents: reusing consumer-queue with id %s" % id)
+      return self._consumers[id]
+    else:
       self.msg("RadioEvents: adding consumer with id %s" % id)
       with self._lock:
         self._consumers[id] = queue
@@ -63,9 +66,11 @@ class RadioEvents(Base):
         ev = {'type': 'version','value': self._api.get_version()}
         ev['text'] = self._formatter.format(ev)
         queue.put_nowait(ev)
+        return queue
       except:
         with self._lock:
           del self._consumers[id]
+        return None
 
   # --- remove a consumer   --------------------------------------------------
 
@@ -91,16 +96,17 @@ class RadioEvents(Base):
       self.msg("RadioEvents: received event: %r" % (event,))
       event['text'] = self._formatter.format(event)
       stale_consumers = []
-      for consumer in self._consumers.values():
+      for id, consumer in self._consumers.items():
         try:
           consumer.put_nowait(event)
         except queue.Full:
-          stale_consumers.append(consumer['id'])
+          stale_consumers.append(id)
       self._input_queue.task_done()
 
       # delete stale consumers
       with self._lock:
         for id in stale_consumers:
+          self.msg("RadioEvents: deleting stale queue with id %s" % id)
           del self._consumers[id]
 
     self.msg("RadioEvents: stopping event-processing")
