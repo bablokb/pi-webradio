@@ -72,11 +72,12 @@ def get_parser():
 
 # --- dump output of API   ----------------------------------------------------
 
-def dump(response):
+def print_response(options,response):
   """ write response to stderr and stdout """
 
-  sys.stderr.write("%d %s\n" % (response[0],response[1]))
-  sys.stderr.flush()
+  if options.debug:
+    sys.stderr.write("%d %s\n" % (response[0],response[1]))
+    sys.stderr.flush()
   try:
     obj = json.loads(response[2])
     print(json.dumps(obj,indent=2,sort_keys=True))
@@ -107,6 +108,6 @@ if __name__ == '__main__':
       print(json.dumps(json.loads(event.data),indent=2,sort_keys=True))
   else:
     resp = cli.exec(options.api,qstring=qstring)
-    dump(resp)
+    print_response(options,resp)
 
   # process stdin
