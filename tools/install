@@ -13,15 +13,7 @@
 
 PACKAGES="python3-flask mpg123 mp3info"
 PROJECT="pi-webradio"
-
-# --- check user parameter   -----------------------------------------------
-
-if [ -z "$1" ]; then
-  echo -e "usage: $0 username" >&2
-  exit 3
-else
-  USERNAME="$1"
-fi
+USERNAME="${1:-pi}"
 
 # --- basic packages   ------------------------------------------------------
 
@@ -56,7 +48,7 @@ fi
 # --- fix user of service   -------------------------------------------------
 
 sed -i -e "/User=/s/=.*/=$USERNAME/" /etc/systemd/system/${PROJECT}.service
-usermod -a -G i2c,audio "$USERNAME"
+usermod -a -G audio "$USERNAME"
 
 # --- activate service   ----------------------------------------------------
 
