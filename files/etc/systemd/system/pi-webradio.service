@@ -1,0 +1,23 @@
+# --------------------------------------------------------------------------
+# Systemd service Definition for pi-webradio.service.
+#
+# The service just starts the script /usr/local/bin/pi-webradio.py
+#
+# Author: Bernhard Bablok
+# License: GPL3
+#
+# Website: https://github.com/bablokb/pi-webradio
+#
+# --------------------------------------------------------------------------
+
+[Unit]
+Description=Start pi-webradio
+After=multi-user.target
+ 
+[Service]
+Type=simple
+User=XXX
+ExecStart=/usr/local/bin/pi-webradio.py -q
+
+[Install]
+WantedBy=multi-user.target
