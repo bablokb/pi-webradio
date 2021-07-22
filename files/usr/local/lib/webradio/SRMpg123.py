@@ -66,7 +66,7 @@ class Mpg123(Base):
   def get_persistent_state(self):
     """ return persistent state (overrides SRBase.get_pesistent_state()) """
     return {
-      'volume': self._volume
+      'volume': self._volume if not self._mute else self._vol_old
       }
 
   # --- restore persistent state of this class   ------------------------------
