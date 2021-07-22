@@ -13,7 +13,7 @@
 DEFAULT_HOST = 'localhost'
 DEFAULT_PORT = 8026
 
-import locale, os, sys, json
+import locale, os, sys, json, shlex, threading
 from   argparse import ArgumentParser
 
 # --- application imports   --------------------------------------------------
@@ -101,7 +101,7 @@ def print_event(options,event):
 
 # --- process single api   ----------------------------------------------------
 
-def process_api(options,cli,api,args,sync=True):
+def process_api(options,api,args,sync=True):
   """ process a single API-call """
 
   qstring = None
@@ -110,24 +110,26 @@ def process_api(options,cli,api,args,sync=True):
   # execute api
   if api == "get_events":
     if sync:
-      process_events(options,cli)
+      process_events(options)
     else:
-      ev_thread = threading.Thread(target=process_events,args=(options,cli))
-      ev_thread.deamon(True)
+      ev_thread = threading.Thread(target=process_events,args=(options,))
+      ev_thread.deamon = False
       ev_thread.start()
   else:
     # use synchronous calls for all other events
-    resp = cli.exec(api,qstring=qstring)
+    resp = options.cli.exec(api,qstring=qstring)
     print_response(options,resp)
 
 # --- process events   --------------------------------------------------------
 
-def process_events(options,cli):
+def process_events(options):
   """ process get_events """
 
-  events = cli.get_events()
+  events = options.cli.get_events()
   for event in events:
     print_event(options,event)
+    if options.stop.is_set():
+      break
 
 # --- main program   ----------------------------------------------------------
 
@@ -139,8 +141,23 @@ if __name__ == '__main__':
   # parse commandline-arguments
   opt_parser     = get_parser()
   options        = opt_parser.parse_args(namespace=Options)
+  options.stop   = threading.Event()
+  options.cli    = RadioClient(options.host[0],options.port[0])
 
   # process cmdline
-  cli     = RadioClient(options.host[0],options.port[0])
   if options.api:
-    process_api(options,cli,options.api,options.args)
+    process_api(options,options.api,options.args)
+
+  # read commands from stdin
+  try:
+    _ = os.tcgetpgrp(sys.stdin.fileno())
+  except:
+    for line in sys.stdin:
+      line = line.rstrip()
+      if not len(line):
+        break
+      cmd  = shlex.split(line)
+      api  = cmd[0]
+      args = cmd[1:]
+      process_api(options,api,args,sync=False)
+    options.stop.set()
