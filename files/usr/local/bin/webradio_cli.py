@@ -52,8 +52,12 @@ def get_parser():
     help='port the server is listening on (default: %d)' % DEFAULT_PORT)
 
   parser.add_argument('-i', '--interactive', action='store_true',
-    dest='inter', default=False,
-    help="interactive mode (read APIs from stdin)")
+    dest='interactive', default=False,
+    help="interactive mode (read APIs from interactive shell)")
+
+  parser.add_argument('-k', '--keyboard', action='store_true',
+    dest='keyboard', default=False,
+    help="interactive mode (read APIs from interactive shell)")
 
   parser.add_argument('-d', '--debug', action='store_true',
     dest='debug', default=False,
@@ -84,6 +88,47 @@ def print_response(options,response):
   except:
     print("response: " + response[2])
 
+# --- print event   -----------------------------------------------------------
+
+def print_event(options,event):
+  """ print event (depending on mode) """
+
+  raw = options.debug or (not options.interactive and not options.keyboard)
+  if raw:
+    print(json.dumps(json.loads(event.data),indent=2,sort_keys=True))
+  else:
+    print(json.loads(event.data)['text'])
+
+# --- process single api   ----------------------------------------------------
+
+def process_api(options,cli,api,args,sync=True):
+  """ process a single API-call """
+
+  qstring = None
+  qstring = '&'.join(args)
+
+  # execute api
+  if api == "get_events":
+    if sync:
+      process_events(options,cli)
+    else:
+      ev_thread = threading.Thread(target=process_events,args=(options,cli))
+      ev_thread.deamon(True)
+      ev_thread.start()
+  else:
+    # use synchronous calls for all other events
+    resp = cli.exec(api,qstring=qstring)
+    print_response(options,resp)
+
+# --- process events   --------------------------------------------------------
+
+def process_events(options,cli):
+  """ process get_events """
+
+  events = cli.get_events()
+  for event in events:
+    print_event(options,event)
+
 # --- main program   ----------------------------------------------------------
 
 if __name__ == '__main__':
@@ -97,17 +142,5 @@ if __name__ == '__main__':
 
   # process cmdline
   cli     = RadioClient(options.host[0],options.port[0])
-  qstring = None
-  if len(options.args):
-    qstring = '&'.join(options.args)
-
-  # execute api
-  if options.api == "get_events":
-    events = cli.get_events()
-    for event in events:
-      print(json.dumps(json.loads(event.data),indent=2,sort_keys=True))
-  else:
-    resp = cli.exec(options.api,qstring=qstring)
-    print_response(options,resp)
-
-  # process stdin
+  if options.api:
+    process_api(options,cli,options.api,options.args)
