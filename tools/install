@@ -11,7 +11,9 @@
 
 # --- defaults used during installation   ----------------------------------
 
-PACKAGES="python3-flask mpg123 mp3info"
+PACKAGES="python3-pip python3-flask mpg123 mp3info"
+PACKAGES_PIP="sseclient-py"
+
 PROJECT="pi-webradio"
 USERNAME="${1:-pi}"
 
@@ -21,6 +23,9 @@ if [ -n "$PACKAGES" ]; then
   apt-get update
   apt-get -y install $PACKAGES
 fi
+
+# install PIP3 packages
+[ -n "$PACKAGES_PIP" ] && pip3 --disable-pip-version-check install $PACKAGES_PIP
 
 # --- install specific files   ----------------------------------------------
 
@@ -58,7 +63,7 @@ usermod -a -G audio "$USERNAME"
 
 # --- activate service   ----------------------------------------------------
 
-systemctl enable ${PROJECT}.service
+#systemctl enable ${PROJECT}.service
 
 # --- final configuration is manual   ---------------------------------------
 
