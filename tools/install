@@ -41,6 +41,7 @@ for f in `find $(dirname "$0")/../files/ -type f -not -name "*.pyc"`; do
   [ ! -d "$target_dir" ] && mkdir -p "$target_dir"
   cp "$f" "$target"
   chown root:root "$target"
+  chmod 644       "$target"
 done
 
 chmod 755 /usr/local/bin/${PROJECT}.py
