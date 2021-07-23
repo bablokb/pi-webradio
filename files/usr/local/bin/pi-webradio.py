@@ -95,9 +95,10 @@ def process_events(app,options,queue):
     else:
       break
   app.msg("pi-webradio: finished processing events")
-  if ev and (ev['type'] == 'eof' or
-             ev['type'] == 'sys' and options.debug):
+  try:
     os.kill(os.getpid(), signal.SIGTERM)
+  except:
+    pass
 
 # --- main program   ----------------------------------------------------------
 
