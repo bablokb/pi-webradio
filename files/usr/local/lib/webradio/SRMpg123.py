@@ -44,6 +44,7 @@ class Mpg123(Base):
     # section [MPG123]
     self._vol_default = int(self.get_value(self._app.parser,"MPG123",
                                        "vol_default",30))
+    self._volume      = self._vol_default
     self._vol_delta   = int(self.get_value(self._app.parser,"MPG123",
                                        "vol_delta",5))
     self._mpg123_opts = self.get_value(self._app.parser,"MPG123",
