@@ -30,12 +30,18 @@ if [ -f /etc/${PROJECT}.conf ]; then
   mv /etc/${PROJECT}.conf /etc/${PROJECT}.conf.$rand
 fi
 
-for f in `find $(dirname "$0")/../files/ -type f`; do
-  cp "$f" "${f#*files}"
-  chown root:root "${f#*files}"
+for f in `find $(dirname "$0")/../files/ -type f -not -name "*.pyc"`; do
+  target="${f#*files}"
+  target_dir="${target%/*}"
+  [ ! -d "$target_dir" ] && mkdir -p "$target_dir"
+  cp "$f" "$target"
+  chown root:root "$target"
 done
+
 chmod 755 /usr/local/bin/${PROJECT}.py
+chmod 755 /usr/local/bin/webradio_cli.py
 chmod 644 /etc/${PROJECT}.conf
+chmod 644 /etc/${PROJECT}.channels
 chmod 644 /etc/systemd/system/${PROJECT}.service
 
 # restore old configuration
