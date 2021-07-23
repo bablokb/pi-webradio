@@ -28,7 +28,7 @@ what is already implemented.
 Installation
 ------------
 
-To install the (server-) software, run
+To install the software, run
 
     git clone https://github.com/bablokb/pi-webradio.git
     cd pi-webradio
@@ -42,31 +42,24 @@ For non-Debian based systems you need to adapt the installation script.
 To test the installation, you can run the following commands:
 
     pi-webradio.py -l    # list channels
-    pi-webradio.py -p 5  # use CTRL-C to finish
+    pi-webradio.py -p 5  # play channel, use CTRL-C to finish
     pi-webradio.py -h    # help
 
 The first should list the currently configured radio-stations, the
 second one should play channel 5. Further information can be found
 in the [documentation](doc/pi-webradio.md).
 
-If testing is ok, you should activate the service. Either restart your
-system or just start the service with
+If testing is ok, you should activate the service (unless you only want
+to use the [client](doc/webradio_cli.md)).
+Enable and start the service with
 
-    sudo systemctl start pi-webradio.service
+    sudo systemctl enable pi-webradio.service
+    sudo systemctl start  pi-webradio.service
 
 Once the service is running, you can access the web-interface with the
 url `http://<ip-or-hostname>:8026/`. If you installed the service on a
 Pi-desktop system, you would use `http://localhost:8026/` from your
 browser.
-
-You can install the commandline client (including all necessary prereqs)
-with the commands:
-
-    git clone https://github.com/bablokb/pi-webradio.git
-    cd pi-webradio
-    sudo tools/install-client
-
-See [here](doc/webradio_cli.md) for usage-hints.
 
 
 Configuration
