@@ -12,7 +12,6 @@
 
 [Unit]
 Description=Start pi-webradio
-After=multi-user.target
  
 [Service]
 Type=simple
@@ -20,4 +19,4 @@ User=XXX
 ExecStart=/usr/local/bin/pi-webradio.py -q
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=network.target
