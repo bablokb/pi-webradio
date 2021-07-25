@@ -16,7 +16,9 @@ import urllib3
 import sseclient
 import http.client as httplib
 
-class RadioClient:
+from webradio import Base
+
+class RadioClient(Base):
   """ python-client for the webradio-api """
 
   # --- constructor   --------------------------------------------------------
