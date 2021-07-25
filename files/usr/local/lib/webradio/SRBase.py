@@ -42,14 +42,6 @@ class Base:
       value = default
     return value
 
-  # --- return function-map of this class   -----------------------------------
-
-  def get_funcs(self):
-    """ return map of user-accessible functions """
-
-    return {key[5:]:getattr(self,key)
-            for key in dir(self) if key.startswith("func_")}
-
   # --- return persistent state of this class   -------------------------------
 
   def get_persistent_state(self):
