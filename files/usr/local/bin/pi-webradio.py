@@ -127,8 +127,7 @@ if __name__ == '__main__':
     for channel in channels:
       print(PRINT_CHANNEL_FMT.format(channel['nr'],channel['name']))
   else:
-    ev_queue = queue.Queue()
-    app.api._add_consumer("main",ev_queue)
+    ev_queue = app.api._add_consumer("main")
     threading.Thread(target=process_events,args=(app,options,ev_queue)).start()
     if options.do_record:
       app.api.rec_start(nr=int(options.channel),sync=True)

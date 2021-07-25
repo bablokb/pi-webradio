@@ -144,9 +144,8 @@ class WebServer(Base):
     """ stream SSE """
 
     try:
-      ev_queue = queue.Queue(3)
       id = uuid.uuid4().hex
-      ev_queue = self._api._add_consumer(id,ev_queue)   # TODO: use session-id
+      ev_queue = self._api._add_consumer(id)   # TODO: use session-id
 
       def event_stream():
         while True:

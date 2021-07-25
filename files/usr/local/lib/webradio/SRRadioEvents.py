@@ -21,6 +21,8 @@ from webradio import EventFormatter
 class RadioEvents(Base):
   """ Multiplex events to consumers """
 
+  QUEUE_SIZE = 10   # size of client event-queues
+
   def __init__(self,app):
     """ initialization """
 
@@ -52,7 +54,7 @@ class RadioEvents(Base):
 
   # --- add a consumer   -----------------------------------------------------
 
-  def add_consumer(self,id,queue):
+  def add_consumer(self,id):
     """ add a consumer to the list of consumers """
 
     if id in self._consumers:
@@ -61,12 +63,12 @@ class RadioEvents(Base):
     else:
       self.msg("RadioEvents: adding consumer with id %s" % id)
       with self._lock:
-        self._consumers[id] = queue
+        self._consumers[id] = queue.Queue(RadioEvents.QUEUE_SIZE)
       try:
         ev = {'type': 'version','value': self._api.get_version()}
         ev['text'] = self._formatter.format(ev)
-        queue.put_nowait(ev)
-        return queue
+        self._consumers[id].put_nowait(ev)
+        return self._consumers[id]
       except:
         with self._lock:
           del self._consumers[id]
