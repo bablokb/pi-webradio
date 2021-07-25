@@ -1,6 +1,8 @@
 Pi-Webradio
 ===========
 
+![](doc/clock.png)
+
 This project provides the software for a Linux-based internet-radio. While
 it will run on any Linux-system (given that it has a valid sound-output),
 the target-hardware is the Raspberry-Pi range.
@@ -9,13 +11,14 @@ The software has the following components:
 
   - mpg123 as the low-level player
   - a set of Python3-classes for control and management
-  - a web-API for (remote) control
-  - a web GUI
-  - a commandline client
+  - a [web-API](doc/API.md) for (remote) control
+  - a [web-GUI](doc/web-gui.md)
+  - a [commandline client](doc/webradio_cli.md)
 
 Although the webradio can be controlled from any browser, it is also
-possible to implement other clients by just using the web-API directly (the
-commandline client can be used as an example).
+possible to implement other clients by just using the [web-API](doc/API.md)
+directly (the [commandline client](doc/webradio_cli.md)
+can be used as an example).
 
 [The second part of this project](case/README.md) is about building a webradio
 using a Waveshare 7.9" touch-display. Here the server-part of the software
@@ -28,14 +31,24 @@ what is already implemented.
 Installation
 ------------
 
+As a prerequisite, you should have a clean install of PiOS. From a
+performance perspective, a Pi-Zero-W with the lite-version of the OS
+is all you need. You can install it on a desktop-system as well, e.g.
+if you intend to run the web-frontend on the same machine. In
+this case you must deinstall pulseaudio (be careful if you intend to
+run the software on a non-dedicated system, here you might need
+pulseaudio because of your audio-setup).
+
 To install the software, run
 
+    #sudo apt-get -y remove pulseaudio
     git clone https://github.com/bablokb/pi-webradio.git
     cd pi-webradio
     sudo tools/install [username]
 
 If you don't supply a username, the service is installed for the
-standard user "pi".
+standard user "pi". As described above the first statement is only
+necessary on PiOS-desktop.
 
 For non-Debian based systems you need to adapt the installation script.
 
