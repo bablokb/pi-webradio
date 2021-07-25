@@ -28,6 +28,7 @@ class EventFormatter(object):
     'play_file': 'playing file: {value}',
     'file_info': '{name}: {duration}',
     'id3': '{tag}: {value}',
+    'keep-alive': 'current time: {value}',
     'eof': '{value} finished'
     }
 
