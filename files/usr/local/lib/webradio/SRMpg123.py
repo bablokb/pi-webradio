@@ -162,13 +162,13 @@ class Mpg123(Base):
 
     if self._process:
       self.msg("Mpg123: stopping mpg123 ...")
-      self._process.stdin.write("QUIT\n")
       try:
+        self._process.stdin.write("QUIT\n")
         self._process.wait(5)
         self.msg("Mpg123: ... done")
-      except TimeoutExpired:
+      except:
         # can't do anything about it
-        self.msg("Mpg123: ... failed stopping mpg123")
+        self.msg("Mpg123: ... exception during destroy of mpg123")
         pass
 
   # --- process output of mpg123   --------------------------------------------
