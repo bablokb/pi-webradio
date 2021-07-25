@@ -12,8 +12,7 @@
 #
 # -----------------------------------------------------------------------------
 
-import queue
-import threading
+import queue, threading, datetime
 
 from webradio import Base
 from webradio import EventFormatter
@@ -21,7 +20,8 @@ from webradio import EventFormatter
 class RadioEvents(Base):
   """ Multiplex events to consumers """
 
-  QUEUE_SIZE = 10   # size of client event-queues
+  QUEUE_SIZE          = 10   # size of client event-queues
+  KEEP_ALIVE_INTERVAL = 15   # send keep-alive every x seconds
 
   def __init__(self,app):
     """ initialization """
@@ -90,12 +90,22 @@ class RadioEvents(Base):
     """ pull events from the input-queue and distribute to the consumer queues """
 
     self.msg("RadioEvents: starting event-processing")
+    count = 0
     while not self._stop_event.is_set():
       try:
         event = self._input_queue.get(block=True,timeout=1)   # block 1s
+        self._input_queue.task_done()
+        self.msg("RadioEvents: received event: %r" % (event,))
+        count = 0
       except queue.Empty:
-        continue
-      self.msg("RadioEvents: received event: %r" % (event,))
+        count = (count+1) % RadioEvents.KEEP_ALIVE_INTERVAL
+        if count > 0:
+          continue
+        else:
+          self.msg("RadioEvents: publishing keep-alive")
+          event = {'type': 'keep-alive', 'value':
+                   datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+
       event['text'] = self._formatter.format(event)
       stale_consumers = []
       for id, consumer in self._consumers.items():
@@ -103,7 +113,6 @@ class RadioEvents(Base):
           consumer.put_nowait(event)
         except queue.Full:
           stale_consumers.append(id)
-      self._input_queue.task_done()
 
       # delete stale consumers
       with self._lock:
