@@ -8,7 +8,8 @@ with setting "0.2mm quality".
 Bottom
 ------
 
-Designed and printed from Tinkercad: <https://www.tinkercad.com/things/0Tme2VRDUYP >.
+Designed and printed from Tinkercad:
+<https://www.tinkercad.com/things/0Tme2VRDUYP>.
 
 Tinkercad has performance-problems with a design composed of so many
 parts, so I switched to OpenSCAD and retrofitted the case. This is the

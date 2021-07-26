@@ -7,7 +7,7 @@ project is a
 [Waveshare 7.9" 1280x400 display](https://www.waveshare.com/wiki/7.9inch_HDMI_LCD)
 which is ideal for a nice control panel.
 
-![](case-with-display.png)
+![](case-with-display.jpg)
 
 The display allows to attach a Raspberry Pi on the back-side. I'm using
 a Raspberry Pi4. The screen is connected to HDMI0, while the sound is
@@ -33,8 +33,11 @@ side and a normal HDMI socket on the other side:
 
 ![](diy-hdmi-cable.jpg)
 
-The top part holds 2.5mm threaded inserts from Ruthex, so the case can be
-simply screwed together. Additional stands ensure proper ventilation.
+The top of the case has pockets for 2.5mm threaded inserts from Ruthex, 
+so the case can be simply screwed together. Additional stands ensure
+proper ventilation.
+
+![](top-case.jpg)
 
 All models are available from the [3D-directory](../3D/Readme.md).
 
