@@ -23,11 +23,12 @@ class RadioClient(Base):
 
   # --- constructor   --------------------------------------------------------
 
-  def __init__(self,host,port,timeout=10):
+  def __init__(self,host,port,debug=False,timeout=10):
     """ constructor """
 
     self._host    = host
     self._port    = port
+    self.debug    = debug
     self._request = httplib.HTTPConnection(host,port,timeout)
     self._client  = None
 
