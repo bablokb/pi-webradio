@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Pi-Webradio
+Comment=Webclient (chrome) for Pi-Webradio
+Exec=/usr/local/bin/webradio_chrome.sh
+Terminal=true
+Type=Application
+StartupNotify=false
+X-GNOME-Autostart-enabled=true
