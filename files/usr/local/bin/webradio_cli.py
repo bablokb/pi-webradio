@@ -23,13 +23,6 @@ sys.path.append(os.path.join(
 
 from webradio import RadioClient
 
-# --- application imports   --------------------------------------------------
-
-sys.path.append(os.path.join(
-  os.path.dirname(sys.argv[0]),"../lib"))
-
-from webradio import RadioClient
-
 # --- helper class for options   --------------------------------------------
 
 class Options(object):
