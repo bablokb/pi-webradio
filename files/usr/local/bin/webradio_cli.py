@@ -13,7 +13,7 @@
 DEFAULT_HOST = 'localhost'
 DEFAULT_PORT = 8026
 
-import locale, os, sys, json, shlex, threading
+import locale, os, sys, json, shlex, threading, signal
 from   argparse import ArgumentParser
 
 # --- application imports   --------------------------------------------------
@@ -34,7 +34,7 @@ class RadioCli(object):
 
     parser = self._get_parser()
     parser.parse_args(namespace=self)
-    self._cli = RadioClient(self.host[0],self.port[0])
+    self._cli = RadioClient(self.host[0],self.port[0],debug=self.debug)
 
   # --- cmdline-parser   -----------------------------------------------------
 
@@ -75,12 +75,23 @@ class RadioCli(object):
       help='api arguments')
     return parser
 
+  # --- setup signal handler   ------------------------------------------------
+
+  def signal_handler(self,_signo, _stack_frame):
+    """ signal-handler for clean shutdown """
+
+    self._cli.msg("webradio_cli: received signal, stopping program ...")
+    self.close()
+
   # --- close connection   ---------------------------------------------------
 
   def close(self):
     """ close connection """
 
-    self._cli.close()
+    try:
+      self._cli.close()
+    except:
+      pass
 
   # --- dump output of API   -------------------------------------------------
 
@@ -157,6 +168,10 @@ if __name__ == '__main__':
 
   # create client-class and parse arguments
   app = RadioCli()
+
+  # setup signal-handler
+  signal.signal(signal.SIGTERM, app.signal_handler)
+  signal.signal(signal.SIGINT,  app.signal_handler)
 
   # process cmdline
   if app.api:
