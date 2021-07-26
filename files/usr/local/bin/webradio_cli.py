@@ -83,7 +83,7 @@ def print_response(options,response):
 
 # --- print event   -----------------------------------------------------------
 
-def print_event(options,event):
+def print_event(event):
   """ print event (depending on mode) """
 
   raw = options.debug or (not options.interactive and not options.keyboard)
@@ -103,26 +103,15 @@ def process_api(options,api,args,sync=True):
   # execute api
   if api == "get_events":
     if sync:
-      process_events(options)
+      events = options.cli.get_events()
+      for event in events:
+        print_event(event)
     else:
-      ev_thread = threading.Thread(target=process_events,args=(options,))
-      ev_thread.deamon = False
-      ev_thread.start()
+      options.cli.start_event_processing(callback=print_event)
   else:
     # use synchronous calls for all other events
     resp = options.cli.exec(api,qstring=qstring)
     print_response(options,resp)
-
-# --- process events   --------------------------------------------------------
-
-def process_events(options):
-  """ process get_events """
-
-  events = options.cli.get_events()
-  for event in events:
-    print_event(options,event)
-    if options.stop.is_set():
-      break
 
 # --- main program   ----------------------------------------------------------
 

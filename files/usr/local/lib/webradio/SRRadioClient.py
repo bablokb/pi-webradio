@@ -12,7 +12,7 @@
 #
 # ----------------------------------------------------------------------------
 
-import urllib3
+import urllib3, threading
 import sseclient
 import http.client as httplib
 
@@ -31,6 +31,7 @@ class RadioClient(Base):
     self.debug    = debug
     self._request = httplib.HTTPConnection(host,port,timeout)
     self._client  = None
+    self._stop    = threading.Event()
 
   # --- close request object   -----------------------------------------------
 
@@ -38,6 +39,7 @@ class RadioClient(Base):
     """ close internal request object """
 
     self._request.close()
+    self._stop.set()
     if self._client:
       self._client.close()
 
@@ -83,3 +85,23 @@ class RadioClient(Base):
 
     self._client = sseclient.SSEClient(response)
     return self._client.events();
+
+  # --- process events   -----------------------------------------------------
+
+  def _process_events(self,callback):
+    """ process events """
+
+    events = self.get_events()
+    for event in events:
+      if callback:
+        callback(event)
+      if self._stop.is_set():
+        break
+
+  # --- start event processing   ---------------------------------------------
+
+  def start_event_processing(self,callback=None):
+    """ create and start event-processing """
+
+    threading.Thread(target=self._process_events,args=(callback,)).start()
+    return self._stop
