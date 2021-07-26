@@ -23,11 +23,11 @@ sys.path.append(os.path.join(
 
 from webradio import RadioClient
 
-# --- application class   ---------------------------------------------------
+# --- application class   ----------------------------------------------------
 
 class RadioCli(object):
 
-  # --- constructor   -------------------------------------------------------
+  # --- constructor   --------------------------------------------------------
 
   def __init__(self):
     """ constructor """
@@ -36,7 +36,7 @@ class RadioCli(object):
     parser.parse_args(namespace=self)
     self._cli = RadioClient(self.host[0],self.port[0])
 
-  # --- cmdline-parser   ----------------------------------------------------
+  # --- cmdline-parser   -----------------------------------------------------
 
   def _get_parser(self):
     """ configure cmdline-parser """
@@ -75,14 +75,14 @@ class RadioCli(object):
       help='api arguments')
     return parser
 
-  # --- close connection   ------------------------------------------------------
+  # --- close connection   ---------------------------------------------------
 
   def close(self):
     """ close connection """
 
     self._cli.close()
 
-  # --- dump output of API   ----------------------------------------------------
+  # --- dump output of API   -------------------------------------------------
 
   def print_response(self,response):
     """ write response to stderr and stdout """
@@ -96,7 +96,7 @@ class RadioCli(object):
     except:
       print("response: " + response[2])
 
-  # --- print event   -----------------------------------------------------------
+  # --- print event   --------------------------------------------------------
 
   def print_event(self,event):
     """ print event (depending on mode) """
@@ -107,7 +107,7 @@ class RadioCli(object):
     else:
       print(json.loads(event.data)['text'])
 
-  # --- process single api   ----------------------------------------------------
+  # --- process single api   -------------------------------------------------
 
   def process_api(self,api,args,sync=True):
     """ process a single API-call """
@@ -128,7 +128,27 @@ class RadioCli(object):
       resp = self._cli.exec(api,qstring=qstring)
       self.print_response(resp)
 
-# --- main program   ----------------------------------------------------------
+  # --- process stdin   ------------------------------------------------------
+
+  def process_stdin(self):
+    """ check for stdin and process commands """
+
+    # test for stdin
+    try:
+      _ = os.tcgetpgrp(sys.stdin.fileno())
+      return
+    except:
+      pass
+
+    # read commands from stdin
+    for line in sys.stdin:
+      line = line.rstrip()
+      if not len(line):
+        break
+      cmd  = shlex.split(line)
+      self.process_api(cmd[0],cmd[1:],sync=False)
+
+# --- main program   ---------------------------------------------------------
 
 if __name__ == '__main__':
 
@@ -142,16 +162,6 @@ if __name__ == '__main__':
   if app.api:
     app.process_api(app.api,app.args)
 
-  # read commands from stdin
-  try:
-    _ = os.tcgetpgrp(sys.stdin.fileno())
-  except:
-    for line in sys.stdin:
-      line = line.rstrip()
-      if not len(line):
-        break
-      cmd  = shlex.split(line)
-      api  = cmd[0]
-      args = cmd[1:]
-      app.process_api(api,args,sync=False)
-    app.close()
+  # process stdin (if available)
+  app.process_stdin()
+  app.close()
