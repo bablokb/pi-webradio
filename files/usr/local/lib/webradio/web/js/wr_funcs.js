@@ -105,7 +105,7 @@ function get_events() {
     source.addEventListener('message', function(e) {
       data = JSON.parse(e.data);
       console.log(data);
-      if (data.type === 'icy-meta') {
+      if (['icy-meta', 'icy-name','id3'].includes(data.type)) {
         addInfo(data.text);
       }
      }, false);
