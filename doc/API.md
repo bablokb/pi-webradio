@@ -1,13 +1,11 @@
 API-Definition
 ==============
 
-Non-public APIs start with an underscrore and cannot be called via
-the webinterface.
+The API consists of the web API (public API), internal API for internal use,
+and events.
 
-Legend:
-
-  - Ok: implemented and tested
-  - I:  implemented
+Web API
+-------
 
 | api                     | description             | class       | status |
 |-------------------------|-------------------------|-------------|--------|
@@ -50,15 +48,45 @@ Legend:
 | player_prev             | select prev file        | Player      |        |
 | player_delete           | delete selected file    | Player      |        |
 |-------------------------|-------------------------|-------------|--------|
-| _push_event(event)      | publish event           | RadioEvents |   Ok   |
-| _add_consumer(id)       | register as an consumer | RadioEvents |   Ok   |
-| _del_consumer(id)       | remove event-consumer   | RadioEvents |   Ok   |
-|-------------------------|-------------------------|-------------|--------|
 | get_events              | poll SSE                | WebServer   |        |
 | publish_state           | publish state change    | WebServer   |        |
 |-------------------------|-------------------------|-------------|--------|
 
-    event: {'type': t, 
-            'value': val}
+Legend:
 
-`val` is type-specific
+  - Ok: implemented and tested
+  - I:  implemented
+
+
+Internal API
+------------
+
+The webserver prevents the execution of API starting with an underscore.
+
+| api                     | description             | class       | status |
+|-------------------------|-------------------------|-------------|--------|
+| _push_event(event)      | publish event           | RadioEvents |   Ok   |
+| _add_consumer(id)       | register as an consumer | RadioEvents |   Ok   |
+| _del_consumer(id)       | remove event-consumer   | RadioEvents |   Ok   |
+|-------------------------|-------------------------|-------------|--------|
+
+
+Events
+------
+
+Events are used to distribute information to clients. Clients must use the
+API `get_events` to subscribe to events.
+
+Every event is a json-structure in the format
+
+    event: {'type': t, 
+            'value': val,
+            'text': text}
+
+The format of the value (val) is specific to the type of the event. The
+`text'-value is a formatted version of the event, and will hopefully be
+i18n-enabled in the future.
+
+You can use the commandline-client to subscribe to events and then use
+another client to execute various APIs. You can also search the source-code
+for `_push_event`.
