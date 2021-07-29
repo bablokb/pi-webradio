@@ -20,7 +20,7 @@ class EventFormatter(object):
   _FMT_MAP = {
     'version': 'pi-webradio version {value}',
     'icy-meta': '{value}',
-    'icy-name': 'current station: {value}',
+    'icy-name': 'channel name: {value}',
     'rec_start': 'recording {name} for {duration} minutes',
     'rec_stop': 'finished recording. File {file}, duration: {duration}m',
     'vol_set': 'setting current volume to {value}',
