@@ -51,10 +51,11 @@ Legend:
 | player_delete           | delete selected file    | Player      |        |
 |-------------------------|-------------------------|-------------|--------|
 | _push_event(event)      | publish event           | RadioEvents |   Ok   |
-| _add_consumer(id,queue) | register as an consumer | RadioEvents |   Ok   |
+| _add_consumer(id)       | register as an consumer | RadioEvents |   Ok   |
 | _del_consumer(id)       | remove event-consumer   | RadioEvents |   Ok   |
 |-------------------------|-------------------------|-------------|--------|
 | get_events              | poll SSE                | WebServer   |        |
+| publish_state           | publish state change    | WebServer   |        |
 |-------------------------|-------------------------|-------------|--------|
 
     event: {'type': t, 
