@@ -217,7 +217,7 @@ class Mpg123(Base):
     else:
       amount = self._vol_delta        # use default
     self._volume = min(100,self._volume + amount)
-    self.vol_set(self._volume)
+    return self.vol_set(self._volume)
 
   # --- decrease volume   ----------------------------------------------------
 
@@ -229,7 +229,7 @@ class Mpg123(Base):
     else:
       amount = self._vol_delta        # use default
     self._volume = max(0,self._volume - amount)
-    self.vol_set(self._volume)
+    return self.vol_set(self._volume)
 
   # --- set volume   ---------------------------------------------------------
 
@@ -243,6 +243,7 @@ class Mpg123(Base):
       self._process.stdin.write("VOLUME %d\n" % val)
       self._api._push_event({'type': 'vol_set',
                               'value': self._volume})
+      return self._volume
 
   # --- mute on  -------------------------------------------------------------
 
@@ -252,7 +253,7 @@ class Mpg123(Base):
     if not self._mute:
       self._vol_old = self._volume
       self._mute    = True
-      self.vol_set(0)
+      return self.vol_set(0)
 
   # --- mute off  ------------------------------------------------------------
 
@@ -261,7 +262,7 @@ class Mpg123(Base):
 
     if self._mute:
       self._mute = False
-      self.vol_set(self._vol_old)
+      return self.vol_set(self._vol_old)
 
   # --- mute toggle   --------------------------------------------------------
 
@@ -269,6 +270,6 @@ class Mpg123(Base):
     """ toggle mute """
 
     if self._mute:
-      self.vol_mute_off()
+      return self.vol_mute_off()
     else:
-      self.vol_mute_on()
+      return self.vol_mute_on()
