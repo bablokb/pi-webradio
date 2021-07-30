@@ -27,6 +27,9 @@ class KeyController(Base):
     "KEY_DOWN":  "vol_down"
     }
 
+  KEY_SPECIAL = ['KEY_LEFTCTRL','KEY_LEFTALT','KEY_LEFTSHIFT',
+                 'KEY_RIGHTCTRL','KEY_RIGHTALT','KEY_RIGHTSHIFT']
+
   # --- constructor   --------------------------------------------------------
 
   def __init__(self,stop,debug=False):
@@ -35,7 +38,6 @@ class KeyController(Base):
     self._stop    = stop
     self._kmap    = KeyController.KEYMAP_RADIO
     self.debug    = debug
-    self.msg("KeyController: map: %r" % self._kmap)
 
   # --- yield api from key-event   -------------------------------------------
 
@@ -45,15 +47,23 @@ class KeyController(Base):
     devices = [evdev.InputDevice(fn) for fn in evdev.list_devices()]
     devices = {dev.fd: dev for dev in devices}
 
-    self.msg("KeyController: type of kmap: %s" % type(self._kmap))
+    special = 0                    # to ignore combinations with special keys
     while not self._stop.is_set():
       fds, _1, _2 = select.select(devices, [], [])
       for fd in fds:
         for event in devices[fd].read():
           event = evdev.util.categorize(event)
-          if (isinstance(event, evdev.events.KeyEvent) and
-              event.keystate == event.key_down):
-            self.msg("KeyController: processing %s" % event.keycode)
+          if not isinstance(event, evdev.events.KeyEvent):
+            continue
+          self.msg("KeyController: processing %s (%d)" %
+                   (event.keycode,event.keystate))
+          if event.keystate == event.key_down:
+            if event.keycode in KeyController.KEY_SPECIAL:
+              special += 1
+              continue
+            elif special > 0:
+              self.msg("KeyController: ignoring %s" % event.keycode)
+              continue
             if event.keycode in self._kmap:
               # key is mapped, yield api-name
               self.msg("KeyController: mapping %s to %s" %
@@ -62,3 +72,6 @@ class KeyController(Base):
             else:
               # key is not mapped, ignore
               self.msg("KeyController: ignoring %s" % event.keycode)
+          elif event.keystate == event.key_up:
+            if event.keycode in KeyController.KEY_SPECIAL:
+              special = max(0,special-1)
