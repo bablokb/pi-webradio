@@ -60,7 +60,7 @@ translate([-250,w4,2-fuzz]) color("orange") cube([w4,200-w4,h_wall]);   // left
 translate([-w4,w4,2-fuzz]) color("orange") cube([w4,200-w4,h_wall]);    // right
 color("orange") difference() {                                  // back
   translate([-250,200-w4,2-fuzz]) cube([250,w4,h_wall]);
-  translate([-87.4,200-w4,2+h_wall+fuzz]) cutout(x_usb,z_usb,x_hdmi,z_hdmi,x_power,z_power);  // -87.91
+  translate([-87.4,200-w4-fuzz,2+h_wall+fuzz]) cutout(x_usb,z_usb,x_hdmi,z_hdmi,x_power,z_power);  // -87.91
 }
 
 
