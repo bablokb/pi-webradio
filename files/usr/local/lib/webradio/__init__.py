@@ -22,3 +22,4 @@ from . SRMpg123         import Mpg123         as Mpg123
 from . SRWebServer      import WebServer      as WebServer
 from . SRWebRadio       import WebRadio       as WebRadio
 from . SRRadioClient    import RadioClient    as RadioClient
+from . SRKeyController  import KeyController  as KeyController
