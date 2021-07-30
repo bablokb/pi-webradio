@@ -21,7 +21,7 @@ from   argparse import ArgumentParser
 sys.path.append(os.path.join(
   os.path.dirname(sys.argv[0]),"../lib"))
 
-from webradio import RadioClient
+from webradio import RadioClient, KeyController
 
 # --- application class   ----------------------------------------------------
 
@@ -75,6 +75,13 @@ class RadioCli(object):
       help='api arguments')
     return parser
 
+  # --- return stop-event   --------------------------------------------------
+
+  def get_stop_event(self):
+    """ return stop event """
+
+    return self._cli.get_stop_event()
+
   # --- setup signal handler   ------------------------------------------------
 
   def signal_handler(self,_signo, _stack_frame):
@@ -120,7 +127,7 @@ class RadioCli(object):
 
   # --- process single api   -------------------------------------------------
 
-  def process_api(self,api,args,sync=True):
+  def process_api(self,api,args=[],sync=True):
     """ process a single API-call """
 
     qstring = None
@@ -179,4 +186,13 @@ if __name__ == '__main__':
 
   # process stdin (if available)
   app.process_stdin()
+
+  # process keyboard / interactive input
+  if app.keyboard:
+    kc = KeyController(app.get_stop_event(),app.debug)
+    for api in kc.api_from_key():
+      app.process_api(api)
+  elif app.interactive:
+    pass   # TBD
+
   app.close()
