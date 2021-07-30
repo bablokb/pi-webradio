@@ -63,9 +63,8 @@ are mainly from the Waveshare-wiki with some additions for the special setup:
     # configure GPIO4 for IR
     dtoverlay=gpio-ir,gpio_pin=4
 
-    # use external heartbeat-LED
-    dtparam=act_led_trigger=heartbeat
-    dtoverlay=act-led,gpio=17
+    # use external status LED (GPIO17: output, drive-high)
+    gpio=17=op,dh
 
     [HDMI:0]
     # Changes for Waveshare display
@@ -112,11 +111,10 @@ with the following content
     Name=Pi-Webradio
     Comment=Webclient (chrome) for Pi-Webradio
     Exec=/usr/local/bin/webradio_chrome.sh
-    Terminal=true
+    Terminal=false
     Type=Application
     StartupNotify=false
     X-GNOME-Autostart-enabled=true
 
 and put it into the directory `$HOME/.config/autostart`. This file
 is part of the distribution in the `misc`-directory.
-
