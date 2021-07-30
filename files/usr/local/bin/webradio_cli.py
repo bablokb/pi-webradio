@@ -182,7 +182,8 @@ if __name__ == '__main__':
 
   # process cmdline
   if app.api:
-    app.process_api(app.api,app.args)
+    app.process_api(app.api,app.args,
+                    sync=not (app.keyboard or app.interactive))
 
   # process stdin (if available)
   app.process_stdin()
