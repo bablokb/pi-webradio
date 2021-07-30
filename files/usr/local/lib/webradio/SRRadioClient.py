@@ -73,6 +73,13 @@ class RadioClient(Base):
 
     return data
 
+  # --- return stop-event   --------------------------------------------------
+
+  def get_stop_event(self):
+    """ return stop event """
+
+    return self._stop
+
   # --- set up SSE and return generator   ------------------------------------
 
   def get_events(self):
