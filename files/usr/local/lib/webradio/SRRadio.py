@@ -147,11 +147,11 @@ class Radio(Base):
 
     self.msg("Radio: switch to next channel")
     if self._channel_nr == 0:
-      self.radio_play_channel(1)
+      return self.radio_play_channel(1)
     elif self._channel_nr == len(self._channels):
-      self.radio_play_channel(1)
+      return self.radio_play_channel(1)
     else:
-      self.radio_play_channel(1+self._channel_nr)
+      return self.radio_play_channel(1+self._channel_nr)
 
   # --- switch to previous channel   ------------------------------------------
 
@@ -161,9 +161,9 @@ class Radio(Base):
 
     self.msg("Radio: switch to previous channel")
     if self._channel_nr <= 1:
-      self.radio_play_channel(len(self._channels))
+      return self.radio_play_channel(len(self._channels))
     else:
-      self.radio_play_channel(self._channel_nr-1)
+      return self.radio_play_channel(self._channel_nr-1)
 
   # --- turn radio off   ------------------------------------------------------
 
