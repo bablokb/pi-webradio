@@ -11,7 +11,7 @@
 
 # --- defaults used during installation   ----------------------------------
 
-PACKAGES="python3-pip python3-flask mpg123 mp3info"
+PACKAGES="python3-pip python3-flask mpg123 mp3info python3-evdev"
 PACKAGES_PIP="sseclient-py"
 
 PROJECT="pi-webradio"
