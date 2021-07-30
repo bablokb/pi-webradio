@@ -105,7 +105,9 @@ class RadioCli(object):
   def print_response(self,response):
     """ write response to stderr and stdout """
 
-    if self.debug:
+    if self.quiet or self.keyboard:
+      return
+    elif self.debug:
       sys.stderr.write("%d %s\n" % (response[0],response[1]))
       sys.stderr.flush()
     try:
@@ -122,8 +124,10 @@ class RadioCli(object):
     raw = self.debug or (not self.interactive and not self.keyboard)
     if raw:
       print(json.dumps(json.loads(event.data),indent=2,sort_keys=True))
-    else:
-      print(json.loads(event.data)['text'])
+    elif not self.quiet:
+      ev_data = json.loads(event.data)
+      if ev_data['type'] != 'keep-alive':
+        print(ev_data['text'])
 
   # --- process single api   -------------------------------------------------
 
