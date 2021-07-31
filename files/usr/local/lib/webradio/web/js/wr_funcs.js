@@ -67,7 +67,7 @@ function formatTime(i) {
   Show message in message-area
 */
 
-showMsg=function(text,time) {
+function showMsg(text,time) {
   $("#msgarea").text(text);
   setTimeout(function() {
                $("#msgarea").empty();
@@ -259,6 +259,7 @@ function radio_toggle() {
 function vol_mute_toggle() {
   $.get("/api/vol_mute_toggle");
   $('#wr_mute_btn').toggleClass('fa-volume-mute').toggleClass('fa-volume-off');
+  showMsg("toggle mute ...",2000);
 };
 
 /**
