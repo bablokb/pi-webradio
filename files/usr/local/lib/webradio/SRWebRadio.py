@@ -23,6 +23,8 @@ from webradio import *
 class WebRadio(Base):
   """ main application class """
 
+  VERSION = "0.90"
+
   def __init__(self,options):
     """ initialization """
 
@@ -81,7 +83,6 @@ class WebRadio(Base):
       self.debug = True
     else:
       self.debug  = self.get_value(self.parser,"GLOBAL", "debug","0") == "1"
-    self._version = self.get_value(self.parser,"GLOBAL", "version","0")
 
   # --- register APIs   ------------------------------------------------------
 
@@ -102,8 +103,8 @@ class WebRadio(Base):
   def _get_version(self):
     """ return version """
 
-    self.msg("WebRadio: version: %s" % self._version)
-    return self._version
+    self.msg("WebRadio: version: %s" % WebRadio.VERSION)
+    return WebRadio.VERSION
 
   # --- switch to player mode   -----------------------------------------------
 
