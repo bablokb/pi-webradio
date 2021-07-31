@@ -197,6 +197,8 @@ if __name__ == '__main__':
     kc = KeyController(app.get_stop_event(),app.debug)
     for api in kc.api_from_key():
       app.process_api(api[0],api[1:],sync=False)
+      if api[0] == 'sys_stop':
+        break
   elif app.interactive:
     pass   # TBD
 
