@@ -34,6 +34,10 @@ if [ -f /etc/${PROJECT}.conf ]; then
   # save current configuration
   mv /etc/${PROJECT}.conf /etc/${PROJECT}.conf.$rand
 fi
+if [ -f /etc/${PROJECT}.channels ]; then
+  # save channel-list
+  mv /etc/${PROJECT}.channels /etc/${PROJECT}.channels.$rand
+fi
 
 for f in `find $(dirname "$0")/../files/ -type f -not -name "*.pyc"`; do
   target="${f#*files}"
@@ -55,6 +59,9 @@ if [ -f /etc/${PROJECT}.conf.$rand ]; then
   mv -f /etc/${PROJECT}.conf /etc/${PROJECT}.conf.new
   mv /etc/${PROJECT}.conf.$rand /etc/${PROJECT}.conf
   echo -e "\nnew version of configuration file: /etc/${PROJECT}.conf.new"
+fi
+if [ -f /etc/${PROJECT}.channels.$rand ]; then
+  mv -f /etc/${PROJECT}.channels.$rand /etc/${PROJECT}.channels
 fi
 
 # --- fix user of service   -------------------------------------------------
