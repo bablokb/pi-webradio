@@ -105,7 +105,7 @@ class RadioCli(object):
   def print_response(self,response):
     """ write response to stderr and stdout """
 
-    if self.quiet or self.keyboard:
+    if self.quiet:
       return
     elif self.debug:
       sys.stderr.write("%d %s\n" % (response[0],response[1]))
@@ -196,7 +196,7 @@ if __name__ == '__main__':
   if app.keyboard:
     kc = KeyController(app.get_stop_event(),app.debug)
     for api in kc.api_from_key():
-      app.process_api(api)
+      app.process_api(api[0],api[1:],sync=False)
   elif app.interactive:
     pass   # TBD
 
