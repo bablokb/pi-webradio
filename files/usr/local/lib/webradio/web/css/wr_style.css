@@ -24,6 +24,14 @@ body {
   flex-direction: row;
 }
 
+#msgarea {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  color: lightblue;
+  font-size: 36px;
+}
+
 /* left-side menu   ------------------------------------------------------- */
 
 #menu {
