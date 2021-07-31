@@ -21,10 +21,30 @@ class KeyController(Base):
   # --- builtin-keymaps   ----------------------------------------------------
 
   KEYMAP_RADIO = {
-    "KEY_LEFT":  "radio_play_prev",
-    "KEY_RIGHT": "radio_play_next",
-    "KEY_UP":    "vol_up",
-    "KEY_DOWN":  "vol_down"
+    "KEY_1":     ["radio_play_channel", "nr=1"],
+    "KEY_2":     ["radio_play_channel", "nr=2"],
+    "KEY_3":     ["radio_play_channel", "nr=3"],
+    "KEY_4":     ["radio_play_channel", "nr=4"],
+    "KEY_5":     ["radio_play_channel", "nr=5"],
+    "KEY_6":     ["radio_play_channel", "nr=6"],
+    "KEY_7":     ["radio_play_channel", "nr=7"],
+    "KEY_8":     ["radio_play_channel", "nr=8"],
+    "KEY_9":     ["radio_play_channel", "nr=9"],
+    "KEY_0":     ["radio_play_channel", "nr=10"],
+    "KEY_D":     ["player_play_dir"],                   # TBD
+    "KEY_F":     ["player_play_file"],                  # TBD
+    "KEY_I":     ["radio_state"],                       # TBD
+    "KEY_O":     ["radio_toggle"],
+    "KEY_P":     ["player_mode_toggle"],                # TBD
+    "KEY_Q":     ["sys_stop"],
+    "KEY_R":     ["rec_toggle"],
+    "KEY_L":     ["radio_get_channels"],
+    "KEY_M":     ["vol_mute_toggle"],
+    "KEY_LEFT":  ["radio_play_prev"],
+    "KEY_RIGHT": ["radio_play_next"],
+    "KEY_UP":    ["vol_up"],
+    "KEY_DOWN":  ["vol_down"],
+    "KEY_ENTER": ["player_select"]                      # TBD
     }
 
   KEY_SPECIAL = ['KEY_LEFTCTRL','KEY_LEFTALT','KEY_LEFTSHIFT',
