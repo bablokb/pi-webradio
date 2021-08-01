@@ -15,6 +15,7 @@ Web API
 | sys_reboot              | reboot system           | WebRadio    |   Ok   |
 | sys_halt                | shutdown system         | WebRadio    |   Ok   |
 |-------------------------|-------------------------|-------------|--------|
+| radio_state             | return current state    | Radio       |        |
 | radio_on                | play current station    | Radio       |   Ok   |
 | radio_off               | stop playing            | Radio       |   Ok   |
 | radio_toggle            | toggle playing          | Radio       |   Ok   |
