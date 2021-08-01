@@ -253,6 +253,18 @@ function radio_toggle() {
 };
 
 /**
+  volume up
+*/
+
+function vol_up() {
+  $.get("/api/vol_up",
+        function(new_vol) {
+          showMsg("volume: "+new_vol,2000);
+        }
+        );
+};
+
+/**
   toggle mute
 */
 
@@ -260,6 +272,18 @@ function vol_mute_toggle() {
   $.get("/api/vol_mute_toggle");
   $('#wr_mute_btn').toggleClass('fa-volume-mute').toggleClass('fa-volume-off');
   showMsg("toggle mute ...",2000);
+};
+
+/**
+  volume up
+*/
+
+function vol_down() {
+  $.get("/api/vol_down",
+        function(new_vol) {
+          showMsg("volume: "+new_vol,2000);
+        }
+        );
 };
 
 /**

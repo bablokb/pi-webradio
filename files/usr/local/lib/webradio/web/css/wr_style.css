@@ -144,6 +144,7 @@ main {
 .play_buttons {
   display: flex;
   justify-content: center;
+  padding-top: 3px;
   font-size: 36px;
 }
 
