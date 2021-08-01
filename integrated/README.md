@@ -1,5 +1,5 @@
-Building a nice case for the Webradio
-=====================================
+Building an integrated Webradio
+===============================
 
 Besides creating the webradio-software, I wanted to build a radio
 for the living-room, attached to my AV-receiver. The basis for this
@@ -12,6 +12,11 @@ which is ideal for a nice control panel.
 The display allows to attach a Raspberry Pi on the back-side. I'm using
 a Raspberry Pi4. The screen is connected to HDMI0, while the sound is
 routed via HDMI1 to the AV-receiver.
+
+Since the Pi ecosystem has many different hats and displays, it is
+easy to build other integrated solution. E.g. Pimoroni's Pirate-Audio
+series of hats (four buttons, a small screen) make a good basis for a
+minimalistic system.
 
 
 Housing
@@ -98,23 +103,3 @@ input. For rotation of the input you need to modify the file
     EndSection
 
 
-Autostart of the browser
-------------------------
-
-In this setup, the Pi4 is server and client at the same time. The server
-part of the software has to be installed as described in the toplevel
-Readme. To automatically start the client (i.e. the web-browser),
-create a "desktop"-file (e.g. `webradio_chrome.desktop`)
-with the following content
-
-    [Desktop Entry]
-    Name=Pi-Webradio
-    Comment=Webclient (chrome) for Pi-Webradio
-    Exec=/usr/local/bin/webradio_chrome.sh
-    Terminal=false
-    Type=Application
-    StartupNotify=false
-    X-GNOME-Autostart-enabled=true
-
-and put it into the directory `$HOME/.config/autostart`. This file
-is part of the distribution in the `misc`-directory.
