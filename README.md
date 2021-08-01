@@ -20,12 +20,30 @@ possible to implement other clients by just using the [web-API](doc/API.md)
 directly (the [commandline client](doc/webradio_cli.md)
 can be used as an example).
 
-[The second part of this project](case/README.md) is about building a webradio
-using a Waveshare 7.9" touch-display. Here the server-part of the software
-runs on the same machine (Raspberry Pi4) as the web-gui.
+[The second part of this project](integrated/README.md) is about building
+an integrated webradio using a Waveshare 7.9" touch-display. Here the
+server-part of the software runs on the same machine (Raspberry Pi4)
+as the web-gui. This subproject can serve as a blueprint for other
+similar solutions, e.g. with the official 7"-touchdisplay for the Pi.
 
 Note this project is work in progress. See [here](#Status "Status") for
 what is already implemented.
+
+
+Documentation
+-------------
+
+Documentation is a part of this Github-project:
+
+  - [Installation](#Installation "Installation")
+  - [System setup](doc/system.md)
+  - [Configuration](#Configuration "Configuration")
+  - [Usage](doc/pi-webradio.md)
+  - [Web GUI](doc/web-gui.md)
+  - [Commandline client](doc/webradio_cli.md)
+  - [API](doc/API.md)
+
+Note: not all planned documentation might be available/complete yet.
 
 
 Installation
