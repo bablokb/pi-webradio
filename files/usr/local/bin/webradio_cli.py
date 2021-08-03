@@ -55,10 +55,16 @@ class RadioCli(object):
     parser.add_argument('-i', '--interactive', action='store_true',
       dest='interactive', default=False,
       help="interactive mode (read APIs from interactive shell)")
-
     parser.add_argument('-k', '--keyboard', action='store_true',
       dest='keyboard', default=False,
-      help="interactive mode (read APIs from interactive shell)")
+      help="key-control mode (maps keys to APIs)")
+
+    parser.add_argument('-e', '--events', action='store_true',
+      dest='events', default=False,
+      help="start event-processing")
+    parser.add_argument('-o', '--on', action='store_true',
+      dest='on', default=False,
+      help="turn radio on")
 
     parser.add_argument('-d', '--debug', action='store_true',
       dest='debug', default=False,
@@ -158,6 +164,7 @@ class RadioCli(object):
     # test for stdin
     try:
       _ = os.tcgetpgrp(sys.stdin.fileno())
+      self._cli.msg("webradio_cli: no stdin ...")
       return
     except:
       pass
@@ -183,6 +190,12 @@ if __name__ == '__main__':
   # setup signal-handler
   signal.signal(signal.SIGTERM, app.signal_handler)
   signal.signal(signal.SIGINT,  app.signal_handler)
+
+  # process special options
+  if app.events:
+    app.process_api("get_events",sync=False)
+  if app.on:
+    app.process_api("radio_on")
 
   # process cmdline
   if app.api:
