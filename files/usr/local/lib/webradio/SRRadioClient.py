@@ -98,12 +98,15 @@ class RadioClient(Base):
   def _process_events(self,callback):
     """ process events """
 
-    events = self.get_events()
-    for event in events:
-      if callback:
-        callback(event)
-      if self._stop.is_set():
-        break
+    try:
+      events = self.get_events()
+      for event in events:
+        if callback:
+          callback(event)
+        if self._stop.is_set():
+          break
+    except:
+      pass
 
   # --- start event processing   ---------------------------------------------
 
