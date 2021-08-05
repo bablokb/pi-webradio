@@ -12,6 +12,10 @@
 #
 # --------------------------------------------------------------------------
 
+xset -dpms
+xset s off
+[ -x /usr/bin/unclutter ] && unclutter &
+
 chromium-browser --app=http://localhost:8026/ --kiosk &
 pid_cb="$!"
 
