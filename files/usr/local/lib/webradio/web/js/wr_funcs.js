@@ -172,7 +172,7 @@ function radio_play_channel(data) {
   Handle restart
 */
 
-doRestart=function() {
+function doRestart() {
   $.get("/api/sys_restart");
   showMsg("Restarting the application ...",2000);
 };
@@ -181,7 +181,7 @@ doRestart=function() {
   Handle stop
 */
 
-doStop=function() {
+function doStop() {
   $.get("/api/sys_stop");
   showMsg("Stopping the application ...",2000);
 };
@@ -190,7 +190,7 @@ doStop=function() {
   Handle halt
 */
 
-doHalt=function() {
+function doHalt() {
   $.get("/api/sys_halt");
   showMsg("Shutting down the system ...",2000);
 };
@@ -199,7 +199,7 @@ doHalt=function() {
   Handle reboot
 */
 
-doReboot=function() {
+function doReboot() {
   $.get("/api/sys_reboot");
   showMsg("Rebooting the system ...",2000);
 };
