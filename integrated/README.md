@@ -76,7 +76,10 @@ are mainly from the Waveshare-wiki with some additions for the special setup:
     hdmi_group=2
     hdmi_mode=87
     hdmi_timings=400 0 100 10 140 1280 10 20 20 2 0 0 0 60 0 43000000 3
-    display_rotate=3
+    display_rotate=1
+    #display_rotate=1  (90)
+    #display_rotate=2 (180)
+    #display_rotate=3 (270)
 
     [HDMI:1]
     hdmi_group=1
