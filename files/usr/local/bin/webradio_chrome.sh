@@ -12,11 +12,19 @@
 #
 # --------------------------------------------------------------------------
 
+# prevent screenblanking
 xset -dpms
 xset s off
 [ -x /usr/bin/unclutter ] && unclutter &
 
-chromium-browser --app=http://localhost:8026/ --kiosk &
+# extract port from configuration
+if [ -f /etc/pi-webradio.conf ]; then
+  PORT=$(sed -ne '/port/s/port[^0-9]*\([0-9]*\).*$/\1/p' /etc/pi-webradio.conf)
+else
+  PORT=8026
+fi
+
+chromium-browser --app=http://localhost:$PORT/ --kiosk &
 pid_cb="$!"
 
 # monitor systemd-service
