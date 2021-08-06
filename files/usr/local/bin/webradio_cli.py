@@ -131,7 +131,7 @@ class RadioCli(object):
 
   # --- print event   --------------------------------------------------------
 
-  def print_event(self,event):
+  def handle_event(self,event):
     """ print event (depending on mode) """
 
     raw = self.debug or (not self.interactive and not self.keyboard)
@@ -155,9 +155,9 @@ class RadioCli(object):
       if sync:
         events = self._cli.get_events()
         for event in events:
-          self.print_event(event)
+          self.handle_event(event)
       else:
-        self._cli.start_event_processing(callback=self.print_event)
+        self._cli.start_event_processing(callback=self.handle_event)
     else:
       # use synchronous calls for all other events
       resp = self._cli.exec(api,qstring=qstring)
