@@ -93,7 +93,7 @@ class RadioCli(object):
   def signal_handler(self,_signo, _stack_frame):
     """ signal-handler for clean shutdown """
 
-    self._cli.msg("webradio_cli: received signal, stopping program ...")
+    self.msg("webradio_cli: received signal, stopping program ...")
     self.close()
 
   # --- close connection   ---------------------------------------------------
@@ -105,6 +105,13 @@ class RadioCli(object):
       self._cli.close()
     except:
       pass
+
+  # --- print message   ------------------------------------------------------
+
+  def msg(self,text,force=False):
+    """ print message """
+
+    self._cli.msg(text,force)
 
   # --- dump output of API   -------------------------------------------------
 
@@ -164,7 +171,7 @@ class RadioCli(object):
     # test for stdin
     try:
       _ = os.tcgetpgrp(sys.stdin.fileno())
-      self._cli.msg("webradio_cli: no stdin ...")
+      self.msg("webradio_cli: no stdin ...")
       return
     except:
       pass
