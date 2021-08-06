@@ -8,7 +8,7 @@ System Setup
 Use `tools/install-pirate-audio` for automatic system-setup. The
 script installs these software packages:
 
-  - apt: python3-spidev python3-pil python3-numpy
+  - apt: python3-rpi.gpio python3-spidev python3-pil python3-numpy
   - pip: st7789
 
 and adds the following entries to `/boot/config.txt`:
