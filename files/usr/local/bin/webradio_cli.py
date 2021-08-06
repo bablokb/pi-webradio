@@ -184,6 +184,41 @@ class RadioCli(object):
       cmd  = shlex.split(line)
       self.process_api(cmd[0],cmd[1:],sync=False)
 
+  # --- run application   ----------------------------------------------------
+
+  def run(self):
+    """ run application """
+
+    # setup signal-handler
+    signal.signal(signal.SIGTERM, self.signal_handler)
+    signal.signal(signal.SIGINT,  self.signal_handler)
+
+    # process special options
+    if self.events:
+      self.process_api("get_events",sync=False)
+    if self.on:
+      self.process_api("radio_on")
+
+    # process cmdline
+    if self.api:
+      self.process_api(self.api,self.args,
+                      sync=not (self.keyboard or self.interactive))
+
+    # process stdin (if available)
+    self.process_stdin()
+
+    # process keyboard / interactive input
+    if self.keyboard:
+      kc = KeyController(self.get_stop_event(),self.debug)
+      for api in kc.api_from_key():
+        self.process_api(api[0],api[1:],sync=False)
+        if api[0] == 'sys_stop':
+          break
+    elif self.interactive:
+      pass   # TBD
+
+    self.close()
+
 # --- main program   ---------------------------------------------------------
 
 if __name__ == '__main__':
@@ -193,33 +228,4 @@ if __name__ == '__main__':
 
   # create client-class and parse arguments
   app = RadioCli()
-
-  # setup signal-handler
-  signal.signal(signal.SIGTERM, app.signal_handler)
-  signal.signal(signal.SIGINT,  app.signal_handler)
-
-  # process special options
-  if app.events:
-    app.process_api("get_events",sync=False)
-  if app.on:
-    app.process_api("radio_on")
-
-  # process cmdline
-  if app.api:
-    app.process_api(app.api,app.args,
-                    sync=not (app.keyboard or app.interactive))
-
-  # process stdin (if available)
-  app.process_stdin()
-
-  # process keyboard / interactive input
-  if app.keyboard:
-    kc = KeyController(app.get_stop_event(),app.debug)
-    for api in kc.api_from_key():
-      app.process_api(api[0],api[1:],sync=False)
-      if api[0] == 'sys_stop':
-        break
-  elif app.interactive:
-    pass   # TBD
-
-  app.close()
+  app.run()
