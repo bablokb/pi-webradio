@@ -11,7 +11,7 @@
 # --------------------------------------------------------------------------
 
 [Unit]
-Description=Start pi-webradio
+Description=pi-webradio
  
 [Service]
 Type=simple
