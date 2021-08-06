@@ -41,6 +41,7 @@ Documentation is a part of this Github-project:
   - [Usage](doc/pi-webradio.md)
   - [Web GUI](doc/web-gui.md)
   - [Commandline client](doc/webradio_cli.md)
+  - [Using Pirate-Audio Hats](doc/pirate-audio.md)
   - [API](doc/API.md)
 
 Note: not all planned documentation might be available/complete yet.
@@ -124,7 +125,7 @@ The current stable version is _0.90_. New versions will be available as soon
 as they are stable. See branch _next_ for the current development-version.
 
   * ***0.90: stable core, Web-GUI with basic functions***
-  * 0.91: cli: fully functional, install-script implemented
+  * 0.91: cli: fully functional
   * 0.92: GUI: add toast-messages
   * 0.94: GUI: state changes sync across web-clients
   * 0.95: player: API implemented
