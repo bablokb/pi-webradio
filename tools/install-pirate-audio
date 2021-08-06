@@ -1,0 +1,66 @@
+#!/bin/bash
+# --------------------------------------------------------------------------
+# This script installs packages necessary for Pirate-Audio hats. It also
+# adds all necessary options to /boot/config.txt.
+#
+# Author: Bernhard Bablok
+# License: GPL3
+#
+# Website: https://github.com/bablokb/pi-webradio
+#
+# --------------------------------------------------------------------------
+
+# --- defaults used during installation   ----------------------------------
+
+PACKAGES="python3-rpi.gpio python3-spidev python3-pil python3-numpy"
+PACKAGES_PIP="st7789"
+
+PROJECT="pi-webradio-pirate-audio"
+
+# --- basic packages   ------------------------------------------------------
+
+if [ -n "$PACKAGES" ]; then
+  apt-get update
+  apt-get -y install $PACKAGES
+fi
+
+# install PIP3 packages
+[ -n "$PACKAGES_PIP" ] && pip3 --disable-pip-version-check install $PACKAGES_PIP
+
+# --- configure system   ----------------------------------------------------
+
+# update /boot/config.txt
+if ! grep -q "^dtparam=spi=on" /boot/config.txt ; then
+  echo -e "[INFO] configuring spi in /boot/config.txt" 2>&1
+  echo "dtparam=spi=on" >> /boot/config.txt
+fi
+
+if grep -q "^dtparam=audio=on" /boot/config.txt ; then
+  echo -e "[INFO] disabling default audio in /boot/config.txt" 2>&1
+  sed -i -e  "s/dtparam=audio=on/dtparam=audio=off/" /boot/config.txt
+fi
+
+if ! grep -q "^pio=25" /boot/config.txt ; then
+  echo -e "[INFO] activating DAC in /boot/config.txt" 2>&1
+  echo "# activate DAC" >> /boot/config.txt
+  echo "pio=25=op,dh" >> /boot/config.txt
+  echo "dtoverlay=hifiberry-dac" >> /boot/config.txt
+fi
+    
+if ! grep -q "^dtoverlay=gpio-key,gpio=5" /boot/config.txt ; then
+  echo -e "[INFO] configuring keys in /boot/config.txt" 2>&1
+  cat >> /boot/config.txt << EOF
+
+#key-mapping: A->up, B->down, X->right, Y->left
+#              5       6       16        24
+dtoverlay=gpio-key,gpio=5,keycode=103,label="UP"
+dtoverlay=gpio-key,gpio=6,keycode=108,label="DOWN"
+dtoverlay=gpio-key,gpio=16,keycode=106,label="RIGHT"
+dtoverlay=gpio-key,gpio=24,keycode=105,label="LEFT"
+# Note: remove last line on old hardware, where Y is connected to GPIO20
+EOF
+fi
+
+# --- final configuration is manual   ---------------------------------------
+
+echo -e "\nplease reboot to activate changes"
