@@ -104,20 +104,29 @@ function get_events() {
     var source = new EventSource('/api/get_events');
     source.addEventListener('message', function(e) {
       data = JSON.parse(e.data);
-      console.log(data);
-      if (['icy-meta', 'icy-name','id3'].includes(data.type)) {
+      if (['icy_meta', 'icy_name','id3'].includes(data.type)) {
         addInfo(data.text);
+      } else {
+        window["handle_event_"+data.type]?.(data.value);
       }
      }, false);
   }
 };
 
+function handle_event_rec_start(data) {
+  showMsg("Recording "+data.name+" for "+data.duration+"min",2000);
+}
+
+function handle_event_rec_stop(data) {
+  showMsg("Recording finished. File: "+data.file+", duration: "+
+          data.duration+"min",5000);
+}
 
 /**
    Query channels and create content
 */
 
-getChannels=function() {
+function getChannels() {
   $.getJSON('/api/radio_get_channels',
     function(channelInfo) {
       $.each(channelInfo,function(index,channel) {
