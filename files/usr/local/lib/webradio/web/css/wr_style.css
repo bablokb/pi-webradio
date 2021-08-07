@@ -27,8 +27,12 @@ body {
 #msgarea {
   position: absolute;
   bottom: 30px;
-  left: 50%;
-  color: lightblue;
+  left: 5%;
+  width: 90%;
+  text-align: center;
+  background: blue;
+  color: white;
+  border-radius: 10px;
   font-size: 36px;
 }
 
