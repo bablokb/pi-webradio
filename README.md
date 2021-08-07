@@ -14,11 +14,13 @@ The software has the following components:
   - a [web-API](doc/API.md) for (remote) control
   - a [web-GUI](doc/web-gui.md)
   - a [commandline client](doc/webradio_cli.md)
+  - a [client for Pirate-Audio-Hats](doc/pirate-audio.md)
 
 Although the webradio can be controlled from any browser, it is also
 possible to implement other clients by just using the [web-API](doc/API.md)
-directly (the [commandline client](doc/webradio_cli.md)
-can be used as an example).
+directly (the [commandline client](doc/webradio_cli.md) or the
+[client for Pirate-Audio-Hats](doc/pirate-audio.md)
+can be used as examples).
 
 [The second part of this project](integrated/README.md) is about building
 an integrated webradio using a Waveshare 7.9" touch-display. Here the
@@ -91,24 +93,26 @@ Enable and start the service with
 Once the service is running, you can access the web-interface with the
 url `http://<ip-or-hostname>:8026/`. If you installed the service on a
 Pi-desktop system, you would use `http://localhost:8026/` from your
-browser.
+(local) browser.
 
 
 Configuration
 -------------
 
 The central configuration-file is `/etc/pi-webradio.conf`. The file
-documents the defaults. Channel-configuration is in the file
-`/etc/pi-webradio.channels`. The latter is a json-file, with name,
-url, and filename (without path) of the channel-logo. The sample
-channel-file distributed with the project contains a number of
-radio-stations mainly from Germany.
+documents the defaults. Here you can change the port or various
+directories (e.g. for recordings).
+
+Channel-configuration is in the file `/etc/pi-webradio.channels`. This
+file is a json-file, with name, url, and filename (without path) of
+the channel-logo. The sample channel-file distributed with the project
+contains a number of radio-stations mainly from Germany.
 
 This project does not distribute any logos for the sample channel list
 to prevent any copyright-trouble. Please download the files yourself
 and copy them to the `files/usr/local/lib/webradio/web/images` directory
 (before installation, afterwards use the same path without the
-`file`-prefix). The image-size should be 256x256 pixel.
+`file`-prefix). The image-size should be about 256x256 pixel.
 
 Finding the correct urls for your favorite radio-stations is not always
 simple, there are various portals which can serve as a starting point.
@@ -121,14 +125,15 @@ list of urls (but beware, this is only a hint, not a necessity).
 Status
 ------
 
-The current stable version is _0.90_. New versions will be available as soon
-as they are stable. See branch _next_ for the current development-version.
+The current stable version is _0.91_. New versions will be available as soon
+as they are stable.
 
-  * ***0.90: stable core, Web-GUI with basic functions***
-  * 0.91: cli: fully functional
-  * 0.92: GUI: add toast-messages
-  * 0.94: GUI: state changes sync across web-clients
-  * 0.95: player: API implemented
+  * 0.90: stable core, Web-GUI with basic functions
+  * ***0.91: GUI: add toast-messages***
+  * 0.92: cli: fully functional
+  * 0.93: GUI: state changes synced across web-clients
+  * 0.94: player API partly implemented
+  * 0.95: player: API functional
   * 0.96: GUI: player with basic functions
   * 0.97: IR-app (map IR-codes to web-API)
   * 0.98: GUI: player complete
