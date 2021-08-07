@@ -103,7 +103,7 @@ class RadioEvents(Base):
           continue
         else:
           self.msg("RadioEvents: publishing keep-alive")
-          event = {'type': 'keep-alive', 'value':
+          event = {'type': 'keep_alive', 'value':
                    datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 
       event['text'] = self._formatter.format(event)

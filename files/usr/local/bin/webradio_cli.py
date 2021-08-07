@@ -139,7 +139,7 @@ class RadioCli(object):
       print(json.dumps(json.loads(event.data),indent=2,sort_keys=True))
     elif not self.quiet:
       ev_data = json.loads(event.data)
-      if ev_data['type'] != 'keep-alive':
+      if ev_data['type'] != 'keep_alive':
         print(ev_data['text'])
 
   # --- process single api   -------------------------------------------------

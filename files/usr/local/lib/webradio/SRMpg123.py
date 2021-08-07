@@ -191,10 +191,10 @@ class Mpg123(Base):
       self.msg("Mpg123: processing line: %s" % line)
       if line.startswith("@I ICY-META"):
         (line,_) = regex.subn(r'\1',line)
-        self._api._push_event({'type': 'icy-meta',
+        self._api._push_event({'type': 'icy_meta',
                               'value': line})
       elif line.startswith("@I ICY-NAME"):
-        self._api._push_event({'type': 'icy-name',
+        self._api._push_event({'type': 'icy_name',
                               'value': line[13:].rstrip("\n")})
       elif line.startswith("@I ID3v2"):
         tag = line[9:].rstrip("\n").split(":")

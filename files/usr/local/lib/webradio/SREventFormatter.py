@@ -19,8 +19,8 @@ class EventFormatter(object):
   # --- format map: type:format   ---------------------------------------------
   _FMT_MAP = {
     'version': 'pi-webradio version {value}',
-    'icy-meta': '{value}',
-    'icy-name': 'channel name: {value}',
+    'icy_meta': '{value}',
+    'icy_name': 'channel name: {value}',
     'rec_start': 'recording {name} for {duration} minutes',
     'rec_stop': 'finished recording. File {file}, duration: {duration}m',
     'vol_set': 'setting current volume to {value}',
@@ -28,7 +28,7 @@ class EventFormatter(object):
     'play_file': 'playing file: {value}',
     'file_info': '{name}: {duration}',
     'id3': '{tag}: {value}',
-    'keep-alive': 'current time: {value}',
+    'keep_alive': 'current time: {value}',
     'eof': '{value} finished'
     }
 
