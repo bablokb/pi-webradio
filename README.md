@@ -14,13 +14,14 @@ The software has the following components:
   - a [web-API](doc/API.md) for (remote) control
   - a [web-GUI](doc/web-gui.md)
   - a [commandline client](doc/webradio_cli.md)
-  - a [client for Pirate-Audio-Hats](doc/pirate-audio.md)
+  - an integrated [client for Pirate-Audio-Hats](doc/pirate-audio.md)
 
 Although the webradio can be controlled from any browser, it is also
 possible to implement other clients by just using the [web-API](doc/API.md)
-directly (the [commandline client](doc/webradio_cli.md) or the
+directly. The [commandline client](doc/webradio_cli.md) or the
 [client for Pirate-Audio-Hats](doc/pirate-audio.md)
-can be used as examples).
+can be used as examples. In the latter case the server and client usually
+run on the same system.
 
 [The second part of this project](integrated/README.md) is about building
 an integrated webradio using a Waveshare 7.9" touch-display. Here the

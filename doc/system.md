@@ -58,11 +58,14 @@ in application and kiosk mode:
 
 chromium-browser --app=http://localhost:8026/ --kiosk &
 
-After the start it then monitor the systemd-process of pi-webradio.
+After the start it then monitors the systemd-process of pi-webradio.
 If that process terminates, the browser is killed as well.
 
 
 Prevent Screen-Blanking
 -----------------------
 
-TBD
+The script `/usr/local/bin/webradio_chrome.sh` also takes care of
+setting options to prevent screen-blanking. Depending on your
+display-manager and/or window-manager, you might need to take
+additional actions, e.g. to prevent a lock-screen.
