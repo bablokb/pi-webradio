@@ -13,7 +13,7 @@
 DEFAULT_HOST = 'localhost'
 DEFAULT_PORT = 8026
 
-import locale, os, sys, json, shlex, threading, signal
+import locale, os, sys, json, shlex, threading, signal, readline
 from   argparse import ArgumentParser
 
 # --- application imports   --------------------------------------------------
@@ -215,7 +215,16 @@ class RadioCli(object):
         if api[0] == 'sys_stop':
           break
     elif self.interactive:
-      pass   # TBD
+      while True:
+        line = input("webradio > ").strip()
+        if not len(line):
+          continue
+        elif line in ['q','Q','quit','Quit']:
+          break
+        api  = shlex.split(line)
+        self.process_api(api[0],api[1:],sync=False)
+        if api[0] == 'sys_stop':
+          break
 
     self.close()
 
