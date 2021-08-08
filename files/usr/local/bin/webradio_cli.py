@@ -184,6 +184,26 @@ class RadioCli(object):
       cmd  = shlex.split(line)
       self.process_api(cmd[0],cmd[1:],sync=False)
 
+  # --- completer for readline   ---------------------------------------------
+
+  def completer(self,text,state):
+    """ implement completer """
+
+    self.msg("RadioCli: completer(%s,%d)" % (text,state))
+    if state == 0:
+      # buffer list of hits
+      if text in self._cli.API_LIST:
+        self._completions = [text]
+      else:
+        self._completions = [api for api in self._cli.API_LIST
+                             if api.startswith(text)]
+
+    if state < len(self._completions):
+      self.msg("RadioCli: returning %s" % self._completions[state])
+      return self._completions[state]
+    else:
+      return True
+
   # --- run application   ----------------------------------------------------
 
   def run(self):
@@ -215,6 +235,8 @@ class RadioCli(object):
         if api[0] == 'sys_stop':
           break
     elif self.interactive:
+      readline.set_completer(lambda text,state: self.completer(text,state))
+      readline.parse_and_bind("tab: complete")
       while True:
         line = input("webradio > ").strip()
         if not len(line):
