@@ -127,7 +127,8 @@ class RadioCli(object):
       obj = json.loads(response[2])
       print(json.dumps(obj,indent=2,sort_keys=True))
     except:
-      print("response: " + response[2])
+      if response[2]:
+        print("response: " + response[2])
 
   # --- print event   --------------------------------------------------------
 
