@@ -77,9 +77,14 @@ class RadioClient(Base):
       url = '/api/'+api
 
     # send, get request and parse response
-    self._request.request("GET",url)
-    response = self._request.getresponse()
-    data = (response.status,response.reason,response.read())
+    try:
+      self._request.request("GET",url)
+      response = self._request.getresponse()
+      data = (response.status,response.reason,response.read())
+    except Exception as ex:
+      self.msg("RadioClient: exception: %s" % ex)
+      self._request = httplib.HTTPConnection(self._host,self._port)
+      data = (-1,"connect error",None)
 
     if close:
       self.close()
