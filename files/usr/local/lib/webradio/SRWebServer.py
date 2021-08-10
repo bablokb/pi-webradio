@@ -119,7 +119,10 @@ class WebServer(Base):
       self.msg("processing api-call: %s" % api)
       try:
         response = self._api.exec(api,**request.args)
-        if api in ['radio_play_channel','radio_get_channel']:
+        if api in ['radio_play_channel',
+                   'radio_play_next',
+                   'radio_play_prev',
+                   'radio_get_channel']:
           self._update_logo(response)
         elif api == 'radio_get_channels':
           response = [self._update_logo(c) for c in response]
