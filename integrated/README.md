@@ -58,7 +58,6 @@ are mainly from the Waveshare-wiki with some additions for the special setup:
     max_framebuffers=2
 
     [all]
-    max_usb_current=1
     dtparam=audio=on
     gpu_mem=128
 
