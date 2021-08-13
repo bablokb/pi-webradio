@@ -63,6 +63,7 @@ if [ -f /etc/${PROJECT}.conf.$rand ]; then
   echo -e "\nnew version of configuration file: /etc/${PROJECT}.conf.new"
 fi
 if [ -f /etc/${PROJECT}.channels.$rand ]; then
+  mv -f /etc/${PROJECT}.channels /etc/${PROJECT}.channels.new
   mv -f /etc/${PROJECT}.channels.$rand /etc/${PROJECT}.channels
 fi
 
