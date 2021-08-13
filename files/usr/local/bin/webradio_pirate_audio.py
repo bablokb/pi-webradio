@@ -96,6 +96,14 @@ class PirateAudio(RadioCli):
     if have_st7789:
       self._update_display(logo)
     
+  # --- close connection   ---------------------------------------------------
+
+  def close(self):
+    """ override to blank display """
+
+    self._screen.set_backlight(0)
+    super(PirateAudio,self).close()
+
 # --- main program   ---------------------------------------------------------
 
 if __name__ == '__main__':
