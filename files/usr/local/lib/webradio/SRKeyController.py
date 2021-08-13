@@ -18,6 +18,8 @@ from webradio import Base
 class KeyController(Base):
   """ map key-events to api-calls """
 
+  TIMEOUT = 5             # check stop-event every x seconds
+
   # --- builtin-keymaps   ----------------------------------------------------
 
   KEYMAP_RADIO_EVENT = {
@@ -107,8 +109,13 @@ class KeyController(Base):
     devices = {dev.fd: dev for dev in devices}
 
     special = 0                    # to ignore combinations with special keys
-    while not self._stop.is_set():
-      fds, _1, _2 = select.select(devices, [], [])
+    while True:
+      fds, _1, _2 = select.select(devices,[],[],KeyController.TIMEOUT)
+      if self._stop.is_set():
+        break
+      elif not len(fds):
+        # timeout condition, try again
+        continue
       for fd in fds:
         for event in devices[fd].read():
           event = evdev.util.categorize(event)
@@ -142,8 +149,16 @@ class KeyController(Base):
 
     old_settings = termios.tcgetattr(sys.stdin)
     tty.setcbreak(sys.stdin.fileno())
+    devices = [sys.stdin.fileno()]
     try:
-      while not self._stop.is_set():
+      while True:
+        fds, _1, _2 = select.select(devices,[],[],KeyController.TIMEOUT)
+        if self._stop.is_set():
+          break
+        elif not len(fds):
+          # timeout condition, try again
+          continue
+
         keycode = os.read(sys.stdin.fileno(), 3).hex()
         self.msg("KeyController: processing %s" % keycode)
         if keycode in self._kmap:
