@@ -44,7 +44,7 @@ class RadioClient(Base):
     self.debug    = debug
     self._request = httplib.HTTPConnection(host,port,timeout)
     self._client  = None
-    self._stop    = threading.Event()
+    self._stop    = None
 
   # --- close request object   -----------------------------------------------
 
@@ -52,7 +52,8 @@ class RadioClient(Base):
     """ close internal request object """
 
     self._request.close()
-    self._stop.set()
+    if self._stop:
+      self._stop.set()
     if self._client:
       self._client.close()
 
@@ -120,8 +121,9 @@ class RadioClient(Base):
   def _process_events(self,callback):
     """ process events """
 
+    self._stop = threading.Event()
     try:
-      while True and not self._stop.is_set():
+      while not self._stop.is_set():
         events = self.get_events()
         self.msg("RadioClient: events: %r" % (events,))
         if not events:
@@ -141,4 +143,8 @@ class RadioClient(Base):
     """ create and start event-processing """
 
     threading.Thread(target=self._process_events,args=(callback,)).start()
+    while not self._stop:
+      # event thread not up and running
+      time.sleep(0.1)
+      continue
     return self._stop
