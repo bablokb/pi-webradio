@@ -41,10 +41,11 @@ Web API
 | player_mode_toggle      | toggle player mode      | WebRadio    |   Ok   |
 | player_play_file(file)  | play selected file      | Player      |   Ok   |
 | player_play_dir(dir)    | play all files in dir   | Player      |        |
+| player_select_dir       | select directory        | Player      |   I    |
 | player_stop             | stop playing            | Player      |        |
 | player_pause            | pause playing           | Player      |        |
 | player_toggle           | toggle playing          | Player      |        |
-| player_select           | select file for playing | Player      |        |
+| player_select_dir       | select directory        | Player      |        |
 | player_next             | select next file        | Player      |        |
 | player_prev             | select prev file        | Player      |        |
 | player_delete           | delete selected file    | Player      |        |
@@ -57,6 +58,14 @@ Legend:
 
   - Ok: implemented and tested
   - I:  implemented
+
+
+Notes
+-----
+
+  - All APIs use GET-requests except `publish_state`
+  - Query-parameters are given in parenthesis, they are optional if
+    sensible defaults exist
 
 
 Internal API
