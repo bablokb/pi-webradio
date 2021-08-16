@@ -33,6 +33,9 @@ function openTab(evt, tabId) {
   if (evt) {
     evt.currentTarget.className += " menu_active";
   }
+
+  // publish new state
+  $.post('/api/publish_state','{"webgui": {"tabid": "'+tabId+'"}}');
 };
 
 /**
