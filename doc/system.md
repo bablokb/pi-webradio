@@ -69,3 +69,11 @@ The script `/usr/local/bin/webradio_chrome.sh` also takes care of
 setting options to prevent screen-blanking. Depending on your
 display-manager and/or window-manager, you might need to take
 additional actions, e.g. to prevent a lock-screen.
+
+
+Remove Mousepointer
+-------------------
+
+To remove the mouse-pointer while being idle, install the package
+`unclutter`. If the start-script detects unclutter, it automatically
+calls the binary. No additional action is necessary.
