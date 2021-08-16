@@ -66,6 +66,8 @@ class WebServer(Base):
     self._flask.add_url_rule('/images/<path:filepath>','images',self.images)
     self._flask.add_url_rule('/js/<path:filepath>','js',self.js_pages)
     self._flask.add_url_rule('/api/get_events','get_events',self.get_events)
+    self._flask.add_url_rule('/api/publish_state','publish_state',
+                             self.publish_state,methods=['POST'])
     self._flask.add_url_rule('/api/<path:api>','api',self.process_api)
 
   # --- return absolute path of web-files   ----------------------------------
@@ -140,6 +142,19 @@ class WebServer(Base):
         response = make_response(('{"msg": ' + msg +'}',500))
         response.content_type = 'application/json'
         return response
+
+  # --- publish state   ----------------------------------------------------
+
+  def publish_state(self):
+    """ publish client state: just redistribute the complete info """
+
+    try:
+      body = request.get_json(force=True)
+    except:
+      traceback.print_exc()
+    self._api._push_event(
+      {'type': 'state', 'value': request.get_json(force=True)})
+    return ""
 
   # --- stream SSE (server sent events)   ----------------------------------
 
