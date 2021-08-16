@@ -45,6 +45,7 @@ class RadioClient(Base):
     self._request = httplib.HTTPConnection(host,port,timeout)
     self._client  = None
     self._stop    = threading.Event()
+    self._have_ev = False
 
   # --- close request object   -----------------------------------------------
 
@@ -127,6 +128,7 @@ class RadioClient(Base):
         if not events:
           time.sleep(3)
           continue
+        self._have_ev = True
         for event in events:
           if callback:
             callback(event)
@@ -141,4 +143,8 @@ class RadioClient(Base):
     """ create and start event-processing """
 
     threading.Thread(target=self._process_events,args=(callback,)).start()
+    while not self._have_ev:
+      # no events yet from server, so wait
+      time.sleep(0.1)
+    self.msg("RadioClient: event-processing activated")
     return self._stop
