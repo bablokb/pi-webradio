@@ -33,11 +33,6 @@ function openTab(evt, tabId) {
   if (evt) {
     evt.currentTarget.className += " menu_active";
   }
-
-  // turn radio of if not switching to channels or play
-  if (!['wr_channels','wr_play'].includes(tabId)) {
-    radio_off();
-  }
 };
 
 /**
