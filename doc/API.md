@@ -49,7 +49,7 @@ Web API
 | player_prev             | select prev file        | Player      |        |
 | player_delete           | delete selected file    | Player      |        |
 |-------------------------|-------------------------|-------------|--------|
-| get_events              | poll SSE                | WebServer   |        |
+| get_events              | poll SSE                | WebServer   |   Ok   |
 | publish_state           | publish state change    | WebServer   |        |
 |-------------------------|-------------------------|-------------|--------|
 
