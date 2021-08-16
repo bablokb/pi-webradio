@@ -101,7 +101,8 @@ class PirateAudio(RadioCli):
   def close(self):
     """ override to blank display """
 
-    self._screen.set_backlight(0)
+    #self._screen.set_backlight(0)        # does not work during shutdown
+    self._screen.display(Image.new('RGB',(240,240),color=(0,0,0)))
     super(PirateAudio,self).close()
 
 # --- main program   ---------------------------------------------------------
