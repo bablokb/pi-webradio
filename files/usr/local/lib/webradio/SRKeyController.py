@@ -67,8 +67,10 @@ class KeyController(Base):
     "69":     ["radio_state"],                       # TBD
     "6f":     ["radio_toggle"],
     "70":     ["player_mode_toggle"],                # TBD
-    "71":     ["sys_stop"],
+    "68":     ["_help"],
+    "71":     ["_quit"],
     "72":     ["rec_toggle"],
+    "73":     ["sys_stop"],
     "6c":     ["radio_get_channels"],
     "6d":     ["vol_mute_toggle"],
     "1b5b44": ["radio_play_prev"],
@@ -183,3 +185,15 @@ class KeyController(Base):
       return self._api_from_term()
     else:
       return self._api_from_key_event()
+
+  # --- print key-mapping   --------------------------------------------------
+
+  def print_mapping(self):
+    """ print key-mapping """
+
+    print("key-mapping:")
+    for key,value in KeyController.KEYMAP_RADIO_EVENT.items():
+      if len(value) > 1:
+        print("%9s -> %s %s" % (key,*value))
+      else:
+        print("%9s -> %s" % (key,value[0]))
