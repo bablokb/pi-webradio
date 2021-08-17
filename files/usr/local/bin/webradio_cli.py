@@ -229,7 +229,12 @@ class RadioCli(object):
     if self.keyboard:
       kc = KeyController(self.get_stop_event(),self.debug)
       for api in kc.api_from_key():
-        self.process_api(api[0],api[1:],sync=False)
+        if api[0] == "_quit":
+          break
+        elif api[0] == "_help":
+          kc.print_mapping()
+        else:
+          self.process_api(api[0],api[1:],sync=False)
         if api[0] == 'sys_stop':
           break
     elif self.interactive:
