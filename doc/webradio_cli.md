@@ -37,11 +37,13 @@ The current implementation supports the following keys:
 |KEY_0      | radio_play_channel  |
 |KEY_D      | player_play_dir     |
 |KEY_F      | player_play_file    |
+|KEY_H      | (help)              |
 |KEY_I      | radio_state         |
 |KEY_O      | radio_toggle        |
 |KEY_P      | player_mode_toggle  |
-|KEY_Q      | sys_stop            |
+|KEY_Q      | (quit client)       |
 |KEY_R      | rec_toggle          |
+|KEY_S      | sys_stop            |
 |KEY_L      | radio_get_channels  |
 |KEY_M      | vol_mute_toggle     |
 |KEY_LEFT   | radio_play_prev     |
