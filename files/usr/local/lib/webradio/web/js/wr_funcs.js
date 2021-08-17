@@ -12,9 +12,17 @@
   Tab navigation
 */
 
+currentTab = 'wr_clock';
+
 function openTab(evt, tabId) {
   // Declare all variables
   var i, content_area, tablinks;
+
+  if (tabId === 'currentTab') {   // nothing to do
+    return;
+  } else {
+    currentTab = tabId;
+  }
 
   // Get all elements with class="content_area" and hide them
   content_area = document.getElementsByClassName("content_area");
@@ -110,6 +118,15 @@ function get_events() {
      }, false);
   }
 };
+
+function handle_event_state(data) {
+  if (data.webgui) {
+    // current support is limited to tabId
+    if (data.webgui.tabId) {
+      openTab(null,data.webgui.tabId);
+    }
+  }
+}
 
 function handle_event_rec_start(data) {
   showMsg("Recording "+data.name+" for "+data.duration+"min",2000);
