@@ -35,11 +35,13 @@ class KeyController(Base):
     "KEY_0":     ["radio_play_channel", "nr=10"],
     "KEY_D":     ["player_play_dir"],                   # TBD
     "KEY_F":     ["player_play_file"],                  # TBD
+    "KEY_H":     ["_help"],                             # TBD
     "KEY_I":     ["radio_state"],                       # TBD
     "KEY_O":     ["radio_toggle"],
     "KEY_P":     ["player_mode_toggle"],                # TBD
-    "KEY_Q":     ["sys_stop"],
+    "KEY_Q":     ["_quit"],
     "KEY_R":     ["rec_toggle"],
+    "KEY_S":     ["sys_stop"],
     "KEY_L":     ["radio_get_channels"],
     "KEY_M":     ["vol_mute_toggle"],
     "KEY_LEFT":  ["radio_play_prev"],
