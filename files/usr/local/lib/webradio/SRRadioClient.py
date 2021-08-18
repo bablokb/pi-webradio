@@ -30,7 +30,7 @@ class RadioClient(Base):
     "rec_start", "rec_stop", "rec_toggle", "player_mode_start",
     "player_mode_exit", "player_mode_toggle", "player_play_file",
     "player_play_dir", "player_stop", "player_pause", "player_toggle",
-    "player_select", "player_next", "player_prev", "player_delete",
+    "player_select_dir", "player_next", "player_prev", "player_delete",
     "get_events", "publish_state"
     ]
 
