@@ -69,7 +69,8 @@ class Player(Base):
   def register_apis(self):
     """ register API-functions """
 
-    self._api.player_play_file = self.player_play_file
+    self._api.player_play_file  = self.player_play_file
+    self._api.player_select_dir = self.player_select_dir
 
   # --- return persistent state of this class   -------------------------------
 
@@ -116,3 +117,36 @@ class Player(Base):
                            'value': {'name': self._file,
                                      'duration': self._pp_time(total_secs)}})
     self._backend.play(self._file)
+
+  # --- select directory, return entries   ------------------------------------
+
+  def player_select_dir(self,dir=None):
+    """ select directory """
+
+    result =  {'dirs':  [], 'files': []}
+    if not dir:
+      dir = self._dir
+    else:
+      # check path
+      dir = os.path.abspath(dir)
+      if not os.path.commonpath([self._root_dir,dir]) == self._root_dir:
+        self.msg("WARNING: directory %s is not below root-directory" % dir,True)
+        return result
+      elif not os.path.isdir(dir):
+        self.msg("WARNING: directory %s does not exist" % dir,True)
+        return result
+      self._dir = dir
+
+    # iterate over directory ...
+    result['dirs'].append('..')
+    for f in os.listdir(dir):
+      if os.path.isfile(os.path.join(dir,f)):
+        if f.endswith(".mp3"):
+          result['files'].append(f)
+      else:
+        result['dirs'].append(f)
+
+    # ... and sort results
+    result['files'].sort()
+    result['dirs'].sort()
+    return result
