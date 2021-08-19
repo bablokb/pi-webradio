@@ -39,15 +39,13 @@ Web API
 | player_mode_start       | start player mode       | WebRadio    |   I    |
 | player_mode_exit        | leave player mode       | WebRadio    |   I    |
 | player_mode_toggle      | toggle player mode      | WebRadio    |   Ok   |
-| player_play_file(file)  | play selected file      | Player      |   Ok   |
+| player_play_file(fname) | play selected file      | Player      |   Ok   |
 | player_play_dir(dir)    | play all files in dir   | Player      |        |
-| player_select_dir       | select directory        | Player      |   I    |
-| player_stop             | stop playing            | Player      |        |
-| player_pause            | pause playing           | Player      |        |
-| player_toggle           | toggle playing          | Player      |        |
-| player_select_dir       | select directory        | Player      |        |
-| player_next             | select next file        | Player      |        |
-| player_prev             | select prev file        | Player      |        |
+| player_select_dir(dir)  | select directory        | Player      |   Ok   |
+| player_stop             | stop playing            | Player      |   Ok   |
+| player_pause            | pause playing           | Player      |   Ok   |
+| player_resume           | resume playing          | Player      |   Ok   |
+| player_toggle           | toggle playing          | Player      |   Ok   |
 | player_delete           | delete selected file    | Player      |        |
 |-------------------------|-------------------------|-------------|--------|
 | get_events              | poll SSE                | WebServer   |   Ok   |
