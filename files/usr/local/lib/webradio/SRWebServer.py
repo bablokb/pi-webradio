@@ -95,16 +95,6 @@ class WebServer(Base):
   def main_page(self):
     return render_template("index.html")
 
-  # --- update logo with correct path   ------------------------------------
-
-  def _update_logo(self,channel):
-    """ update logo in channel-dict """
-    if os.path.exists(self._get_path('images',channel['logo'])):
-      channel['logo'] = 'images/'+channel['logo']
-    else:
-      channel['logo'] = None
-    return channel
-
   # --- process API-call   -------------------------------------------------
 
   def process_api(self,api):
@@ -121,13 +111,6 @@ class WebServer(Base):
       self.msg("processing api-call: %s" % api)
       try:
         response = self._api.exec(api,**request.args)
-        if api in ['radio_play_channel',
-                   'radio_play_next',
-                   'radio_play_prev',
-                   'radio_get_channel']:
-          self._update_logo(response)
-        elif api == 'radio_get_channels':
-          response = [self._update_logo(c) for c in response]
         return json.dumps(response)
       except NotImplementedError as err:
         self.msg("illegal request: /api/%s" % api)

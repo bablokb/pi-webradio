@@ -46,6 +46,12 @@ class Radio(Base):
     self._channel_file  = self.get_value(self._app.parser,"GLOBAL","channel_file",
                                          default_path)
 
+    # section [WEB]
+    default_web_root = os.path.realpath(
+      os.path.join(self._app.options.pgm_dir,"..","lib","webradio","web"))
+    self._web_root  = self.get_value(self._app.parser,"WEB","web_root",
+                                         default_web_root)
+
   # --- register APIs   ------------------------------------------------------
 
   def register_apis(self):
@@ -91,6 +97,11 @@ class Radio(Base):
       nr=1
       for channel in self._channels:
         channel['nr'] = nr
+        logo_path = os.path.join(self._web_root,"images",channel['logo'])
+        if os.path.exists(logo_path):
+          channel['logo'] = os.path.join("images",channel['logo'])
+        else:
+          channel['logo'] = None
         nr += 1
     except:
       self.msg("Radio: Loading channels failed")
@@ -138,7 +149,7 @@ class Radio(Base):
       self._channel_nr   = nr
       self._last_channel = self._channel_nr
       self._backend.play(channel['url'])
-    return dict(channel)
+    return channel
 
   # --- switch to next channel   ----------------------------------------------
 
