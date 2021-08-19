@@ -39,13 +39,13 @@ class RadioClient(Base):
   def __init__(self,host,port,debug=False,timeout=10):
     """ constructor """
 
-    self._host    = host
-    self._port    = port
-    self.debug    = debug
-    self._request = httplib.HTTPConnection(host,port,timeout)
-    self._client  = None
-    self._stop    = threading.Event()
-    self._have_ev = False
+    self._host      = host
+    self._port      = port
+    self.debug      = debug
+    self._request   = httplib.HTTPConnection(host,port,timeout)
+    self._sseclient = None
+    self._stop      = threading.Event()
+    self._have_ev   = False
 
   # --- close request object   -----------------------------------------------
 
@@ -54,8 +54,8 @@ class RadioClient(Base):
 
     self._request.close()
     self._stop.set()
-    if self._client:
-      self._client.close()
+    if self._sseclient:
+      self._sseclient.close()
 
   # --- execute request   ----------------------------------------------------
 
@@ -110,8 +110,8 @@ class RadioClient(Base):
 
     try:
       response = http.request('GET', url, preload_content=False, headers=headers)
-      self._client = sseclient.SSEClient(response)
-      return self._client.events()
+      self._sseclient = sseclient.SSEClient(response)
+      return self._sseclient.events()
     except Exception as ex:
       self.msg("RadioClient: exception: %s" % ex)
       return None
