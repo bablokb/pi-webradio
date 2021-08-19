@@ -18,7 +18,7 @@ function openTab(evt, tabId) {
   // Declare all variables
   var i, content_area, tablinks;
 
-  if (tabId === 'currentTab') {   // nothing to do
+  if (tabId === currentTab) {   // nothing to do
     return;
   } else {
     currentTab = tabId;
@@ -121,9 +121,9 @@ function get_events() {
 
 function handle_event_state(data) {
   if (data.webgui) {
-    // current support is limited to tabId
-    if (data.webgui.tabId) {
-      openTab(null,data.webgui.tabId);
+    // current support is limited to tabid
+    if (data.webgui.tabid) {
+      openTab(null,data.webgui.tabid);
     }
   }
 }
