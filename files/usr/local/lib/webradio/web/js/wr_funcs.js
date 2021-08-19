@@ -113,7 +113,12 @@ function get_events() {
       if (['icy_meta', 'icy_name','id3'].includes(data.type)) {
         addInfo(data.text);
       } else {
-        window["handle_event_"+data.type]?.(data.value);
+        // window["handle_event_"+data.type]?.(data.value);
+        if (window["handle_event_"+data.type]) {
+          window["handle_event_"+data.type](data.value);
+        } else {
+          console.log('ignoring event: ', data);
+        }
       }
      }, false);
   }
@@ -135,6 +140,13 @@ function handle_event_rec_start(data) {
 function handle_event_rec_stop(data) {
   showMsg("Recording finished. File: "+data.file+", duration: "+
           data.duration+"min",5000);
+}
+
+function handle_event_radio_play_channel(data) {
+  if (data.nr !== last_channel) {
+    last_channel = data.nr;
+    update_channel_info(data);
+  }
 }
 
 /**
@@ -161,33 +173,40 @@ function getChannels() {
 };
 
 /**
+  show channel-info
+*/
+
+function update_channel_info(channel) {
+  console.log("updating channel-info for channel ",channel);
+  $('#wr_infos').empty();
+  $('#wr_on_btn').removeClass('fas').addClass('far');
+  $('#wr_off_btn').removeClass('far').addClass('fas');
+  $('#wr_pause_btn').removeClass('far').addClass('fas');
+  $('#wr_play_link').addClass('menu_active');
+  if (channel.logo) {
+    $('#wr_play_logo').attr('src',channel.logo);
+    $('#wr_play_name').empty();
+  } else {
+    $('#wr_play_logo').attr('src','/images/default.png');
+    $('#wr_play_name').html(channel.name);
+  }
+}
+
+/**
   Switch to given channel (data should be {'nr': value})
 */
 
 var last_channel = 0;
 
 function radio_play_channel(data) {
+  // check if channel is new
+  if (data.nr != last_channel) {
+    last_channel = data.nr;
+  }
   $.getJSON('/api/radio_play_channel',data,
     function(channel) {
       openTab(null,'wr_play');
-      $('#wr_on_btn').removeClass('fas').addClass('far');
-      $('#wr_off_btn').removeClass('far').addClass('fas');
-      $('#wr_pause_btn').removeClass('far').addClass('fas');
-      $('#wr_play_link').addClass('menu_active');
-      if (channel.logo) {
-        $('#wr_play_logo').attr('src',channel.logo);
-        $('#wr_play_name').empty();
-      } else {
-        $('#wr_play_logo').attr('src','/images/default.png');
-        $('#wr_play_name').html(channel.name);
-      }
-      // check if channel is new
-      if (channel.nr != last_channel) {
-        last_channel = channel.nr;
-        $('#wr_infos').empty();
-      } else {
-        // do nothing
-      }
+      update_channel_info(channel);
     }
   );
 };
