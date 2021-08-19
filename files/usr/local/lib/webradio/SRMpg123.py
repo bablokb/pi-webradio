@@ -117,6 +117,7 @@ class Mpg123(Base):
     if self._process:
       self.msg("Mpg123: starting to play %s" % url)
       self._url = url
+      self._pause = False
       if url.endswith(".m3u"):
         self._process.stdin.write("LOADLIST 0 %s\n" % url)
       else:
@@ -132,6 +133,7 @@ class Mpg123(Base):
       self._process.stdin.write("STOP\n")
       # might need time.sleep(x) here?!
       self._url = None
+      self._pause = False
 
   # --- pause playing   -------------------------------------------------------
 
@@ -150,7 +152,7 @@ class Mpg123(Base):
     """ continue playing """
 
     if self._process:
-      self.msg("Mpg123: continuing playback")
+      self.msg("Mpg123: resuming playback")
       if self._pause:
         self._process.stdin.write("PAUSE\n")
         self._pause = False
