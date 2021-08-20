@@ -131,9 +131,9 @@ as they are stable.
 
   * 0.90: stable core, Web-GUI with basic functions
   * 0.91: GUI: add toast-messages
-  * ***0.92: cli: fully functional***
+  * 0.92: cli: fully functional
   * 0.93: GUI: state changes synced across web-clients
-  * 0.94: player API partly implemented
+  * 0.94: ***player API partly implemented***
   * 0.95: player: API functional
   * 0.96: GUI: player with basic functions
   * 0.97: IR-app (map IR-codes to web-API)
