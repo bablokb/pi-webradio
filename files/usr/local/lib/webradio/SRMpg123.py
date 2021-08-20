@@ -157,6 +157,16 @@ class Mpg123(Base):
         self._process.stdin.write("PAUSE\n")
         self._pause = False
 
+  # --- toggle playing   ------------------------------------------------------
+
+  def toggle(self):
+    """ toggle playing """
+
+    if self._process:
+      self.msg("Mpg123: toggle playback")
+      self._process.stdin.write("PAUSE\n")
+      self._pause = not self._pause
+
   # --- stop player   ---------------------------------------------------------
 
   def destroy(self):
@@ -205,6 +215,12 @@ class Mpg123(Base):
                                          'value': tag[1]}})
       elif line.startswith("@P 0"):
         self._api._push_event({'type': 'eof',
+                              'value': self._url})
+      elif line.startswith("@P 1"):
+        self._api._push_event({'type': 'pause',
+                              'value': self._url})
+      elif line.startswith("@P 2"):
+        self._api._push_event({'type': 'play',
                               'value': self._url})
 
     self.msg("Mpg123: stopping mpg123 reader-thread")
