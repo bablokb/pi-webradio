@@ -134,12 +134,32 @@ function handle_event_state(data) {
 }
 
 function handle_event_rec_start(data) {
+  // toggle solid/regular btn
+  $('#wr_rec_btn').removeClass('fas').addClass('far');
   showMsg("Recording "+data.name+" for "+data.duration+"min",2000);
 }
 
 function handle_event_rec_stop(data) {
+  $('#wr_rec_btn').removeClass('far').addClass('fas');
   showMsg("Recording finished. File: "+data.file+", duration: "+
           data.duration+"min",5000);
+}
+
+function handle_event_play(data) {
+  $('#wr_play_btn').removeClass('fas').addClass('far');
+  $('#wr_pause_btn').removeClass('far').addClass('fas').prop("disabled", false);
+  $('#wr_off_btn').removeClass('far').addClass('fas');
+}
+
+function handle_event_pause(data) {
+  $('#wr_play_btn').removeClass('far').addClass('fas');
+  $('#wr_pause_btn').removeClass('fas').addClass('far');
+}
+
+function handle_event_eof(data) {
+  $('#wr_play_btn').removeClass('far').addClass('fas');
+  $('#wr_pause_btn').removeClass('far').addClass('fas').prop("disabled", true);
+  $('#wr_off_btn').removeClass('fas').addClass('far');
 }
 
 function handle_event_radio_play_channel(data) {
@@ -179,9 +199,6 @@ function getChannels() {
 function update_channel_info(channel) {
   console.log("updating channel-info for channel ",channel);
   $('#wr_infos').empty();
-  $('#wr_on_btn').removeClass('fas').addClass('far');
-  $('#wr_off_btn').removeClass('far').addClass('fas');
-  $('#wr_pause_btn').removeClass('far').addClass('fas');
   $('#wr_play_link').addClass('menu_active');
   if (channel.logo) {
     $('#wr_play_logo').attr('src',channel.logo);
@@ -251,13 +268,8 @@ function doReboot() {
   turn radio on
 */
 
-var radio_state = "on";
 function radio_on() {
   $.get("/api/radio_on");
-  radio_state = "on";
-  $('#wr_on_btn').removeClass('fas').addClass('far');
-  $('#wr_off_btn').removeClass('far').addClass('fas');
-  $('#wr_pause_btn').removeClass('far').addClass('fas');
 };
 
 /**
@@ -266,10 +278,6 @@ function radio_on() {
 
 function radio_off() {
   $.get("/api/radio_off");
-  radio_state = "off";
-  $('#wr_off_btn').removeClass('fas').addClass('far');
-  $('#wr_on_btn').removeClass('far').addClass('fas');
-  $('#wr_pause_btn').removeClass('far').addClass('fas');
 };
 
 /**
@@ -277,22 +285,7 @@ function radio_off() {
 */
 
 function radio_toggle() {
-  if (radio_state == "off") {
-    return;
-  }
   $.get("/api/radio_toggle");
-  $('#wr_pause_btn').toggleClass('fas').toggleClass('far');
-  if (radio_state == "on") {
-    // pause, remove play or stop icon
-    $('#wr_on_btn').removeClass('far').addClass('fas');
-    $('#wr_off_btn').removeClass('far').addClass('fas');
-    radio_state = "pause";
-  } else {
-    // resume playing
-    $('#wr_off_btn').removeClass('far').addClass('fas');
-    $('#wr_on_btn').removeClass('fas').addClass('far');
-    radio_state = "on";
-  }
 };
 
 /**
@@ -335,7 +328,5 @@ function vol_down() {
 
 function rec_toggle() {
   $.get("/api/rec_toggle");
-  // toggle solid/regular btn
-  $('#wr_rec_btn').toggleClass('fas').toggleClass('far');
 };
 
