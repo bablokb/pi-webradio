@@ -122,5 +122,8 @@ class RadioEvents(Base):
 
     self.msg("RadioEvents: stopping event-processing")
     for consumer in self._consumers.values():
-      consumer.put_nowait(None)
+      try:
+        consumer.put_nowait(None)
+      except:
+        pass
     self.msg("RadioEvents: event-processing finished")
