@@ -59,6 +59,8 @@ class Radio(Base):
 
     self._api.radio_on             = self.radio_on
     self._api.radio_off            = self.radio_off
+    self._api.radio_pause          = self.radio_pause
+    self._api.radio_resume         = self.radio_resume
     self._api.radio_toggle         = self.radio_toggle
     self._api.radio_get_channels   = self.radio_get_channels
     self._api.radio_get_channel    = self.radio_get_channel
@@ -198,12 +200,26 @@ class Radio(Base):
     else:
       self.msg("Radio: ignoring command, radio already on")
 
+  # --- pause radio   ---------------------------------------------------------
+
+  def radio_pause(self):
+    """ pause playing """
+
+    self.msg("Radio: pause playing")
+    self._backend.pause()
+
+  # --- pause radio   ---------------------------------------------------------
+
+  def radio_resume(self):
+    """ resume playing """
+
+    self.msg("Radio: resume playing")
+    self._backend.resume()
+
   # --- toggle radio state   --------------------------------------------------
 
   def radio_toggle(self):
-    """ toggle radio state """
+    """ toggle playing """
 
-    if self._channel_nr == 0:
-      self.radio_on()
-    else:
-      self.radio_off()
+    self.msg("Radio: toggle playing")
+    self._backend.toggle()

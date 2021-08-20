@@ -18,6 +18,8 @@ Web API
 | radio_state             | return current state    | Radio       |        |
 | radio_on                | play current station    | Radio       |   Ok   |
 | radio_off               | stop playing            | Radio       |   Ok   |
+| radio_pause             | pause playing           | Radio       |   Ok   |
+| radio_resume            | resume playing          | Radio       |   Ok   |
 | radio_toggle            | toggle playing          | Radio       |   Ok   |
 | radio_get_channels      | return list of channels | Radio       |   Ok   |
 | radio_get_channel       | return channel          | Radio       |   Ok   |
