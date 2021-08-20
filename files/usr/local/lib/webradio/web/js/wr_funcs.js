@@ -42,6 +42,10 @@ function openTab(evt, tabId) {
     evt.currentTarget.className += " menu_active";
   }
 
+  if (tabId == 'wr_play' && last_channel == 0) {
+    radio_play_channel({'nr': 0});
+  }
+
   // publish new state
   $.post('/api/publish_state','{"webgui": {"tabid": "'+tabId+'"}}');
 };
