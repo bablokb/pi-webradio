@@ -9,6 +9,8 @@ Web API
 
 | api                     | description             | class       | status |
 |-------------------------|-------------------------|-------------|--------|
+| get_api_list            | return API-list         | Api         |   Ok   |
+|-------------------------|-------------------------|-------------|--------|
 | get_version             | return version number   | WebRadio    |   Ok   |
 | sys_restart             | restart application     | WebRadio    |   Ok   |
 | sys_stop                | stop application        | WebRadio    |   Ok   |
