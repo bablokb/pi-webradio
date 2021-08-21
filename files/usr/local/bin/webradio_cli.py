@@ -193,7 +193,7 @@ class RadioCli(object):
     #self.msg("RadioCli: completer(%s,%d)" % (text,state))
     if state == 0:
       # buffer list of hits
-      self._completions = [api for api in self._cli.API_LIST
+      self._completions = [api for api in self._cli.get_api_list()
                            if api.startswith(text)]
 
     if state < len(self._completions):
