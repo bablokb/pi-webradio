@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-# -----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 # Pi-Webradio: implementation of class Api
 #
 # Collect all API-functions
@@ -10,7 +10,7 @@
 #
 # Website: https://github.com/bablokb/pi-webradio
 #
-# -----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 
 from webradio import Base
 
@@ -23,7 +23,7 @@ class Api(Base):
     self._app          = app
     self.debug         = app.debug
 
-  # --- execute API by name   -------------------------------------------------
+  # --- execute API by name   ------------------------------------------------
 
   def _exec(self,name,**args):
     """ execute an API by name """
@@ -34,3 +34,12 @@ class Api(Base):
     else:
       self.msg("unknown API-method %s" % name)
       raise NotImplementedError("API %s not implemented" % name)
+
+  # --- return list of APIs   ------------------------------------------------
+
+  def get_api_list(self):
+    """ return list of APIs """
+
+    return [func for func in dir(self)
+            if callable(getattr(self, func)) and not func.startswith("_")
+            and func not in Base.__dict__ ]
