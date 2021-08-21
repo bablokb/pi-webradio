@@ -110,7 +110,7 @@ class WebServer(Base):
     else:
       self.msg("processing api-call: %s" % api)
       try:
-        response = self._api.exec(api,**request.args)
+        response = self._api._exec(api,**request.args)
         return json.dumps(response)
       except NotImplementedError as err:
         self.msg("illegal request: /api/%s" % api)

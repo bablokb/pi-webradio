@@ -25,7 +25,7 @@ class Api(Base):
 
   # --- execute API by name   -------------------------------------------------
 
-  def exec(self,name,**args):
+  def _exec(self,name,**args):
     """ execute an API by name """
 
     if hasattr(self,name):
