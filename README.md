@@ -126,7 +126,7 @@ list of urls (but beware, this is only a hint, not a necessity).
 Status
 ------
 
-The current stable version is _0.92_. New versions will be available as soon
+The current stable version is _0.94_. New versions will be available as soon
 as they are stable.
 
   * 0.90: stable core, Web-GUI with basic functions
