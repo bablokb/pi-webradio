@@ -148,9 +148,6 @@ class RadioCli(object):
   def process_api(self,api,args=[],sync=True):
     """ process a single API-call """
 
-    qstring = None
-    qstring = '&'.join(args)
-
     # execute api
     if api == "get_events":
       if sync:
@@ -161,7 +158,12 @@ class RadioCli(object):
         self._cli.start_event_processing(callback=self.handle_event)
     else:
       # use synchronous calls for all other events
-      resp = self._cli.exec(api,qstring=qstring)
+      params = {}
+      for a in args:
+        [key,value] = a.split("=",1)
+        params[key] = value
+
+      resp = self._cli.exec(api,params=params)
       self.print_response(resp)
 
   # --- process stdin   ------------------------------------------------------

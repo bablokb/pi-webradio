@@ -12,7 +12,7 @@
 #
 # ----------------------------------------------------------------------------
 
-import urllib3, threading, time, json
+import urllib, urllib3, threading, time, json
 import sseclient
 import http.client as httplib
 
@@ -47,21 +47,12 @@ class RadioClient(Base):
 
   # --- execute request   ----------------------------------------------------
 
-  def exec(self,api,qdict=None,qstring=None,close=False):
+  def exec(self,api,params=None,close=False):
     """ execute api with given parameters """
 
-    # build api-url
-    query = ""
-    if qdict:
-      for k,v in qdict.items():
-        query=query+"&"+k+"="+v
-    if qstring:
-      query=query+"&"+qstring
-
-    query=query.lstrip('&')        # remove leading & if necessary
-
-    if len(query):
-      url = '/api/'+api+'?'+query
+    if len(params):
+      qstring = urllib.parse.urlencode(params,quote_via=urllib.parse.quote)
+      url = '/api/{0}?{1}'.format(api,qstring)
     else:
       url = '/api/'+api
 
