@@ -1,6 +1,14 @@
 Configuring a Pirate-Audio-Hat for Pi-Webradio
 ==============================================
 
+Pimoroni has a number of Pi-Zero audio-hats, they all have four buttons
+and a 240x240 display. Depending on your need, you can buy a version
+with a speaker or headphone-jack or line-out terminals.
+
+On these hats you can run the server and a special client which
+controls the keys and the screen.
+
+![](pirate-audio.jpg)
 
 System Setup
 ------------

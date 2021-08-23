@@ -14,9 +14,9 @@ a Raspberry Pi4. The screen is connected to HDMI0, while the sound is
 routed via HDMI1 to the AV-receiver.
 
 Since the Pi ecosystem has many different hats and displays, it is
-easy to build other integrated solution. E.g. Pimoroni's Pirate-Audio
-series of hats (four buttons, a small screen) make a good basis for a
-minimalistic system.
+easy to build other integrated solution. E.g. [Pimoroni's Pirate-Audio
+series of hats](../doc/pirate-audio.md) (four buttons, a small screen)
+make a good basis for a minimalistic system.
 
 
 Housing
