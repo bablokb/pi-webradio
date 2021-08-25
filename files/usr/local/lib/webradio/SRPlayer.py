@@ -56,17 +56,10 @@ class Player(Base):
     self._def_dir = self.get_value(self._app.parser,"PLAYER",
                                     "player_def_dir",
                                     self._root_dir)
-    if not os.path.exists(self._def_dir):
-      self.msg("[WARNING] Player: default-directory %s of player does not exist" %
-               self._def_dir,True)
-      self._def_dir = self._root_dir
-      self.msg("[WARNING] Player: using %s as fallback" % self._def_dir,True)
     self._def_dir = os.path.abspath(self._def_dir)
-
-    if not os.path.commonpath([self._root_dir,self._def_dir]) == self._root_dir:
-      self.msg("[WARNING] Player: default-directory is not below root-directory",True)
+    if not self._check_dir(self._def_dir):
       self._def_dir = self._root_dir
-      self.msg("[WARNING] Player: using %s as fallback" % self._def_dir,True)
+      self.msg("[WARNING] Player: using %s as fallback" % self._root_dir,True)
 
     self._dir = self._def_dir
     self.msg("Player: root dir:    %s" % self._root_dir)
@@ -101,8 +94,41 @@ class Player(Base):
     self.msg("Player: restoring persistent state")
     if 'player_dir' in state_map:
       self._dir = state_map['player_dir']
+      if not self._check_dir(self._dir):
+        self._dir = self._def_dir
     if 'player_file' in state_map:
       self._file = state_map['player_file']
+      if self._file and not self._check_file(self._file):
+        self._file = None
+
+  # --- check directory   ---------------------------------------------------
+
+  def _check_dir(self,path):
+    """ check if directory is valid """
+
+    path = os.path.abspath(path)
+    if not os.path.exists(path):
+      self.msg("[WARNING] Player: %s does not exist" % path)
+      return False
+
+    if not os.path.commonpath([self._root_dir,path]) == self._root_dir:
+      self.msg("[WARNING] Player: %s is not child of root-directory" % path,
+               True)
+      return False
+
+    return True
+
+  # --- check file   ---------------------------------------------------------
+
+  def _check_file(self,path):
+    """ check if file is valid """
+
+    path = os.path.abspath(path)
+    if not os.path.exists(path):
+      self.msg("[WARNING] Player: %s does not exist" % path)
+      return False
+    else:
+      return self._check_dir(os.path.dirname(path))
 
   # --- pretty print duration/time   ----------------------------------------
 
@@ -127,10 +153,9 @@ class Player(Base):
     if fname:
       if not os.path.isabs(fname):
         fname = os.path.join(self._dir,fname)
-      if os.path.exists(fname):
-        self._file = fname
-      else:
-        raise ValueError("filename %s does not exist" % fname)
+      if not self._check_file(fname):
+        raise ValueError("invalid filename %s" % fname)
+      self._file = fname
 
     self._backend.play(self._file)
     self._state = Player._PLAY
@@ -192,17 +217,16 @@ class Player(Base):
 
     result =  {'dirs':  [], 'files': []}
     if not dir:
+      # use current directory, keep current file
       dir = self._dir
     else:
-      # check path
-      dir = os.path.abspath(dir)
-      if not os.path.commonpath([self._root_dir,dir]) == self._root_dir:
-        self.msg("[WARNING] Player: directory %s is not below root-directory" % dir,True)
-        return result
-      elif not os.path.isdir(dir):
-        self.msg("[WARNING] Player: directory %s does not exist" % dir,True)
-        return result
+      if not os.path.isabs(dir):
+        dir = os.path.abspath(os.path.join(self._dir,dir))
+      if not self._check_dir(dir):
+        raise ValueError("invalid directory %s" % dir)
+      # set new current directory, reset current file
       self._dir = dir
+      self._file = None
 
     # iterate over directory ...
     self.msg("Player: collecting dir-info for %s" % dir)
