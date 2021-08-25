@@ -50,7 +50,7 @@ class RadioClient(Base):
   def exec(self,api,params=None,close=False):
     """ execute api with given parameters """
 
-    if len(params):
+    if params and len(params):
       qstring = urllib.parse.urlencode(params,quote_via=urllib.parse.quote)
       url = '/api/{0}?{1}'.format(api,qstring)
     else:
