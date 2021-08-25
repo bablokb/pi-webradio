@@ -195,7 +195,7 @@ class RadioCli(object):
     #self.msg("RadioCli: completer(%s,%d)" % (text,state))
     if state == 0:
       # buffer list of hits
-      self._completions = [api for api in self._cli.get_api_list()
+      self._completions = [api for api in self._api_list
                            if api.startswith(text)]
 
     if state < len(self._completions):
@@ -240,6 +240,7 @@ class RadioCli(object):
         if api[0] == 'sys_stop':
           break
     elif self.interactive:
+      self._api_list = self._cli.get_api_list()
       readline.set_completer(lambda text,state: self.completer(text,state))
       readline.parse_and_bind("tab: complete")
       while True:
