@@ -94,9 +94,6 @@ class WebRadio(Base):
     self.api.sys_stop         = self.sys_stop
     self.api.sys_reboot       = self.sys_reboot
     self.api.sys_halt         = self.sys_halt
-    self.api.play_mode_start  = self.play_mode_start
-    self.api.play_mode_exit   = self.play_mode_exit
-    self.api.play_mode_toggle = self.play_mode_toggle
 
   # --- return version   ---------------------------------------------------
 
@@ -105,35 +102,6 @@ class WebRadio(Base):
 
     self.msg("WebRadio: version: %s" % WebRadio.VERSION)
     return WebRadio.VERSION
-
-  # --- switch to player mode   -----------------------------------------------
-
-  def play_mode_start(self):
-    """ start player mode """
-
-    self.msg("Webradio: starting player mode")
-    self._play_mode = True
-    self.api.radio_off()
-
-  # --- exit player mode   ----------------------------------------------------
-
-  def play_mode_exit(self):
-    """ stop player mode, start radio mode """
-
-    self.msg("Webradio: stopping player mode")
-    self._play_mode = False
-    self.api.play_stop()
-
-  # --- exit player mode   ----------------------------------------------------
-
-  def play_mode_toggle(self):
-    """ toggle player mode """
-
-    self.msg("Webradio: processing play_mode_toggle")
-    if self._play_mode:
-      self.play_mode_exit()
-    else:
-      self.play_mode_start()
 
   # --- shutdown system   -----------------------------------------------------
 

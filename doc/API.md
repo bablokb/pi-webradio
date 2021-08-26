@@ -40,9 +40,6 @@ Web API
 | rec_stop                | stop  recording         | Recorder    |   Ok   |
 | rec_toggle              | toggle recording        | Recorder    |   Ok   |
 |-------------------------|-------------------------|-------------|--------|
-| player_mode_start       | start player mode       | WebRadio    |   I    |
-| player_mode_exit        | leave player mode       | WebRadio    |   I    |
-| player_mode_toggle      | toggle player mode      | WebRadio    |   Ok   |
 | player_play_file(fname) | play selected file      | Player      |   Ok   |
 | player_play_dir(dir)    | play all files in dir   | Player      |        |
 | player_select_dir(dir)  | select directory        | Player      |   Ok   |
