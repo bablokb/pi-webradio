@@ -14,7 +14,7 @@
 
 import threading, subprocess, signal, os, shlex, re, traceback
 from threading import Thread
-import queue, collections
+import queue, collections, time
 
 from webradio import Base
 
@@ -115,9 +115,12 @@ class Mpg123(Base):
     """ start playing """
 
     if self._process:
+      if self._url:
+        self.stop()
+        while self._url:
+          time.sleep(0.1)
       self.msg("Mpg123: starting to play %s" % url)
-      self._url = url
-      self._pause = False
+      self._url   = url
       if url.endswith(".m3u"):
         self._process.stdin.write("LOADLIST 0 %s\n" % url)
       else:
@@ -128,44 +131,47 @@ class Mpg123(Base):
   def stop(self):
     """ stop playing """
 
+    if not self._url:
+      return
     if self._process:
       self.msg("Mpg123: stopping current url/file")
       self._process.stdin.write("STOP\n")
       # might need time.sleep(x) here?!
-      self._url = None
-      self._pause = False
 
   # --- pause playing   -------------------------------------------------------
 
   def pause(self):
     """ pause playing """
 
+    if not self._url or self._pause:
+      return
     if self._process:
       self.msg("Mpg123: pausing playback")
       if not self._pause:
         self._process.stdin.write("PAUSE\n")
-        self._pause = True
 
   # --- continue playing   ----------------------------------------------------
 
   def resume(self):
     """ continue playing """
 
+    if not self._url or not self._pause:
+      return
     if self._process:
       self.msg("Mpg123: resuming playback")
       if self._pause:
         self._process.stdin.write("PAUSE\n")
-        self._pause = False
 
   # --- toggle playing   ------------------------------------------------------
 
   def toggle(self):
     """ toggle playing """
 
+    if not self._url:
+      return
     if self._process:
       self.msg("Mpg123: toggle playback")
       self._process.stdin.write("PAUSE\n")
-      self._pause = not self._pause
 
   # --- stop player   ---------------------------------------------------------
 
@@ -216,10 +222,14 @@ class Mpg123(Base):
       elif line.startswith("@P 0"):
         self._api._push_event({'type': 'eof',
                               'value': self._url})
+        self._url   = None
+        self._pause = False
       elif line.startswith("@P 1"):
+        self._pause = True
         self._api._push_event({'type': 'pause',
                               'value': self._url})
       elif line.startswith("@P 2"):
+        self._pause = False
         self._api._push_event({'type': 'play',
                               'value': self._url})
 

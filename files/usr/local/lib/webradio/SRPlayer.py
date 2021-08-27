@@ -19,10 +19,6 @@ from webradio import Base
 class Player(Base):
   """ Player-controller """
 
-  _STOP  = 0
-  _PLAY  = 1
-  _PAUSE = 2
-
   def __init__(self,app):
     """ initialization """
 
@@ -32,7 +28,6 @@ class Player(Base):
     self._backend = app.backend
 
     self._file    = None
-    self._state   = Player._STOP
 
     self.read_config()
     self.register_apis()
@@ -147,9 +142,6 @@ class Player(Base):
   def player_play_file(self,fname=None):
     """ start playing """
 
-    if self._state == Player._PLAY:
-      self.player_stop()
-
     if fname:
       if not os.path.isabs(fname):
         fname = os.path.join(self._dir,fname)
@@ -158,7 +150,6 @@ class Player(Base):
       self._file = fname
 
     self._backend.play(self._file)
-    self._state = Player._PLAY
     self._api._push_event({'type': 'play_file', 'value': self._file})
     total_secs = int(subprocess.check_output(["mp3info", "-p","%S",self._file]))
     self._api._push_event({'type': 'file_info',
@@ -170,45 +161,28 @@ class Player(Base):
   def player_stop(self):
     """ stop playing (play->stop, pause->stop)"""
 
-    if self._state == Player._STOP:
-      return                      # nothing playing
-    else:
-      self._backend.stop()        # backend will publish eof-event
-      self._state = Player._STOP
+    self._backend.stop()        # backend will publish eof-event
 
   # --- pause playing   -----------------------------------------------------
 
   def player_pause(self):
     """ pause playing (play->pause) """
 
-    if not self._state == Player._PLAY:
-      return                      # nothing playing
-    else:
-      self._backend.pause()
-      self._state = Player._PAUSE
+    self._backend.pause()
 
   # --- resume playing   ----------------------------------------------------
 
   def player_resume(self):
     """ resume playing (pause->play) """
 
-    if not self._state == Player._PAUSE:
-      return                      # not paused
-    else:
-      self._backend.resume()
-      self._state = Player._PLAY
+    self._backend.resume()
 
   # --- toggle playing   ------------------------------------------------------
 
   def player_toggle(self):
     """ toggle playing (play->pause, pause->play) """
 
-    if self._state == Player._STOP:
-      return                      # not paused
-    elif self._state == Player._PLAY:
-      self.player_pause()
-    else:
-      self.player_resume()
+    self._backend.toggle()
 
   # --- select directory, return entries   ------------------------------------
 
