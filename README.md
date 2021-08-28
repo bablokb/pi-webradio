@@ -126,20 +126,21 @@ list of urls (but beware, this is only a hint, not a necessity).
 Status
 ------
 
-The current stable version is _0.94_. New versions will be available as soon
+The current stable version is _0.95_. New versions will be available as soon
 as they are stable.
 
   * 0.90: stable core, Web-GUI with basic functions
   * 0.91: GUI: add toast-messages
   * 0.92: cli: fully functional
   * 0.93: GUI: state changes synced across web-clients
-  * 0.94: ***player API partly implemented***
-  * 0.95: player: API functional
+  * 0.94: player API partly implemented
+  * 0.95: ***player: API functional***
   * 0.96: GUI: player with basic functions
-  * 0.97: IR-app (map IR-codes to web-API)
+  * 0.97: player API complete
   * 0.98: GUI: player complete
   * 0.99: code cleanup
   * 1.00: API frozen
+  * 1.01: IR-app (map IR-codes to web-API)
 
 
 SW-Versions
