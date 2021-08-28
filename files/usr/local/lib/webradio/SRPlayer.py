@@ -149,6 +149,9 @@ class Player(Base):
         raise ValueError("invalid filename %s" % file)
       self._file = file
 
+    if not self._file:
+      raise ValueError("default file not set")
+
     self._backend.play(self._file)
     self._api._push_event({'type': 'play_file', 'value': self._file})
     total_secs = int(subprocess.check_output(["mp3info", "-p","%S",self._file]))
