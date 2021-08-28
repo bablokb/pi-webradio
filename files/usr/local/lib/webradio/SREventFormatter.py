@@ -31,7 +31,8 @@ class EventFormatter(object):
     'file_info': '{name}: {duration}',
     'id3': '{tag}: {value}',
     'keep_alive': 'current time: {value}',
-    'eof': '{value} finished'
+    'eof': '{value} finished',
+    'dir_select': 'current directory: {value}'
     }
 
   # --- format event   --------------------------------------------------------
