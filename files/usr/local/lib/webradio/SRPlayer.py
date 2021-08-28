@@ -139,15 +139,15 @@ class Player(Base):
 
   # --- start playing   -------------------------------------------------------
 
-  def player_play_file(self,fname=None):
+  def player_play_file(self,file=None):
     """ start playing """
 
-    if fname:
-      if not os.path.isabs(fname):
-        fname = os.path.join(self._dir,fname)
-      if not self._check_file(fname):
-        raise ValueError("invalid filename %s" % fname)
-      self._file = fname
+    if file:
+      if not os.path.isabs(file):
+        file = os.path.join(self._dir,file)
+      if not self._check_file(file):
+        raise ValueError("invalid filename %s" % file)
+      self._file = file
 
     self._backend.play(self._file)
     self._api._push_event({'type': 'play_file', 'value': self._file})

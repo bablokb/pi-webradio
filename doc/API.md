@@ -40,7 +40,7 @@ Web API
 | rec_stop                | stop  recording         | Recorder    |   Ok   |
 | rec_toggle              | toggle recording        | Recorder    |   Ok   |
 |-------------------------|-------------------------|-------------|--------|
-| player_play_file(fname) | play selected file      | Player      |   Ok   |
+| player_play_file(file)  | play selected file      | Player      |   Ok   |
 | player_play_dir(dir)    | play all files in dir   | Player      |        |
 | player_select_dir(dir)  | select directory        | Player      |   Ok   |
 | player_stop             | stop playing            | Player      |   Ok   |
