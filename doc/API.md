@@ -48,6 +48,7 @@ Web API
 | player_resume           | resume playing          | Player      |   Ok   |
 | player_toggle           | toggle playing          | Player      |   Ok   |
 | player_delete           | delete selected file    | Player      |        |
+| player_get_cover(dir)   | get album-cover         | Player      |        |
 |-------------------------|-------------------------|-------------|--------|
 | get_events              | poll SSE                | WebServer   |   Ok   |
 | publish_state           | publish state change    | WebServer   |        |
