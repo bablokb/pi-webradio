@@ -211,7 +211,8 @@ class Player(Base):
 
     # iterate over directory ...
     self.msg("Player: collecting dir-info for %s" % dir)
-    result['dirs'].append('..')
+    if self._dir != self._root_dir:
+      result['dirs'].append('..')
     for f in os.listdir(dir):
       if os.path.isfile(os.path.join(dir,f)):
         if f.endswith(".mp3"):
