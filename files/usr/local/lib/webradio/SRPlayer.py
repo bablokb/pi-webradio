@@ -206,8 +206,11 @@ class Player(Base):
       self._file = None
 
     # publish event (return dir relative to root_dir)
-    self._api._push_event({'type':  'dir_select',
-                           'value': self._dir[len(self._root_dir)+1:]})
+    if self._dir == self._root_dir:
+      cur_dir = None
+    else:
+      cur_dir = self._dir[len(self._root_dir)+1:]
+    self._api._push_event({'type':  'dir_select', 'value': cur_dir})
 
     # iterate over directory ...
     self.msg("Player: collecting dir-info for %s" % dir)
