@@ -44,6 +44,8 @@ function openTab(evt, tabId) {
 
   if (tabId == 'wr_play' && last_channel == 0) {
     radio_play_channel({'nr': 0});
+  } else if (tabId == 'wr_player' && last_dir == "__unset__") {
+    player_select_dir({'dir': null});
   }
 
   // publish new state
@@ -201,7 +203,6 @@ function getChannels() {
 */
 
 function update_channel_info(channel) {
-  console.log("updating channel-info for channel ",channel);
   $('#wr_infos').empty();
   $('#wr_play_link').addClass('menu_active');
   if (channel.logo) {
@@ -211,6 +212,29 @@ function update_channel_info(channel) {
     $('#wr_play_logo').attr('src','/images/default.png');
     $('#wr_play_name').html(channel.name);
   }
+}
+
+/**
+  update dir/file list in player-tab
+*/
+
+function update_player_list(dirInfo) {
+  console.log("updating player-list");
+  $.each(dirInfo.dirs,function(index,dir) {
+      console.log("adding directory ("+index+"): "+dir);
+      var item = $("#file_0").clone(true).attr({"id": "d_"+index,
+            "onclick": "player_select_dir({'dir': '"+dir+"'})"})
+          .appendTo("#file_list");
+      item.html("<div class=\"ch_txt\">"+dir+"</div>");
+    });
+  $.each(dirInfo.files,function(index,file) {
+      console.log("adding file ("+index+"): "+file);
+      var item = $("#file_0").clone(true).attr({"id": "f_"+index,
+            "onclick": "player_play_file({'file': '"+file+"'})"})
+        .appendTo("#file_list");
+      item.html("<div class=\"ch_txt\">"+file+"</div>");
+    });
+  $("#file_0").remove();   // remove template
 }
 
 /**
@@ -228,6 +252,25 @@ function radio_play_channel(data) {
     function(channel) {
       openTab(null,'wr_play');
       update_channel_info(channel);
+    }
+  );
+};
+
+/**
+  Switch to given directory (data should be {'dir': value})
+*/
+
+var last_dir = "__unset__";      // null is valid for the root_dir
+
+function player_select_dir(data) {
+  // check if directory is new
+  if (data.dir != last_dir) {
+    last_dir = data.dir;
+  }
+  $.getJSON('/api/player_select_dir',data,
+    function(result) {
+      openTab(null,'wr_player');
+      update_player_list(result);
     }
   );
 };
