@@ -182,17 +182,30 @@ main {
   height: 98vh;
   width: max-content;
   overflow-x: hidden;
+  overflow-y: auto;
   align-items: left;
+}
+
+.dir_item {
+  width: 100%;
+  margin: 5px;
+  padding: 20px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: yellow;
+  border-radius: 30px;
+  font-size: 36px;
+  color: yellow;
 }
 
 .file_item {
   width: 100%;
   margin: 5px;
-  padding: 10px;
+  padding: 20px;
   border-style: solid;
   border-width: 1px;
   border-color: blue;
-  border-radius: 5px;
+  border-radius: 30px;
   font-size: 36px;
   color: lightblue;
 }
