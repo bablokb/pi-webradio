@@ -13,5 +13,7 @@
 -->
 
 <div id="wr_player" style="display: none" class="content_area">
-  <h1>Placeholder Player</h1>
+  <div id="file_list" class="file_list">
+    <div id="file_0" class="file_item"></div>
+  </div>
 </div>
