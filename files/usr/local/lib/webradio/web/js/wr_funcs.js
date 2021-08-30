@@ -219,22 +219,22 @@ function update_channel_info(channel) {
 */
 
 function update_player_list(dirInfo) {
-  console.log("updating player-list");
+  $(".dir_item:gt(0)").remove();              // keep template
   $.each(dirInfo.dirs,function(index,dir) {
-      console.log("adding directory ("+index+"): "+dir);
-      var item = $("#file_0").clone(true).attr({"id": "d_"+index,
+      var item = $("#dir_0").clone(true).attr({"id": "d_"+index,
             "onclick": "player_select_dir({'dir': '"+dir+"'})"})
           .appendTo("#file_list");
       item.html("<div class=\"ch_txt\">"+dir+"</div>");
+      item.show();
     });
+  $(".file_item:gt(0)").remove();              // keep template
   $.each(dirInfo.files,function(index,file) {
-      console.log("adding file ("+index+"): "+file);
       var item = $("#file_0").clone(true).attr({"id": "f_"+index,
             "onclick": "player_play_file({'file': '"+file+"'})"})
         .appendTo("#file_list");
       item.html("<div class=\"ch_txt\">"+file+"</div>");
+      item.show();
     });
-  $("#file_0").remove();   // remove template
 }
 
 /**
@@ -271,6 +271,18 @@ function player_select_dir(data) {
     function(result) {
       openTab(null,'wr_player');
       update_player_list(result);
+    }
+  );
+};
+
+/**
+   play given file (data should be {'file': name})
+*/
+
+function player_play_file(data) {
+  $.getJSON('/api/player_play_file',data,
+    function(result) {
+      showMsg("playing ...",2000);
     }
   );
 };
