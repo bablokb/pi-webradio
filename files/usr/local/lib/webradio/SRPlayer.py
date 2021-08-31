@@ -95,6 +95,8 @@ class Player(Base):
       self._file = state_map['player_file']
       if self._file and not self._check_file(self._file):
         self._file = None
+    self.msg("Player: currrent dir:  %s" % self._dir)
+    self.msg("Player: currrent file: %s" % self._file)
 
   # --- check directory   ---------------------------------------------------
 
