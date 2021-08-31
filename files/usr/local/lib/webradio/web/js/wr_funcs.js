@@ -282,7 +282,7 @@ function player_select_dir(data) {
 function player_play_file(data) {
   $.getJSON('/api/player_play_file',data,
     function(result) {
-      showMsg("playing ...",2000);
+      showMsg("playing " + result.name,2000);
     }
   );
 };
