@@ -120,7 +120,10 @@ class Mpg123(Base):
         while self._url:
           time.sleep(0.1)
       self.msg("Mpg123: starting to play %s" % url)
-      self._url   = url
+      if url.startswith("http"):
+        self._url   = url
+      else:
+        self._url   = os.path.basename(url)
       if url.endswith(".m3u"):
         self._process.stdin.write("LOADLIST 0 %s\n" % url)
       else:
