@@ -175,6 +175,12 @@ function handle_event_radio_play_channel(data) {
   }
 }
 
+function handle_dir_select(data) {
+  if (last_dir !== data) {
+    player_select_dir({'dir': data});
+  }
+}
+
 /**
    Query channels and create content
 */
