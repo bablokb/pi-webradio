@@ -16,7 +16,8 @@ $fa = 1;
 $fs = 0.4;
 
 w4 = 1.67;    // wall thickness 4 layers
-h_wall = 67;
+h_front = 7;
+h_wall = 67 + h_front;
 fuzz = 0.001; // fuzzing to ensure overlap
 
 // --- base plate   ------------------------------------------------------------
@@ -55,10 +56,10 @@ module cutout(x_usb,z_usb,x_hdmi,z_hdmi,x_power,z_power) {
 
 // --- walls   -----------------------------------------------------------------
 
-translate([-250,0,2-fuzz]) color("orange") cube([250,w4,7]);    // front
+translate([-250,0,2-fuzz]) color("orange") cube([250,w4,h_front]);      // front
 translate([-250,w4,2-fuzz]) color("orange") cube([w4,200-w4,h_wall]);   // left
 translate([-w4,w4,2-fuzz]) color("orange") cube([w4,200-w4,h_wall]);    // right
-color("orange") difference() {                                  // back
+color("orange") difference() {                                          // back
   translate([-250,200-w4,2-fuzz]) cube([250,w4,h_wall]);
   translate([-87.4,200-w4-fuzz,2+h_wall+fuzz]) cutout(x_usb,z_usb,x_hdmi,z_hdmi,x_power,z_power);  // -87.91
 }
