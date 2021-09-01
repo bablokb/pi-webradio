@@ -46,7 +46,3 @@
     </div>
   </div>
 </div>
-
-<script>
-get_events();
-</script>
