@@ -28,7 +28,7 @@ translate([-250,0,0]) difference() {
   // ventilation
   v_depth = 5;
   for (dy=[15:10:45]) {
-    translate([55,dy,0]) cube([110,5,2]);
+    translate([250-110-55,dy,0]) cube([110,5,2]);
   }
 }
 
