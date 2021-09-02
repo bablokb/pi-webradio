@@ -44,8 +44,9 @@ function openTab(evt, tabId) {
 
   if (tabId == 'wr_play' && last_channel == 0) {
     radio_play_channel({'nr': 0});
-  } else if (tabId == 'wr_player' && last_dir == "__unset__") {
-    player_select_dir({'dir': null});
+  } else if (tabId == 'wr_player' && !last_dir) {
+    // get directory for server's current-directory
+    player_select_dir({'dir': '.'});
   }
 
   // publish new state
@@ -175,7 +176,7 @@ function handle_event_radio_play_channel(data) {
   }
 }
 
-function handle_dir_select(data) {
+function handle_event_dir_select(data) {
   if (last_dir !== data) {
     player_select_dir({'dir': data});
   }
@@ -266,7 +267,7 @@ function radio_play_channel(data) {
   Switch to given directory (data should be {'dir': value})
 */
 
-var last_dir = "__unset__";      // null is valid for the root_dir
+var last_dir = null;
 
 function player_select_dir(data) {
   // check if directory is new
