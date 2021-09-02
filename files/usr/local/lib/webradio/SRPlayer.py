@@ -28,6 +28,7 @@ class Player(Base):
     self._backend = app.backend
 
     self._file    = None
+    self._dirinfo = None
 
     self.read_config()
     self.register_apis()
@@ -196,7 +197,6 @@ class Player(Base):
   def player_select_dir(self,dir=None):
     """ select directory """
 
-    result =  {'dirs':  [], 'files': []}
     if not dir:
       # use current directory, keep current file
       dir = self._dir
@@ -205,29 +205,42 @@ class Player(Base):
         dir = os.path.abspath(os.path.join(self._dir,dir))
       if not self._check_dir(dir):
         raise ValueError("invalid directory %s" % dir)
+
+    if dir == self._dir and self._dirinfo:
+      # use buffered information
+      result = self._dirinfo
+      cache_valid = True
+    else:
       # set new current directory, reset current file
+      result =  {'dirs':  [], 'files': []}
+      cache_valid = False
       self._dir = dir
       self._file = None
 
     # publish event (return dir relative to root_dir)
     if self._dir == self._root_dir:
-      cur_dir = None
+      cur_dir = '.'
     else:
       cur_dir = self._dir[len(self._root_dir)+1:]
     self._api._push_event({'type':  'dir_select', 'value': cur_dir})
 
-    # iterate over directory ...
-    self.msg("Player: collecting dir-info for %s" % dir)
-    if self._dir != self._root_dir:
-      result['dirs'].append('..')
-    for f in os.listdir(dir):
-      if os.path.isfile(os.path.join(dir,f)):
-        if f.endswith(".mp3"):
-          result['files'].append(f)
-      else:
-        result['dirs'].append(f)
+    # iterate over directory if new ...
+    if not cache_valid:
+      self.msg("Player: collecting dir-info for %s" % dir)
+      if self._dir != self._root_dir:
+        result['dirs'].append('..')
+      for f in os.listdir(dir):
+        if os.path.isfile(os.path.join(dir,f)):
+          if f.endswith(".mp3"):
+            result['files'].append(f)
+        else:
+          result['dirs'].append(f)
 
-    # ... and sort results
-    result['files'].sort()
-    result['dirs'].sort()
+      # ... and sort results
+      result['files'].sort()
+      result['dirs'].sort()
+      self._dirinfo = result
+    else:
+      self.msg("Player: using cached dir-info for %s" % dir)
+
     return result
