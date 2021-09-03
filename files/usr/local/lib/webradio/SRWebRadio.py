@@ -23,7 +23,7 @@ from webradio import *
 class WebRadio(Base):
   """ main application class """
 
-  VERSION = "0.95"
+  VERSION = "0.96"
 
   def __init__(self,options):
     """ initialization """
