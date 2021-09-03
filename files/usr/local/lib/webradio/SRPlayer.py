@@ -195,14 +195,21 @@ class Player(Base):
   # --- select directory, return entries   ------------------------------------
 
   def player_select_dir(self,dir=None):
-    """ select directory """
+    """ select directory:
+        a directory starting with a / is always interpreted relative
+        to root_dir, otherwise relative to the current directory
+    """
 
     if not dir:
       # use current directory, keep current file
       dir = self._dir
     else:
-      if not os.path.isabs(dir):
-        dir = os.path.abspath(os.path.join(self._dir,dir))
+      if os.path.isabs(dir):
+        dir = os.path.normpath(self._root_dir+dir)   # cannot use join here!
+        self.msg("Player: dir is absolute, fullpath %s" % dir)
+      else:
+        dir = os.path.normpath(os.path.join(self._dir,dir))
+        self.msg("Player: dir is relative, fullpath %s" % dir)
       if not self._check_dir(dir):
         raise ValueError("invalid directory %s" % dir)
 
@@ -218,14 +225,12 @@ class Player(Base):
       self._file = None
 
     # publish event (return dir relative to root_dir)
-    if self._dir == self._root_dir:
-      cur_dir = '.'
-    else:
-      cur_dir = self._dir[len(self._root_dir)+1:]
+    cur_dir = self._dir[len(self._root_dir):]+os.path.sep
     self._api._push_event({'type':  'dir_select', 'value': cur_dir})
 
     # iterate over directory if new ...
     if not cache_valid:
+      result['current'] = cur_dir
       self.msg("Player: collecting dir-info for %s" % dir)
       if self._dir != self._root_dir:
         result['dirs'].append('..')
