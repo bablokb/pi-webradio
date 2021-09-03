@@ -242,6 +242,7 @@ function update_player_list(dirInfo) {
       item.html("<div class=\"ch_txt\">"+file+"</div>");
       item.show();
     });
+  $("#file_list").scrollTop(0);
 }
 
 /**
