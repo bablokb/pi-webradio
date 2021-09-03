@@ -125,6 +125,12 @@ main {
   justify-content: space-between;
 }
 
+.play_right {                      /* single column flex-container */
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
 .play_clock {
   display: flex;
   justify-content: center;
