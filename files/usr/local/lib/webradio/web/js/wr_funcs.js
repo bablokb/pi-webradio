@@ -272,7 +272,26 @@ var last_dir = null;
 function player_select_dir(data) {
   // check if directory is new
   if (data.dir != last_dir) {
-    last_dir = data.dir;
+    // this is a bit hacky to prevent unnecessary updates
+    if (data.dir == '.') {
+      // this should happen only once
+      last_dir = data.dir;
+    } else {
+      // cleanup last_dir if necessary
+      last_dir = last_dir.startsWith('.') ? last_dir.slice(1) : last_dir;
+    }
+    if (data.dir.startsWith('/')) {
+      last_dir = data.dir;
+    } else if (data.dir == '..') {
+      // remove last dir-part from last_dir
+      last_dir =
+        last_dir.substr(0,last_dir.lastIndexOf('/',last_dir.length-2)+1);
+    } else if (data.dir !== '.') {
+      last_dir = last_dir +
+        (data.dir.endsWith('/') ? data.dir.slice(0,-1) : data.dir) + '/';
+    }
+  } else {
+    return;
   }
   $.getJSON('/api/player_select_dir',data,
     function(result) {
