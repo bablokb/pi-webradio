@@ -209,7 +209,13 @@ main {
   border-radius: 30px;
   font-size: 36px;
   color: lightblue;
+  scrollbar-width: none;
 }
+
+::-webkit-scrollbar {
+  display: none;
+}
+
 
 /* --- special functions   ------------------------------------------------ */
 
