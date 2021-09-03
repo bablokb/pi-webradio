@@ -42,7 +42,11 @@
                 <i id="wr_voldown_btn" class="fas fa-volume-down"></i></a>
       </div>
     </div>
-    <div id="wr_infos" class="play_info">    <!-- second column            -->
+    <div id="wr_info_column" class="play_right">       <!-- second column  -->
+      <div id="wr_infos" class="play_info">            <!-- info area      -->
+      </div>
+      <div id="wr_time" class="play_time">             <!-- current/total  -->
+      </div>
     </div>
   </div>
 </div>
