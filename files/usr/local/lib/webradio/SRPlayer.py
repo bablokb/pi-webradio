@@ -12,7 +12,7 @@
 #
 # -----------------------------------------------------------------------------
 
-import os, datetime, subprocess
+import os, datetime, subprocess, threading
 
 from webradio import Base
 
@@ -27,6 +27,7 @@ class Player(Base):
     self._api     = app.api
     self._backend = app.backend
 
+    self._lock    = threading.Lock()
     self._file    = None
     self._dirinfo = None
 
@@ -200,6 +201,8 @@ class Player(Base):
         to root_dir, otherwise relative to the current directory
     """
 
+    self._lock.acquire()
+
     if not dir:
       # use current directory, keep current file
       dir = self._dir
@@ -211,6 +214,7 @@ class Player(Base):
         dir = os.path.normpath(os.path.join(self._dir,dir))
         self.msg("Player: dir is relative, fullpath %s" % dir)
       if not self._check_dir(dir):
+        self._lock.release()
         raise ValueError("invalid directory %s" % dir)
 
     if dir == self._dir and self._dirinfo:
@@ -248,4 +252,5 @@ class Player(Base):
     else:
       self.msg("Player: using cached dir-info for %s" % dir)
 
+    self._lock.release()
     return result
