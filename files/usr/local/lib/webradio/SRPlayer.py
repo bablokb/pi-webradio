@@ -12,7 +12,7 @@
 #
 # -----------------------------------------------------------------------------
 
-import os, datetime, subprocess, threading
+import os, datetime, subprocess, threading, copy, queue
 
 from webradio import Base
 
@@ -30,6 +30,8 @@ class Player(Base):
     self._lock    = threading.Lock()
     self._file    = None
     self._dirinfo = None
+    self._dirplay = None
+    self._dirstop = threading.Event()
 
     self.read_config()
     self.register_apis()
@@ -73,6 +75,7 @@ class Player(Base):
     self._api.player_resume     = self.player_resume
     self._api.player_toggle     = self.player_toggle
     self._api.player_select_dir = self.player_select_dir
+    self._api.player_play_dir   = self.player_play_dir
 
   # --- return persistent state of this class   -------------------------------
 
@@ -156,13 +159,11 @@ class Player(Base):
     if not self._file:
       raise ValueError("default file not set")
 
-    self._backend.play(self._file)
-    self._api._push_event({'type': 'play_file',
-                           'value': os.path.basename(self._file)})
     total_secs = int(subprocess.check_output(["mp3info", "-p","%S",self._file]))
     file_info = {'name': os.path.basename(self._file),
                  'duration': self._pp_time(total_secs)}
     self._api._push_event({'type': 'file_info', 'value': file_info })
+    self._backend.play(self._file)
     return file_info
 
   # --- stop playing   -------------------------------------------------------
@@ -170,7 +171,11 @@ class Player(Base):
   def player_stop(self):
     """ stop playing (play->stop, pause->stop)"""
 
-    self._backend.stop()        # backend will publish eof-event
+    if self._dirplay:
+      self._dirstop.set()         # this will also stop the backend
+      self._dirplay.join()
+    else:
+      self._backend.stop()        # backend will publish eof-event
 
   # --- pause playing   -----------------------------------------------------
 
@@ -254,3 +259,70 @@ class Player(Base):
 
     self._lock.release()
     return result
+
+  # --- play all files in directory   -----------------------------------------
+
+  def player_play_dir(self,start=None):
+    """ play all files in the current directory starting with
+        the given file
+    """
+
+    # check existing player-thread, stop it and wait until it is finished
+    if self._dirplay:
+      self._dirstop.set()
+      self._dirplay.join()
+
+    # copy file-list
+    if not start:
+      files = copy.deepcopy(self._dirinfo['files'])
+    else:
+      try:
+        index = self._dirinfo['files'].index(start)
+        self.msg("Player: starting play_dir with file %s (index %i)" %
+                 (start,index))
+        files = copy.deepcopy(self._dirinfo['files'][index:])
+      except ValueError:
+        raise ValueError("file %s does not exist" % start)
+
+    # start player-thread, pass files as argument
+    self._dirstop.clear()
+    self._dirplay = threading.Thread(target=self._play_dir,args=(files,))
+    self._dirplay.start()
+
+  # --- play all files (helper)   --------------------------------------------
+
+  def _play_dir(self,files):
+    """ play all given files """
+
+    ev_queue = self._api._add_consumer("_play_dir")
+    do_exit = False
+
+    for fname in files:
+      if do_exit:
+        break
+      self.msg("Player: _play_dir: playing next file %s" % fname)
+      self.player_play_file(fname)
+      while True:
+        # a naive implementation would just block on the queue, but
+        # then we could stop this thread only after an event occurs
+        if self._dirstop.wait(timeout=1.0):
+          do_exit = True
+          break
+        try:
+          ev = ev_queue.get(block=False)
+          ev_queue.task_done()
+          if ev:
+            if ev['type'] == 'eof':       # start next file
+              self.msg("Player: processing eof for %s" % fname)
+              break
+          else:
+            do_exit = True
+            break
+        except queue.Empty:
+          pass
+
+    # cleanup
+    self.msg("Player: stopping _play_dir and cleaning up")
+    self._api._del_consumer("_play_dir")
+    self._backend.stop()
+    self._dirplay = None
