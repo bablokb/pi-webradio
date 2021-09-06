@@ -41,7 +41,7 @@ Web API
 | rec_toggle              | toggle recording        | Recorder    |   Ok   |
 |-------------------------|-------------------------|-------------|--------|
 | player_play_file(file)  | play selected file      | Player      |   Ok   |
-| player_play_dir(dir)    | play all files in dir   | Player      |        |
+| player_play_dir(start)  | play all files in dir   | Player      |   Ok   |
 | player_select_dir(dir)  | select directory        | Player      |   Ok   |
 | player_stop             | stop playing            | Player      |   Ok   |
 | player_pause            | pause playing           | Player      |   Ok   |
@@ -78,6 +78,7 @@ The webserver prevents the execution of API starting with an underscore.
 | _push_event(event)      | publish event           | RadioEvents |   Ok   |
 | _add_consumer(id)       | register as an consumer | RadioEvents |   Ok   |
 | _del_consumer(id)       | remove event-consumer   | RadioEvents |   Ok   |
+| _exec(...)              | execute API by name     | Api         |   Ok   |
 |-------------------------|-------------------------|-------------|--------|
 
 
