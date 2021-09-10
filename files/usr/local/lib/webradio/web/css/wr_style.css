@@ -206,6 +206,9 @@ main {
 }
 
 .file_item {
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
   width: 95%;
   margin: 5px;
   padding: 15px;
@@ -216,6 +219,16 @@ main {
   font-size: 36px;
   color: lightblue;
   scrollbar-width: none;
+}
+
+.file_btn {
+  padding: 7px;
+  margin-right: 10px;
+  border-width: 1px;
+  border-radius: 10px;
+  border-style: solid;
+  border-color: blue;
+  color: blue;
 }
 
 ::-webkit-scrollbar {

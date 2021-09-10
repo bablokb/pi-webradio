@@ -226,7 +226,7 @@ function update_channel_info(channel) {
 */
 
 function update_player_list(dirInfo) {
-  $(".dir_item:gt(0)").remove();              // keep template
+  $(".dir_item:gt(0)").remove();              // only keep template
   $.each(dirInfo.dirs,function(index,dir) {
       var item = $("#dir_0").clone(true).attr({"id": "d_"+index,
             "onclick": "player_select_dir({'dir': '"+dir+"'})"})
@@ -234,13 +234,18 @@ function update_player_list(dirInfo) {
       item.html("<div class=\"ch_txt\">"+dir+"</div>");
       item.show();
     });
-  $(".file_item:gt(0)").remove();              // keep template
+  $(".file_item:gt(0)").remove();              // only keep template
   $.each(dirInfo.files,function(index,file) {
       var item = $("#file_0").clone(true).attr({"id": "f_"+index,
-            "onclick": "player_play_file({'file': '"+file+"'})"})
+            "style": "display:flex"})
         .appendTo("#file_list");
-      item.html("<div class=\"ch_txt\">"+file+"</div>");
-      item.show();
+      item.children().eq(0).attr({"id": "f_"+index+"_pd",
+            "onclick": "player_play_dir({'start': '"+file+"'})"});
+      item.children().eq(1).attr({"id": "f_"+index+"_pf",
+            "onclick": "player_play_file({'file': '"+file+"'})"});
+      item.children().eq(2).attr({"id": "f_"+index+"_file",
+            "onclick": "player_play_file({'file': '"+file+"'})"})
+        .html("<div class=\"ch_txt\">"+file+"</div>");
     });
   $("#file_list").scrollTop(0);
 }
@@ -310,6 +315,18 @@ function player_play_file(data) {
   $.getJSON('/api/player_play_file',data,
     function(result) {
       showMsg("playing " + result.name,2000);
+    }
+  );
+};
+
+/**
+   play dir from given file (data should be {'start': name})
+*/
+
+function player_play_dir(data) {
+  $.getJSON('/api/player_play_dir',data,
+    function(result) {
+      showMsg("playing directory",2000);
     }
   );
 };
