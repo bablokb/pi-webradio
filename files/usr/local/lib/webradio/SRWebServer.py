@@ -132,11 +132,10 @@ class WebServer(Base):
     """ publish client state: just redistribute the complete info """
 
     try:
-      body = request.get_json(force=True)
+      self._api._push_event(
+        {'type': 'state', 'value': request.get_json(force=True)})
     except:
       traceback.print_exc()
-    self._api._push_event(
-      {'type': 'state', 'value': request.get_json(force=True)})
     return ""
 
   # --- stream SSE (server sent events)   ----------------------------------
