@@ -8,6 +8,21 @@
 //
 // ---------------------------------------------------------------------------
 
+
+wr_state = {
+  'webgui': {
+    'tabid': 'wr_clock'
+  },
+  'mode':     null,
+  'radio':    {
+    'last_channel': null,
+  },
+  'player': {
+    'last_dir': null,
+    'last_file': null,
+  }
+};
+
 /**
   Tab navigation
 */
@@ -18,10 +33,10 @@ function openTab(evt, tabId) {
   // Declare all variables
   var i, content_area, tablinks;
 
-  if (tabId === currentTab) {   // nothing to do
+  if (tabId === wr_state.webgui.tabid) {   // nothing to do
     return;
   } else {
-    currentTab = tabId;
+    wr_state.webgui.tabid = tabId;
   }
 
   // Get all elements with class="content_area" and hide them
@@ -42,15 +57,16 @@ function openTab(evt, tabId) {
     evt.currentTarget.className += " menu_active";
   }
 
-  if (tabId == 'wr_play' && last_channel == 0) {
+  if (tabId == 'wr_play' && !wr_state.mode) {
+    // initial state: play last channel
     radio_play_channel({'nr': 0});
-  } else if (tabId == 'wr_player' && !last_dir) {
+  } else if (tabId == 'wr_player' && !wr_state.player.last_dir) {
     // get directory for server's current-directory
     player_select_dir({'dir': '.'});
   }
 
   // publish new state
-  $.post('/api/publish_state','{"webgui": {"tabid": "'+tabId+'"}}');
+  $.post('/api/publish_state',JSON.stringify(wr_state));
 };
 
 /**
@@ -170,14 +186,14 @@ function handle_event_eof(data) {
 }
 
 function handle_event_radio_play_channel(data) {
-  if (data.nr !== last_channel) {
-    last_channel = data.nr;
+  if (data.nr !== wr_state.radio.last_channel) {
+    wr_state.radio.last_channel = data.nr;
     update_channel_info(data);
   }
 }
 
 function handle_event_dir_select(data) {
-  if (last_dir !== data) {
+  if (wr_state.player.last_dir !== data) {
     player_select_dir({'dir': data});
   }
 }
@@ -254,12 +270,11 @@ function update_player_list(dirInfo) {
   Switch to given channel (data should be {'nr': value})
 */
 
-var last_channel = 0;
-
 function radio_play_channel(data) {
+  wr_state.mode = 'radio';
   // check if channel is new
-  if (data.nr != last_channel) {
-    last_channel = data.nr;
+  if (data.nr != wr_state.radio.last_channel) {
+    wr_state.radio.last_channel = data.nr;
   }
   $.getJSON('/api/radio_play_channel',data,
     function(channel) {
@@ -273,10 +288,9 @@ function radio_play_channel(data) {
   Switch to given directory (data should be {'dir': value})
 */
 
-var last_dir = null;
-
 function player_select_dir(data) {
   // check if directory is new
+  var last_dir = wr_state.player.last_dir;
   if (data.dir != last_dir) {
     // this is a bit hacky to prevent unnecessary updates
     if (data.dir == '.') {
@@ -296,6 +310,7 @@ function player_select_dir(data) {
       last_dir = last_dir +
         (data.dir.endsWith('/') ? data.dir.slice(0,-1) : data.dir) + '/';
     }
+    wr_state.player.last_dir = last_dir;
   } else {
     return;
   }
@@ -312,6 +327,7 @@ function player_select_dir(data) {
 */
 
 function player_play_file(data) {
+  wr_state.mode = 'player';
   $.getJSON('/api/player_play_file',data,
     function(result) {
       showMsg("playing " + result.name,2000);
@@ -324,6 +340,7 @@ function player_play_file(data) {
 */
 
 function player_play_dir(data) {
+  wr_state.mode = 'player';
   $.getJSON('/api/player_play_dir',data,
     function(result) {
       showMsg("playing directory",2000);
