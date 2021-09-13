@@ -312,9 +312,9 @@ class Player(Base):
           ev = ev_queue.get(block=False)
           ev_queue.task_done()
           if ev:
-            if ev['type'] == 'eof':       # start next file
+            if ev['type'] == 'eof' and ev['value'] == fname:
               self.msg("Player: processing eof for %s" % fname)
-              break
+              break                              # start next file
           else:
             do_exit = True
             break
