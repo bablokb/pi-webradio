@@ -390,27 +390,39 @@ function doReboot() {
 };
 
 /**
-  turn radio on
+  turn radio/player on
 */
 
-function radio_on() {
-  $.get("/api/radio_on");
+function audio_on() {
+  if (wr_state.mode == 'player') {
+    $.get("/api/player_play");
+  } else {
+    $.get("/api/radio_on");
+  }
 };
 
 /**
-  turn radio off
+  turn radio/player off
 */
 
-function radio_off() {
-  $.get("/api/radio_off");
+function audio_off() {
+  if (wr_state.mode == 'player') {
+    $.get("/api/player_stop");
+  } else {
+    $.get("/api/radio_off");
+  }
 };
 
 /**
-  toggle radio-state
+  toggle radio/player-state
 */
 
-function radio_toggle() {
-  $.get("/api/radio_toggle");
+function audio_toggle() {
+  if (wr_state.mode == 'player') {
+    $.get("/api/player_toggle");
+  } else {
+    $.get("/api/radio_toggle");
+  }
 };
 
 /**

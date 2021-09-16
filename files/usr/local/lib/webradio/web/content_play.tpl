@@ -24,11 +24,11 @@
         <div id="wr_play_name" class="play_name"></div>
       </div>
       <div class="play_buttons">
-        <a href="#" onclick="radio_on()">
+        <a href="#" onclick="audio_on()">
                 <i id="wr_play_btn" class="fas fa-play-circle"></i></a>
-        <a href="#" onclick="radio_toggle()">
+        <a href="#" onclick="audio_toggle()">
                 <i id="wr_pause_btn" class="fas fa-pause-circle"></i></a>
-        <a href="#" onclick="radio_off()">
+        <a href="#" onclick="audio_off()">
                 <i id="wr_off_btn" class="fas fa-stop-circle"></i></a>
         <a href="#" onclick="rec_toggle()">
                 <i id="wr_rec_btn" class="fas fa-dot-circle"></i></a>
