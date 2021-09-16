@@ -1,31 +1,31 @@
 [
   { "name": "Bayern 1",
-    "url": "http://br-br1-obb.cast.addradio.de/br/br1/obb/mp3/mid",
+    "url":  "http://dispatcher.rndfnk.com/br/br1/obb/mp3/mid",
     "logo": "Bayern1.jpg"
   },
 
   { "name": "Bayern 2",
-    "url":  "http://br-br2-sued.cast.addradio.de/br/br2/sued/mp3/mid",
+    "url":  "http://dispatcher.rndfnk.com/br/br2/sued/mp3/mid",
     "logo": "Bayern2.jpg"
   },
 
   { "name": "Bayern 3",
-    "url":  "http://br-br3-live.cast.addradio.de/br/br3/live/mp3/mid",
+    "url":  "http://dispatcher.rndfnk.com/br/br3/live/mp3/mid",
     "logo": "Bayern3.png"
   },
 
   { "name": "BR-Klassik",
-    "url":  "http://br-brklassik-live.cast.addradio.de/br/brklassik/live/mp3/high",
+    "url":  "http://dispatcher.rndfnk.com/br/brklassik/live/mp3/high",
     "logo": "BR-Klassik.png"
   },
 
   { "name": "BR24",
-    "url":  "http://br-br24-live.cast.addradio.de/br/br24/live/mp3/mid",
+    "url":  "http://dispatcher.rndfnk.com/br/br24/live/mp3/mid",
     "logo": "BR24.png"
   },
 
   { "name": "BR24live",
-    "url":  "http://br-br24live-live.cast.addradio.de/br/br24live/live/mp3/mid",
+    "url":  "http://dispatcher.rndfnk.com/br/br24live/live/mp3/mid",
     "logo": "BR24live.png"
   },
 
@@ -70,7 +70,7 @@
   },
 
   { "name": "SWR 2",
-    "url":  "http://mp3-live.swr.de/swr2_m.m3u",
+    "url":  "http://liveradio.swr.de/sw282p3/swr2/",
     "logo": "SWR2.png"
   },
 
