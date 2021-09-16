@@ -18,7 +18,8 @@
     <div id="file_0" class="file_item" style="display: none">
       <i id="file_0_pd" class="file_btn fas fa-sort-amount-down-alt"></i>
       <i id="file_0_pf" class="file_btn fas fa-long-arrow-alt-right"></i>
-      <div id="file_0_file"></div>
+      <div id="file_0_file" class="file_file"></div>
+      <div id="file_0_duration" class="file_duration"></div>
     </div>
   </div>
 </div>

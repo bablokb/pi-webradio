@@ -231,6 +231,16 @@ main {
   color: blue;
 }
 
+.file_file {
+  flex: 1;
+}
+
+
+.file_duration {
+
+}
+
+
 ::-webkit-scrollbar {
   display: none;
 }
