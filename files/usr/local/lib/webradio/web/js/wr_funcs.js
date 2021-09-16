@@ -180,6 +180,7 @@ function handle_event_pause(data) {
 }
 
 function handle_event_eof(data) {
+  $('#wr_infos').empty();
   $('#wr_play_btn').removeClass('far').addClass('fas');
   $('#wr_pause_btn').removeClass('far').addClass('fas').prop("disabled", true);
   $('#wr_off_btn').removeClass('fas').addClass('far');
@@ -328,11 +329,13 @@ function player_select_dir(data) {
 
 function player_play_file(data) {
   wr_state.mode = 'player';
+  $('#wr_infos').empty();
   $.getJSON('/api/player_play_file',data,
     function(result) {
       showMsg("playing " + result.name,2000);
     }
   );
+  openTab(null,'wr_play');
 };
 
 /**
@@ -341,11 +344,13 @@ function player_play_file(data) {
 
 function player_play_dir(data) {
   wr_state.mode = 'player';
+  $('#wr_infos').empty();
   $.getJSON('/api/player_play_dir',data,
     function(result) {
       showMsg("playing directory",2000);
     }
   );
+  openTab(null,'wr_play');
 };
 
 /**
