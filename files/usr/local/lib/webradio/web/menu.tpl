@@ -21,7 +21,7 @@
   <a id="wr_play_link" class="tablink" href="#"
         onclick="openTab(event,'wr_play')"><i class="fas fa-play"></i></a>
   <a class="tablink" href="#"
-        onclick="openTab(event,'wr_player')"><i class="fas fa-file-audio"></i></a>
+        onclick="openTab(event,'wr_files')"><i class="fas fa-file-audio"></i></a>
   <a class="tablink" href="#"
         onclick="openTab(event,'wr_special')"><i class="fas fa-wrench"></i></a>
 </div>

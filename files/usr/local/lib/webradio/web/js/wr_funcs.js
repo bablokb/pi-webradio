@@ -60,7 +60,7 @@ function openTab(evt, tabId) {
   if (tabId == 'wr_play' && !wr_state.mode) {
     // initial state: play last channel
     radio_play_channel({'nr': 0});
-  } else if (tabId == 'wr_player' && !wr_state.player.last_dir) {
+  } else if (tabId == 'wr_files' && !wr_state.player.last_dir) {
     // get directory for server's current-directory
     player_select_dir({'dir': '.'});
   }
@@ -317,7 +317,7 @@ function player_select_dir(data) {
   }
   $.getJSON('/api/player_select_dir',data,
     function(result) {
-      openTab(null,'wr_player');
+      openTab(null,'wr_files');
       update_player_list(result);
     }
   );
