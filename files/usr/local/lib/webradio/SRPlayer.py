@@ -142,7 +142,7 @@ class Player(Base):
     if h > 0:
       return "{0:02d}:{1:02d}:{2:02d}".format(h,m,s)
     else:
-      return "00:{0:02d}:{1:02d}".format(m,s)
+      return "{0:02d}:{1:02d}".format(m,s)
 
   # --- start playing   -------------------------------------------------------
 
@@ -228,7 +228,7 @@ class Player(Base):
       cache_valid = True
     else:
       # set new current directory, reset current file
-      result =  {'dirs':  [], 'files': []}
+      result =  {'dirs':  [], 'files': [], 'dur': []}
       cache_valid = False
       self._dir = dir
       self._file = None
@@ -246,7 +246,11 @@ class Player(Base):
       for f in os.listdir(dir):
         if os.path.isfile(os.path.join(dir,f)):
           if f.endswith(".mp3"):
+            secs = int(subprocess.check_output(["mp3info",
+                                                "-p","%S",
+                                                os.path.join(dir,f)]))
             result['files'].append(f)
+            result['dur'].append((secs,self._pp_time(secs)))
         else:
           result['dirs'].append(f)
 
