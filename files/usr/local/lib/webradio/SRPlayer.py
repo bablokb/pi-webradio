@@ -222,16 +222,21 @@ class Player(Base):
         self._lock.release()
         raise ValueError("invalid directory %s" % dir)
 
-    if dir == self._dir and self._dirinfo:
-      # use buffered information
-      result = self._dirinfo
-      cache_valid = True
+    result =  {'dirs':  [], 'files': [], 'dur': []}
+    cache_valid = False
+    if dir == self._dir:
+      if self._dirinfo:
+        # use buffered information
+        result = self._dirinfo
+        cache_valid = True
     else:
       # set new current directory, reset current file
-      result =  {'dirs':  [], 'files': [], 'dur': []}
-      cache_valid = False
       self._dir = dir
       self._file = None
+    if self._file:
+      result['cur_file'] = os.path.basename(self._file)
+    else:
+      result['cur_file'] = self._file
 
     # publish event (return dir relative to root_dir)
     cur_dir = self._dir[len(self._root_dir):]+os.path.sep
@@ -239,7 +244,7 @@ class Player(Base):
 
     # iterate over directory if new ...
     if not cache_valid:
-      result['current'] = cur_dir
+      result['cur_dir']  = cur_dir
       self.msg("Player: collecting dir-info for %s" % dir)
       if self._dir != self._root_dir:
         result['dirs'].append('..')
