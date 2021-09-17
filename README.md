@@ -135,9 +135,9 @@ as they are stable.
   * 0.93: GUI: state changes synced across web-clients
   * 0.94: player API partly implemented
   * 0.95: player: API functional
-  * 0.96: ***GUI: player with basic functions***
-  * 0.97: GUI: player complete
-  * 0.98: player API complete
+  * 0.96: GUI: player with basic functions
+  * 0.97: ***player API complete***
+  * 0.98: GUI: player complete
   * 0.99: code cleanup
   * 1.00: API frozen
   * 1.01: IR-app (map IR-codes to web-API)
