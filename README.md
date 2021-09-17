@@ -97,30 +97,51 @@ Pi-desktop system, you would use `http://localhost:8026/` from your
 (local) browser.
 
 
+Update
+------
+
+You can update the software with the same commands as during installation,
+the update script will not overwrite any of your configuration files in
+`/etc`. If you kept the project directory, update is simpler using:
+
+    cd pi-webradio
+    git pull
+    sudo tools/install [username]
+
+The second command will update the local copy of the project-repository.
+
+Note that you also need to clear your browser cache after an update.
+If you run a dedicated system with an integrated solution
+(i.e. server and browser on the same machine), you can just delete
+the directory `/home/[username]/.cache/chromium`.
+
+
 Configuration
 -------------
 
 The central configuration-file is `/etc/pi-webradio.conf`. The file
 documents the defaults. Here you can change the port or various
-directories (e.g. for recordings).
+directories (e.g. for recordings or media-files).
 
 Channel-configuration is in the file `/etc/pi-webradio.channels`. This
 file is a json-file, with name, url, and filename (without path) of
 the channel-logo. The sample channel-file distributed with the project
-contains a number of radio-stations mainly from Germany.
+contains a number of radio-stations mainly from Germany. They do tend
+to change the URLs once in a while, so these are not guaranteed to work.
 
 This project does not distribute any logos for the sample channel list
 to prevent any copyright-trouble. Please download the files yourself
 and copy them to the `files/usr/local/lib/webradio/web/images` directory
 (before installation, afterwards use the same path without the
-`file`-prefix). The image-size should be about 256x256 pixel.
+`files`-prefix). The image-size should be about 256x256 pixel.
 
 Finding the correct urls for your favorite radio-stations is not always
 simple, there are various portals which can serve as a starting point.
 If they don't disclose the url directly, you can always use the
 developer-tools of your browser and check all requested urls in the
 network-tab. Look for `mp3`, `m3u`, `icecast` or `shoutcast` in the
-list of urls (but beware, this is only a hint, not a necessity).
+list of urls (but beware, this is only a hint, not a necessity). You
+can also try to write a friendly mail to the radio station.
 
 
 Status
