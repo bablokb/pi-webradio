@@ -221,6 +221,11 @@ main {
   scrollbar-width: none;
 }
 
+.file_item_selected {
+  border-width: 7px;
+  border-style: double;
+}
+
 .file_btn {
   padding: 7px;
   margin-right: 10px;
