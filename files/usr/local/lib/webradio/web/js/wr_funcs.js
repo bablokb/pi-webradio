@@ -266,6 +266,10 @@ function update_player_list(dirInfo) {
       item.children().eq(3).attr({"id": "f_"+index+"_duration",
             "onclick": "player_play_file({'file': '"+file+"'})"})
         .html("<div class=\"ch_txt\">"+dirInfo.dur[index][1]+"</div>");
+      // highlight current file
+      if (file == dirInfo.cur_file) {
+        item.addClass('file_item_selected');
+      }
     });
   $("#file_list").scrollTop(0);
 }
