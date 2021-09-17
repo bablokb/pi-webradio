@@ -41,9 +41,14 @@ File Selection
 This dialog allows navigation within a directory of mp3-files. You have
 to configure the root-directory in `/etc/pi-webradio.conf`.
 
-![file playback](play_file.png)
+![file selection](file_selection.png)
 
-(This is still work in progress and not yet implemented).
+You can choose between playing a single file or playing all files of
+the directory starting from the selected file (click on the leftmost icon).
+
+Not that this project is mainly a web-radio, so the media-player only
+supports basic functionality. If you need a full-fledged media-server,
+try a different solution, e.g. the *mpd (media player daemon)*.
 
 
 System-Functions
