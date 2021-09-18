@@ -287,6 +287,7 @@ function radio_play_channel(data) {
   $.getJSON('/api/radio_play_channel',data,
     function(channel) {
       openTab(null,'wr_play');
+      $('#wr_rec_btn').show();
       update_channel_info(channel);
     }
   );
@@ -342,6 +343,7 @@ function player_play_file(data) {
       showMsg("playing " + result.name,2000);
     }
   );
+  $('#wr_rec_btn').hide();
   openTab(null,'wr_play');
 };
 
@@ -357,6 +359,7 @@ function player_play_dir(data) {
       showMsg("playing directory",2000);
     }
   );
+  $('#wr_rec_btn').hide();
   openTab(null,'wr_play');
 };
 
