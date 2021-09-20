@@ -253,18 +253,22 @@ function update_player_list(dirInfo) {
     });
   $(".file_item:gt(0)").remove();              // only keep template
   $.each(dirInfo.files,function(index,file) {
+      var sep = "'";
+      if (file.includes(sep)) {
+        sep = '"';
+      }
       var item = $("#file_0").clone(true).attr({"id": "f_"+index,
             "style": "display:flex"})
         .appendTo("#file_list");
       item.children().eq(0).attr({"id": "f_"+index+"_pd",
-            "onclick": "player_play_dir({'start': '"+file+"'})"});
+            "onclick": "player_play_dir({'start': "+sep+file+sep+"})"});
       item.children().eq(1).attr({"id": "f_"+index+"_pf",
-            "onclick": "player_play_file({'file': '"+file+"'})"});
+            "onclick": "player_play_file({'file': "+sep+file+sep+"})"});
       item.children().eq(2).attr({"id": "f_"+index+"_file",
-            "onclick": "player_play_file({'file': '"+file+"'})"})
-        .html("<div class=\"ch_txt\">"+file+"</div>");
+            "onclick": "player_play_file({'file': "+sep+file+sep+"})"})
+        .html("<div class=\"ch_txt\"></div>").text(file);
       item.children().eq(3).attr({"id": "f_"+index+"_duration",
-            "onclick": "player_play_file({'file': '"+file+"'})"})
+            "onclick": "player_play_file({'file': "+sep+file+sep+"})"})
         .html("<div class=\"ch_txt\">"+dirInfo.dur[index][1]+"</div>");
       // highlight current file
       if (file == dirInfo.cur_file) {
