@@ -251,17 +251,20 @@ class Player(Base):
       for f in os.listdir(dir):
         if os.path.isfile(os.path.join(dir,f)):
           if f.endswith(".mp3"):
-            secs = int(subprocess.check_output(["mp3info",
-                                                "-p","%S",
-                                                os.path.join(dir,f)]))
             result['files'].append(f)
-            result['dur'].append((secs,self._pp_time(secs)))
         else:
           result['dirs'].append(f)
 
       # ... and sort results
       result['files'].sort()
       result['dirs'].sort()
+      # add add time-info
+      for f in result['files']:
+        secs = int(subprocess.check_output(["mp3info",
+                                            "-p","%S",
+                                            os.path.join(dir,f)]))
+        result['dur'].append((secs,self._pp_time(secs)))
+      # save results
       self._dirinfo = result
     else:
       self.msg("Player: using cached dir-info for %s" % dir)
