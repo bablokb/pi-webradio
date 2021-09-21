@@ -85,7 +85,7 @@ def process_events(app,options,queue):
   while True:
     ev = queue.get()
     if ev:
-      if not options.quiet:
+      if not options.quiet and not ev['type'] == 'keep_alive':
         print(ev['text'])
       queue.task_done()
       if ev['type'] == 'eof' and options.do_play:
