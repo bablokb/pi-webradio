@@ -153,7 +153,7 @@ class WebServer(Base):
           ev_queue.task_done()
           if ev:
             sse = "data: %s\n\n" % json.dumps(ev)
-            self.msg("WebServer: serving event '%s'" % sse)
+            #self.msg("WebServer: serving event '%s'" % sse)
             yield sse
           else:
             break
