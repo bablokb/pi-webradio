@@ -12,7 +12,7 @@
 #
 # -----------------------------------------------------------------------------
 
-import queue, threading, datetime
+import queue, threading, datetime, sys
 
 from webradio import Base
 from webradio import EventFormatter
@@ -102,7 +102,7 @@ class RadioEvents(Base):
         if count > 0:
           continue
         else:
-          self.msg("RadioEvents: publishing keep-alive")
+          #self.msg("RadioEvents: publishing keep-alive")
           event = {'type': 'keep_alive', 'value':
                    datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 
