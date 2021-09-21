@@ -28,6 +28,8 @@ class Mpg123(Base):
     self._api       = app.api
     self.debug      = app.debug
     self._process   = None
+    self._op_event  = threading.Event()
+    self._play      = False
     self._pause     = False
     self._volume    = -1
     self._mute      = False
@@ -115,31 +117,32 @@ class Mpg123(Base):
     """ start playing """
 
     if self._process:
-      if self._url:
+      if self._play:
         self.stop()
-        while self._url:
-          time.sleep(0.1)
       self.msg("Mpg123: starting to play %s" % url)
       if url.startswith("http"):
         self._url   = url
       else:
         self._url   = os.path.basename(url)
+      self._op_event.clear()
       if url.endswith(".m3u"):
         self._process.stdin.write("LOADLIST 0 %s\n" % url)
       else:
         self._process.stdin.write("LOAD %s\n" % url)
+      self._op_event.wait()
 
   # --- stop playing current URL/file   ---------------------------------------
 
   def stop(self):
     """ stop playing """
 
-    if not self._url:
+    if not self._play:
       return
     if self._process:
       self.msg("Mpg123: stopping current url/file")
+      self._op_event.clear()
       self._process.stdin.write("STOP\n")
-      # might need time.sleep(x) here?!
+      self._op_event.wait()
 
   # --- pause playing   -------------------------------------------------------
 
@@ -151,30 +154,36 @@ class Mpg123(Base):
     if self._process:
       self.msg("Mpg123: pausing playback")
       if not self._pause:
+        self._op_event.clear()
         self._process.stdin.write("PAUSE\n")
+        self._op_event.wait()
 
   # --- continue playing   ----------------------------------------------------
 
   def resume(self):
     """ continue playing """
 
-    if not self._url or not self._pause:
+    if not self._play and not self._pause:
       return
     if self._process:
       self.msg("Mpg123: resuming playback")
       if self._pause:
+        self._op_event.clear()
         self._process.stdin.write("PAUSE\n")
+        self._op_event.wait()
 
   # --- toggle playing   ------------------------------------------------------
 
   def toggle(self):
     """ toggle playing """
 
-    if not self._url:
+    if not self._play:
       return
     if self._process:
       self.msg("Mpg123: toggle playback")
+      self._op_event.clear()
       self._process.stdin.write("PAUSE\n")
+      self._op_event.wait()
 
   # --- stop player   ---------------------------------------------------------
 
@@ -223,18 +232,24 @@ class Mpg123(Base):
                                'value': {'tag': tag[0],
                                          'value': tag[1]}})
       elif line.startswith("@P 0"):
-        self._api._push_event({'type': 'eof',
-                              'value': self._url})
-        self._url   = None
-        self._pause = False
+        # @P 0 is not reliable
+        if self._play:
+          self._api._push_event({'type': 'eof','value': self._url})
+          self._url   = None
+          self._pause = False
+          self._play  = False
+          self._op_event.set()
       elif line.startswith("@P 1"):
         self._pause = True
         self._api._push_event({'type': 'pause',
                               'value': self._url})
+        self._op_event.set()
       elif line.startswith("@P 2"):
+        self._play  = True
         self._pause = False
         self._api._push_event({'type': 'play',
                               'value': self._url})
+        self._op_event.set()
 
     self.msg("Mpg123: stopping mpg123 reader-thread")
 
