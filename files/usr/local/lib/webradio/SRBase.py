@@ -12,7 +12,7 @@
 #
 # -----------------------------------------------------------------------------
 
-import sys
+import sys, time
 
 class Base:
   """ base class with common methods """
@@ -25,7 +25,7 @@ class Base:
     if force:
       sys.stderr.write("%s\n" % text)
     elif self.debug:
-      sys.stderr.write("[DEBUG] %s\n" % text)
+      sys.stderr.write("[DEBUG %s] %s\n" % (time.strftime("%H:%M:%S"),text))
     sys.stderr.flush()
 
   # --- read configuration value   --------------------------------------------
