@@ -106,7 +106,8 @@ class Mpg123(Base):
                                      universal_newlines=True,
                                      stdin=subprocess.PIPE,
                                      stdout=subprocess.PIPE,
-                                     stderr=subprocess.STDOUT)
+                                     stderr=subprocess.STDOUT,
+                                     errors='replace')
     self._reader_thread = Thread(target=self._process_stdout)
     self._reader_thread.start()
     self.vol_set(self._volume)
@@ -215,7 +216,7 @@ class Mpg123(Base):
           break;
       except:
         # catch e.g. decode-error
-        pass
+        continue
       if line.startswith("@F"):
         continue
       self.msg("Mpg123: processing line: %s" % line)
