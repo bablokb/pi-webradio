@@ -245,8 +245,12 @@ function update_channel_info(channel) {
 function update_player_list(dirInfo) {
   $(".dir_item:gt(0)").remove();              // only keep template
   $.each(dirInfo.dirs,function(index,dir) {
+      var sep = "'";
+      if (dir.includes(sep)) {
+        sep = '"';
+      }
       var item = $("#dir_0").clone(true).attr({"id": "d_"+index,
-            "onclick": "player_select_dir({'dir': '"+dir+"'})"})
+            "onclick": "player_select_dir({'dir': "+sep+dir+sep+"})"})
           .appendTo("#file_list");
       item.html("<div class=\"ch_txt\">"+dir+"</div>");
       item.show();
