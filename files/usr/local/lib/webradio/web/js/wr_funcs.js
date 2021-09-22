@@ -413,7 +413,7 @@ function doReboot() {
 
 function audio_on() {
   if (wr_state.mode == 'player') {
-    $.get("/api/player_play");
+    $.get("/api/player_play_file");
   } else {
     $.get("/api/radio_on");
   }
