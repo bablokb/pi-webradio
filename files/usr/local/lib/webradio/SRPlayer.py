@@ -159,6 +159,9 @@ class Player(Base):
     if not self._file:
       raise ValueError("default file not set")
 
+    if self._dirinfo:
+      self._dirinfo['cur_file'] = self._file
+
     total_secs = int(subprocess.check_output(["mp3info", "-p","%S",self._file]))
     file_info = {'name': os.path.basename(self._file),
                  'duration': self._pp_time(total_secs)}
