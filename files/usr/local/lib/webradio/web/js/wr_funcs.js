@@ -331,8 +331,10 @@ function player_select_dir(data) {
   } else {
     return;
   }
+  $("#msgarea").text("loading directory " + data.dir + " ...");
   $.getJSON('/api/player_select_dir',data,
     function(result) {
+      $("#msgarea").empty();
       openTab(null,'wr_files');
       update_player_list(result);
     }
