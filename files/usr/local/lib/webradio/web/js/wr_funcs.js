@@ -15,13 +15,16 @@ wr_state = {
   },
   'mode':     null,
   'radio':    {
-    'last_channel': null,
+    'last_channel': null
   },
   'player': {
     'last_dir': null,
     'last_file': null,
+    'last_index': -1
   }
 };
+
+wr_file2index = {};
 
 /**
   Tab navigation
@@ -255,8 +258,11 @@ function update_player_list(dirInfo) {
       item.html("<div class=\"ch_txt\">"+dir+"</div>");
       item.show();
     });
+
   $(".file_item:gt(0)").remove();              // only keep template
+  wr_file2index = {};
   $.each(dirInfo.files,function(index,file) {
+      wr_file2index[file] = index;
       var sep = "'";
       if (file.includes(sep)) {
         sep = '"';
@@ -277,6 +283,7 @@ function update_player_list(dirInfo) {
       // highlight current file
       if (file == dirInfo.cur_file) {
         item.addClass('file_item_selected');
+        wr_state.player.last_index = index;
       }
     });
   $("#file_list").scrollTop(0);
@@ -347,7 +354,19 @@ function player_select_dir(data) {
 
 function player_play_file(data) {
   wr_state.mode = 'player';
+  wr_state.player.last_file = data.file;
+
+  // update highlight
+  if (wr_state.player.last_index > -1) {
+    $('#f_'+wr_state.player.last_index).removeClass('file_item_selected');
+  }
+  wr_state.player.last_index = wr_file2index[data.file];
+  $('#f_'+wr_state.player.last_index).addClass('file_item_selected');
+
+  // clear info-box
   $('#wr_infos').empty();
+
+  // tell server to start playing
   $.getJSON('/api/player_play_file',data,
     function(result) {
       showMsg("playing " + result.name,2000);
