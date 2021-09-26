@@ -181,10 +181,11 @@ function handle_event_rec_stop(data) {
           data.duration+"min",5000);
 }
 
-function handle_event_play(data) {
+function handle_event_play(file) {
   $('#wr_play_btn').removeClass('fas').addClass('far');
   $('#wr_pause_btn').removeClass('far').addClass('fas').prop("disabled", false);
   $('#wr_off_btn').removeClass('far').addClass('fas');
+  showMsg("playing " + file,2000);
 }
 
 function handle_event_pause(data) {
@@ -378,7 +379,7 @@ function player_play_file(data) {
   // tell server to start playing
   $.getJSON('/api/player_play_file',data,
     function(result) {
-      showMsg("playing " + result.name,2000);
+      // do nothing
     }
   );
   $('#wr_rec_btn').hide();
