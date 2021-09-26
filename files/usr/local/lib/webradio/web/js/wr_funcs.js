@@ -38,8 +38,6 @@ function openTab(evt, tabId) {
 
   if (tabId === wr_state.webgui.tabid) {   // nothing to do
     return;
-  } else {
-    wr_state.webgui.tabid = tabId;
   }
 
   // Get all elements with class="content_area" and hide them
@@ -66,9 +64,21 @@ function openTab(evt, tabId) {
   } else if (tabId == 'wr_files' && !wr_state.player.last_dir) {
     // get directory for server's current-directory
     player_select_dir({'dir': '.'});
+    return;
+  } else if (tabId == 'wr_files') {
+    // scroll to current file
+    if (wr_state.player.last_index > -1) {
+      $("#file_list").scrollTop(0);
+      $('#file_list').stop().animate({
+        'scrollTop': $('#f_'+wr_state.player.last_index).offset().top},
+        800, 'swing');
+    } else {
+      $("#file_list").scrollTop(0);
+    }
   }
 
   // publish new state
+  wr_state.webgui.tabid = tabId;
   $.post('/api/publish_state',JSON.stringify(wr_state));
 };
 
@@ -286,7 +296,6 @@ function update_player_list(dirInfo) {
         wr_state.player.last_index = index;
       }
     });
-  $("#file_list").scrollTop(0);
 }
 
 /**
@@ -342,8 +351,8 @@ function player_select_dir(data) {
   $.getJSON('/api/player_select_dir',data,
     function(result) {
       $("#msgarea").empty();
-      openTab(null,'wr_files');
       update_player_list(result);
+      openTab(null,'wr_files');
     }
   );
 };
