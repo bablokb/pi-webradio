@@ -152,7 +152,7 @@ function get_events() {
         // window["handle_event_"+data.type]?.(data.value);
         if (window["handle_event_"+data.type]) {
           window["handle_event_"+data.type](data.value);
-        } else {
+        } else if (data.type !== "keep_alive") {
           console.log('ignoring event: ', data);
         }
       }
