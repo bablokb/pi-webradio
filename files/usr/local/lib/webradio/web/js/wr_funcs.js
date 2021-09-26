@@ -185,6 +185,18 @@ function handle_event_play(file) {
   $('#wr_play_btn').removeClass('fas').addClass('far');
   $('#wr_pause_btn').removeClass('far').addClass('fas').prop("disabled", false);
   $('#wr_off_btn').removeClass('far').addClass('fas');
+
+  // update state
+  wr_state.player.last_file = file;
+
+  // update highlight
+  if (wr_state.player.last_index > -1) {
+    $('#f_'+wr_state.player.last_index).removeClass('file_item_selected');
+  }
+  wr_state.player.last_index = wr_file2index[file];
+  $('#f_'+wr_state.player.last_index).addClass('file_item_selected');
+
+  // (temporary) info for user
   showMsg("playing " + file,2000);
 }
 
@@ -364,15 +376,6 @@ function player_select_dir(data) {
 
 function player_play_file(data) {
   wr_state.mode = 'player';
-  wr_state.player.last_file = data.file;
-
-  // update highlight
-  if (wr_state.player.last_index > -1) {
-    $('#f_'+wr_state.player.last_index).removeClass('file_item_selected');
-  }
-  wr_state.player.last_index = wr_file2index[data.file];
-  $('#f_'+wr_state.player.last_index).addClass('file_item_selected');
-
   // clear info-box
   $('#wr_infos').empty();
 
