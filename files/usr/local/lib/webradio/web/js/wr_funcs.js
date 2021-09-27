@@ -342,7 +342,7 @@ function player_select_dir(data) {
     if (data.dir == '.') {
       // this should happen only once
       last_dir = data.dir;
-    } else {
+    } else if (last_dir) {
       // cleanup last_dir if necessary
       last_dir = last_dir.startsWith('.') ? last_dir.slice(1) : last_dir;
     }
