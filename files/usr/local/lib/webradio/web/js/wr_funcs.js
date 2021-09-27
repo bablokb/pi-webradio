@@ -210,6 +210,13 @@ function handle_event_eof(data) {
   $('#wr_play_btn').removeClass('far').addClass('fas');
   $('#wr_pause_btn').removeClass('far').addClass('fas').prop("disabled", true);
   $('#wr_off_btn').removeClass('fas').addClass('far');
+  if (data.last) {
+    if (wr_state.mode == 'radio') {
+      openTab(null,'wr_channels');
+    } else {
+      openTab(null,'wr_files');
+    }
+  }
 }
 
 function handle_event_radio_play_channel(data) {
