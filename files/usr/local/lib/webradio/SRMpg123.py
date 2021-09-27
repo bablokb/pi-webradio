@@ -119,7 +119,7 @@ class Mpg123(Base):
 
     if self._process:
       if self._play:
-        self.stop()
+        self.stop(last=False)     # since we are about to play another file
       self.msg("Mpg123: starting to play %s" % url)
       self._last = last
       if url.startswith("http"):
@@ -135,13 +135,14 @@ class Mpg123(Base):
 
   # --- stop playing current URL/file   ---------------------------------------
 
-  def stop(self):
+  def stop(self,last=True):
     """ stop playing """
 
     if not self._play:
       return
     if self._process:
       self.msg("Mpg123: stopping current url/file")
+      self._last = last
       self._op_event.clear()
       self._process.stdin.write("STOP\n")
       self._op_event.wait()
@@ -236,7 +237,9 @@ class Mpg123(Base):
       elif line.startswith("@P 0"):
         # @P 0 is not reliable
         if self._play:
-          self._api._push_event({'type': 'eof','value': self._url})
+          self._api._push_event({'type': 'eof',
+                                 'value': {'name': self._url,
+                                           'last': self._last}})
           self._url   = None
           self._pause = False
           self._play  = False

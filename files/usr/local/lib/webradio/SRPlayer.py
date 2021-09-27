@@ -164,7 +164,8 @@ class Player(Base):
 
     total_secs = int(subprocess.check_output(["mp3info", "-p","%S",self._file]))
     file_info = {'name': os.path.basename(self._file),
-                 'duration': self._pp_time(total_secs)}
+                 'duration': self._pp_time(total_secs),
+                 'last': last}
     self._api._push_event({'type': 'file_info', 'value': file_info })
     self._backend.play(self._file,last)
     return file_info
@@ -312,11 +313,12 @@ class Player(Base):
     ev_queue = self._api._add_consumer("_play_dir")
     do_exit = False
 
-    for fname in files:
+    index_last = len(files)-1
+    for index,fname in enumerate(files):
       if do_exit:
         break
       self.msg("Player: _play_dir: playing next file %s" % fname)
-      self.player_play_file(fname)
+      self.player_play_file(fname,last=index==index_last)
       while True:
         # a naive implementation would just block on the queue, but
         # then we could stop this thread only after an event occurs
@@ -327,7 +329,7 @@ class Player(Base):
           ev = ev_queue.get(block=False)
           ev_queue.task_done()
           if ev:
-            if ev['type'] == 'eof' and ev['value'] == fname:
+            if ev['type'] == 'eof' and ev['value']['name'] == fname:
               self.msg("Player: processing eof for %s" % fname)
               break                              # start next file
           else:
