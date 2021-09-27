@@ -24,8 +24,6 @@
         <div id="wr_play_name" class="play_name"></div>
       </div>
       <div class="play_buttons">
-        <a href="#" onclick="audio_on()">
-                <i id="wr_play_btn" class="fas fa-play-circle"></i></a>
         <a href="#" onclick="audio_toggle()">
                 <i id="wr_pause_btn" class="fas fa-pause-circle"></i></a>
         <a href="#" onclick="audio_off()">
