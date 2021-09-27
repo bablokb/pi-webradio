@@ -307,6 +307,7 @@ function update_player_list(dirInfo) {
       if (file == dirInfo.cur_file) {
         item.addClass('file_item_selected');
         wr_state.player.last_index = index;
+        wr_state.player.last_file  = file;
       }
     });
 }
