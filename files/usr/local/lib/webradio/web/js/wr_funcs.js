@@ -415,6 +415,7 @@ function player_play_dir(data) {
 function doRestart() {
   $.get("/api/sys_restart");
   showMsg("Restarting the application ...",2000);
+  openTab(null,'wr_clock');
 };
 
 /**
@@ -424,6 +425,7 @@ function doRestart() {
 function doStop() {
   $.get("/api/sys_stop");
   showMsg("Stopping the application ...",2000);
+  openTab(null,'wr_clock');
 };
 
 /**
@@ -433,6 +435,7 @@ function doStop() {
 function doHalt() {
   $.get("/api/sys_halt");
   showMsg("Shutting down the system ...",2000);
+  openTab(null,'wr_clock');
 };
 
 /**
@@ -442,6 +445,7 @@ function doHalt() {
 function doReboot() {
   $.get("/api/sys_reboot");
   showMsg("Rebooting the system ...",2000);
+  openTab(null,'wr_clock');
 };
 
 /**
