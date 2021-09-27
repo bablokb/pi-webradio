@@ -182,9 +182,7 @@ function handle_event_rec_stop(data) {
 }
 
 function handle_event_play(file) {
-  $('#wr_play_btn').removeClass('fas').addClass('far');
   $('#wr_pause_btn').removeClass('far').addClass('fas').prop("disabled", false);
-  $('#wr_off_btn').removeClass('far').addClass('fas');
 
   // update state
   wr_state.player.last_file = file;
@@ -201,15 +199,12 @@ function handle_event_play(file) {
 }
 
 function handle_event_pause(data) {
-  $('#wr_play_btn').removeClass('far').addClass('fas');
   $('#wr_pause_btn').removeClass('fas').addClass('far');
 }
 
 function handle_event_eof(data) {
   $('#wr_infos').empty();
-  $('#wr_play_btn').removeClass('far').addClass('fas');
   $('#wr_pause_btn').removeClass('far').addClass('fas').prop("disabled", true);
-  $('#wr_off_btn').removeClass('fas').addClass('far');
   if (data.last) {
     if (wr_state.mode == 'radio') {
       openTab(null,'wr_channels');
@@ -447,18 +442,6 @@ function doHalt() {
 function doReboot() {
   $.get("/api/sys_reboot");
   showMsg("Rebooting the system ...",2000);
-};
-
-/**
-  turn radio/player on
-*/
-
-function audio_on() {
-  if (wr_state.mode == 'player') {
-    $.get("/api/player_play_file");
-  } else {
-    $.get("/api/radio_on");
-  }
 };
 
 /**
