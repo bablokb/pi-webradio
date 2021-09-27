@@ -146,7 +146,7 @@ class Player(Base):
 
   # --- start playing   -------------------------------------------------------
 
-  def player_play_file(self,file=None):
+  def player_play_file(self,file=None,last=True):
     """ start playing """
 
     if file:
@@ -166,7 +166,7 @@ class Player(Base):
     file_info = {'name': os.path.basename(self._file),
                  'duration': self._pp_time(total_secs)}
     self._api._push_event({'type': 'file_info', 'value': file_info })
-    self._backend.play(self._file)
+    self._backend.play(self._file,last)
     return file_info
 
   # --- stop playing   -------------------------------------------------------
