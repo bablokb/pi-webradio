@@ -266,6 +266,10 @@ main {
   padding: 16px;
   color: black;
   background-color: blue;
-  transition: all 0.3s ease;
   font-size: 72px;
+
+  border-width: 2px;
+  border-radius: 10px;
+  border-style: groove;
+  border-color: aqua;
 }
