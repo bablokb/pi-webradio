@@ -129,6 +129,10 @@ the channel-logo. The sample channel-file distributed with the project
 contains a number of radio-stations mainly from Germany. They do tend
 to change the URLs once in a while, so these are not guaranteed to work.
 
+The underlying low-level player mpg123 does not support
+encrypted (https) streams, make sure to use the unencrypted version.
+Radio-stations usually support both variants.
+
 This project does not distribute any logos for the sample channel list
 to prevent any copyright-trouble. Please download the files yourself
 and copy them to the `files/usr/local/lib/webradio/web/images` directory
@@ -152,7 +156,7 @@ as they are stable.
 
   * 0.90: stable core, Web-GUI with basic functions
   * 0.91: GUI: add toast-messages
-  * 0.92: cli: fully functional
+  * 0.92: cli: fully functional (web-radio part)
   * 0.93: GUI: state changes synced across web-clients
   * 0.94: player API partly implemented
   * 0.95: player: API functional
