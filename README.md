@@ -167,6 +167,10 @@ as they are stable.
   * 1.00: API frozen
   * 1.01: IR-app (map IR-codes to web-API)
 
+Known issues:
+
+  * using multiple web-clients in parallel is currently broken
+
 
 SW-Versions
 -----------
