@@ -162,11 +162,14 @@ function get_events() {
 
 function handle_event_state(data) {
   if (data.webgui) {
-    // current support is limited to tabid
     if (data.webgui.tabid) {
       openTab(null,data.webgui.tabid);
     }
   }
+  if (wr_state.player.last_dir !== data.player.last_dir) {
+    player_select_dir({'dir': data.player_last_dir});
+  }
+  wr_state = data;
 }
 
 function handle_event_rec_start(data) {
