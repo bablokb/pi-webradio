@@ -144,13 +144,13 @@ class Radio(Base):
     self.msg("Radio: start playing channel %d (%s)" % (nr,channel['name']))
 
     # check if we have to do anything
-    if nr == self._channel_nr:
-      self.msg("Radio: already on channel %d" % nr)
-    else:
+    if self._backend.play(channel['url']):
       self._api._push_event({'type': 'radio_play_channel', 'value': channel})
       self._channel_nr   = nr
       self._last_channel = self._channel_nr
-      self._backend.play(channel['url'])
+    else:
+      self.msg("Radio: already on channel %d" % nr)
+      # theoretically we could also have lost our backend
     return channel
 
   # --- switch to next channel   ----------------------------------------------
