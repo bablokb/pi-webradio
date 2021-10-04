@@ -188,14 +188,15 @@ function handle_event_play(file) {
   $('#wr_pause_btn').removeClass('far').addClass('fas').prop("disabled", false);
 
   // update state
-  wr_state.player.last_file = file;
-
-  // update highlight
-  if (wr_state.player.last_index > -1) {
-    $('#f_'+wr_state.player.last_index).removeClass('file_item_selected');
+  if (wr_state.mode === 'player') {
+    wr_state.player.last_file = file;
+    // update highlight
+    if (wr_state.player.last_index > -1) {
+      $('#f_'+wr_state.player.last_index).removeClass('file_item_selected');
+    }
+    wr_state.player.last_index = wr_file2index[file];
+    $('#f_'+wr_state.player.last_index).addClass('file_item_selected');
   }
-  wr_state.player.last_index = wr_file2index[file];
-  $('#f_'+wr_state.player.last_index).addClass('file_item_selected');
 
   // (temporary) info for user
   showMsg("playing " + file,2000);
