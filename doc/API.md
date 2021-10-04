@@ -48,7 +48,7 @@ Web API
 | player_resume           | resume playing          | Player      |   Ok   |
 | player_toggle           | toggle playing          | Player      |   Ok   |
 | player_delete           | delete selected file    | Player      |        |
-| player_get_cover(dir)   | get album-cover         | Player      |        |
+| player_get_cover(dir)   | get album-cover         | Player      |   Ok   |
 |-------------------------|-------------------------|-------------|--------|
 | get_events              | poll SSE                | WebServer   |   Ok   |
 | publish_state           | publish state change    | WebServer   |        |
@@ -79,6 +79,7 @@ The webserver prevents the execution of API starting with an underscore.
 | _add_consumer(id)       | register as an consumer | RadioEvents |   Ok   |
 | _del_consumer(id)       | remove event-consumer   | RadioEvents |   Ok   |
 | _exec(...)              | execute API by name     | Api         |   Ok   |
+| _get_cover_file()       | path to cover file      | Player      |   Ok   |
 |-------------------------|-------------------------|-------------|--------|
 
 
