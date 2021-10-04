@@ -119,6 +119,8 @@ class Mpg123(Base):
 
     if self._process:
       if self._play:
+        if url == self._url:      # do nothing, already playing
+          return
         self.stop(last=False)     # since we are about to play another file
       self.msg("Mpg123: starting to play %s" % url)
       self._last = last
