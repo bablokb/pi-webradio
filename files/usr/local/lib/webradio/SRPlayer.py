@@ -76,6 +76,7 @@ class Player(Base):
     self._api.player_toggle     = self.player_toggle
     self._api.player_select_dir = self.player_select_dir
     self._api.player_play_dir   = self.player_play_dir
+    self._api._player_get_cover_file = self._player_get_cover_file
 
   # --- return persistent state of this class   -------------------------------
 
@@ -343,3 +344,14 @@ class Player(Base):
     self._api._del_consumer("_play_dir")
     self._backend.stop()
     self._dirplay = None
+
+  # --- return name of cover file (currently only cover.jpg)   ---------------
+
+  def _player_get_cover_file(self):
+    """ return name of cover file """
+
+    cover = os.path.join(self._dir,"cover.jpg")
+    if os.path.exists(cover):
+      return cover
+    else:
+      return None

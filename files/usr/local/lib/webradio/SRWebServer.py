@@ -15,7 +15,7 @@
 import os, json, queue, traceback, uuid
 
 from flask import Flask, Response, render_template, request, make_response
-from flask import send_from_directory
+from flask import send_from_directory, send_file
 
 from werkzeug.serving import make_server, WSGIRequestHandler
 
@@ -66,6 +66,8 @@ class WebServer(Base):
     self._flask.add_url_rule('/images/<path:filepath>','images',self.images)
     self._flask.add_url_rule('/js/<path:filepath>','js',self.js_pages)
     self._flask.add_url_rule('/api/get_events','get_events',self.get_events)
+    self._flask.add_url_rule('/api/player_get_cover',
+                             'player_get_cover',self.get_cover)
     self._flask.add_url_rule('/api/publish_state','publish_state',
                              self.publish_state,methods=['POST'])
     self._flask.add_url_rule('/api/<path:api>','api',self.process_api)
@@ -137,6 +139,17 @@ class WebServer(Base):
     except:
       traceback.print_exc()
     return ""
+
+  # --- return cover   -----------------------------------------------------
+
+  def get_cover(self,dir="ignored"):
+    """ return cover if available """
+
+    cover = self._api._player_get_cover_file()
+    if cover:
+      return send_file(cover)
+    else:
+      return send_from_directory(self._get_path('images'),'default.png')
 
   # --- stream SSE (server sent events)   ----------------------------------
 

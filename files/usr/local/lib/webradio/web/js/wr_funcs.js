@@ -196,6 +196,9 @@ function handle_event_play(file) {
     }
     wr_state.player.last_index = wr_file2index[file];
     $('#f_'+wr_state.player.last_index).addClass('file_item_selected');
+    cover_url = '/api/player_get_cover?dir='+encodeURIComponent(
+          wr_state.player.last_dir);
+    $('#wr_play_logo').attr('src',cover_url);
   }
 
   // (temporary) info for user
