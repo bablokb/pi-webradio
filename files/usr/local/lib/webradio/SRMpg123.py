@@ -115,12 +115,12 @@ class Mpg123(Base):
   # --- play URL/file   -------------------------------------------------------
 
   def play(self,url,last=True):
-    """ start playing """
+    """ start playing, return True if a new file/url is started """
 
     if self._process:
       if self._play:
         if url == self._url:      # do nothing, already playing
-          return
+          return False
         self.stop(last=False)     # since we are about to play another file
       self.msg("Mpg123: starting to play %s" % url)
       self._last = last
@@ -134,6 +134,9 @@ class Mpg123(Base):
       else:
         self._process.stdin.write("LOAD %s\n" % url)
       self._op_event.wait()
+      return True
+    else:
+      return False
 
   # --- stop playing current URL/file   ---------------------------------------
 
