@@ -85,6 +85,9 @@ class Radio(Base):
     if 'channel_nr' in state_map:
       self._last_channel = state_map['channel_nr']
 
+    self._api.update_state(section="radio",key="channel_nr",
+                           value=self._last_channel,publish=False)
+
   # --- read channels   -------------------------------------------------------
 
   def read_channels(self):
