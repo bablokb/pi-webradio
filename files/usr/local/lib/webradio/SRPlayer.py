@@ -103,6 +103,10 @@ class Player(Base):
         self._file = None
     self.msg("Player: currrent dir:  %s" % self._dir)
     self.msg("Player: currrent file: %s" % self._file)
+    self._api.update_state(section="player",key="last_dir",
+                           value=self._dir,publish=False)
+    self._api.update_state(section="player",key="last_file",
+                           value=self._file,publish=False)
 
   # --- check directory   ---------------------------------------------------
 
