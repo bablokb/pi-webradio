@@ -40,7 +40,7 @@
   },
 
   { "name": "NDR Kultur",
-    "url":  "http://ndr-ndrkultur-live.cast.addradio.de/ndr/ndrkultur/live/mp3/128/stream.mp3",
+    "url":  "http://icecast.ndr.de/ndr/ndrkultur/live/mp3/128/stream.mp3",
     "logo": "NDR-Kultur.png"
   },
 
