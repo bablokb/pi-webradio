@@ -134,11 +134,15 @@ class WebServer(Base):
     """ update state and redistribute """
 
     try:
-      state = self._api.update_state(state=request.get_json(force=True))
-      self._api._push_event({'type': 'state', 'value': state})
+      self._api.update_state(state=request.get_json(force=True))
+      return ""
     except:
+      self.msg("exception while calling: /api/update_state")
       traceback.print_exc()
-    return ""
+      msg = '"internal server error"'
+      response = make_response(('{"msg": ' + msg +'}',500))
+      response.content_type = 'application/json'
+      return response
 
   # --- return cover   -----------------------------------------------------
 
