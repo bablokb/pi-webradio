@@ -16,6 +16,7 @@ Web API
 | sys_stop                | stop application        | WebRadio    |   Ok   |
 | sys_reboot              | reboot system           | WebRadio    |   Ok   |
 | sys_halt                | shutdown system         | WebRadio    |   Ok   |
+| update_state            | update and dist. state  | WebRadio    |        |
 |-------------------------|-------------------------|-------------|--------|
 | radio_state             | return current state    | Radio       |        |
 | radio_on                | play current station    | Radio       |   Ok   |
@@ -51,7 +52,6 @@ Web API
 | player_get_cover(dir)   | get album-cover         | Player      |   Ok   |
 |-------------------------|-------------------------|-------------|--------|
 | get_events              | poll SSE                | WebServer   |   Ok   |
-| publish_state           | publish state change    | WebServer   |        |
 |-------------------------|-------------------------|-------------|--------|
 
 Legend:
@@ -63,7 +63,7 @@ Legend:
 Notes
 -----
 
-  - All APIs use GET-requests except `publish_state`
+  - All APIs use GET-requests except `update_state`
   - Query-parameters are given in parenthesis, they are optional if
     sensible defaults exist
 
