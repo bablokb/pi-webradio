@@ -171,8 +171,12 @@ class WebRadio(Base):
   def update_state(self,state=None,section=None,key=None,value=None,publish=True):
     """ update state and publish as event """
 
-    if publish and state:
-      self.api._push_event({'type': 'state', 'value': state})
+    if state:
+      self._state = state
+    elif section and key:
+      self._state[section][key] = value
+    if publish:
+      self.api._push_event({'type': 'state', 'value': self._state})
     return
 
   # --- query state of objects and save   -------------------------------------
