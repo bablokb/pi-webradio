@@ -77,9 +77,9 @@ function openTab(evt, tabId) {
     }
   }
 
-  // publish new state
+  // update new state
   wr_state.webgui.tabid = tabId;
-  $.post('/api/publish_state',JSON.stringify(wr_state));
+  $.post('/api/update_state',JSON.stringify(wr_state));
 };
 
 /**

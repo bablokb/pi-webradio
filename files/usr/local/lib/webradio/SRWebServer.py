@@ -68,8 +68,8 @@ class WebServer(Base):
     self._flask.add_url_rule('/api/get_events','get_events',self.get_events)
     self._flask.add_url_rule('/api/player_get_cover',
                              'player_get_cover',self.get_cover)
-    self._flask.add_url_rule('/api/publish_state','publish_state',
-                             self.publish_state,methods=['POST'])
+    self._flask.add_url_rule('/api/update_state','update_state',
+                             self.update_state,methods=['POST'])
     self._flask.add_url_rule('/api/<path:api>','api',self.process_api)
 
   # --- return absolute path of web-files   ----------------------------------
@@ -130,12 +130,12 @@ class WebServer(Base):
 
   # --- publish state   ----------------------------------------------------
 
-  def publish_state(self):
-    """ publish client state: just redistribute the complete info """
+  def update_state(self):
+    """ update state and redistribute """
 
     try:
-      self._api._push_event(
-        {'type': 'state', 'value': request.get_json(force=True)})
+      state = self._api.update_state(state=request.get_json(force=True))
+      self._api._push_event({'type': 'state', 'value': state})
     except:
       traceback.print_exc()
     return ""

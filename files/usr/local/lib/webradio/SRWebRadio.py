@@ -94,6 +94,7 @@ class WebRadio(Base):
     self.api.sys_stop         = self.sys_stop
     self.api.sys_reboot       = self.sys_reboot
     self.api.sys_halt         = self.sys_halt
+    self.api.update_state     = self.update_state
 
   # --- return version   ---------------------------------------------------
 
@@ -162,6 +163,13 @@ class WebRadio(Base):
     else:
       self.msg("Webradio: no application stop in debug-mode")
     self.api._push_event({'type': 'sys', 'value': 'stop'})
+
+  # --- update (and distribute) state   ---------------------------------------
+
+  def update_state(self,state=None,section=None,key=None,value=None,publish=True):
+    """ update state and publish as event """
+
+    return state
 
   # --- query state of objects and save   -------------------------------------
 
