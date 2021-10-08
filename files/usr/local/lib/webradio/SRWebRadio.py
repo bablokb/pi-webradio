@@ -69,6 +69,8 @@ class WebRadio(Base):
       self.recorder = Recorder(self)
       self._objects = [self,self.radio,self.player,
                        self.recorder,self.backend]
+
+    self._state = {'mode': 'radio'}
     self._load_state()
     if self.backend:
       self.backend.create()
@@ -192,19 +194,36 @@ class WebRadio(Base):
 
     try:
       if not os.path.exists(self._store):
-        self._play_mode = False
-        return
-      self.msg("Webradio: Loading settings from %s" % self._store)
-      f = open(self._store,"r")
-      state = json.load(f)
+        state = {}
+      else:
+        self.msg("Webradio: Loading settings from %s" % self._store)
+        f = open(self._store,"r")
+        state = json.load(f)
+        f.close()
       for obj in self._objects:
         if obj.__module__ in state:
           obj.set_persistent_state(state[obj.__module__])
-      f.close()
     except:
       self.msg("Webradio: Loading settings failed")
       if self.debug:
         traceback.print_exc()
+
+  # --- return persistent state of this class   -------------------------------
+
+  def get_persistent_state(self):
+    """ return persistent state (overrides SRBase.get_pesistent_state()) """
+    return {
+      'mode': self._state['mode']
+      }
+
+  # --- restore persistent state of this class   ------------------------------
+
+  def set_persistent_state(self,state_map):
+    """ restore persistent state (overrides SRBase.set_pesistent_state()) """
+
+    self.msg("WebRadio: restoring persistent state")
+    if 'mode' in state_map:
+      self._state['mode'] = state_map['mode']
 
   # --- setup signal handler   ------------------------------------------------
 
