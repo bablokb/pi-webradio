@@ -174,7 +174,10 @@ class WebRadio(Base):
     if state:
       self._state = state
     elif section and key:
-      self._state[section][key] = value
+      if section in self._state:
+        self._state[section][key] = value
+      else:
+        self._state[section] = {key:value}
     if publish:
       self.api._push_event({'type': 'state', 'value': self._state})
     return
