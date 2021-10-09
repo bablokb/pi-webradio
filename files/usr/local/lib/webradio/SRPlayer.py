@@ -174,6 +174,8 @@ class Player(Base):
                  'last': last}
     self._api._push_event({'type': 'file_info', 'value': file_info })
     self._backend.play(self._file,last)
+    self._api.update_state(section="player",key="last_file",
+                           value=os.path.basename(self._file),publish=False)
     return file_info
 
   # --- stop playing   -------------------------------------------------------
@@ -243,6 +245,8 @@ class Player(Base):
       # set new current directory, reset current file
       self._dir = dir
       self._file = None
+      self._api.update_state(section="player",key="last_file",
+                           value=None,publish=False)
     if self._file:
       result['cur_file'] = os.path.basename(self._file)
     else:
@@ -251,6 +255,9 @@ class Player(Base):
     # publish event (return dir relative to root_dir)
     cur_dir = self._dir[len(self._root_dir):]+os.path.sep
     self._api._push_event({'type':  'dir_select', 'value': cur_dir})
+    self._api.update_state(section="player",key="last_dir",
+                           value=cur_dir,
+                           publish=False)
 
     # iterate over directory if new ...
     if not cache_valid:
