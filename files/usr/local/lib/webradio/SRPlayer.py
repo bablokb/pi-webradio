@@ -104,9 +104,10 @@ class Player(Base):
     self.msg("Player: currrent dir:  %s" % self._dir)
     self.msg("Player: currrent file: %s" % self._file)
     self._api.update_state(section="player",key="last_dir",
-                           value=self._dir,publish=False)
+                           value=self._dir[len(self._root_dir):]+os.path.sep,
+                           publish=False)
     self._api.update_state(section="player",key="last_file",
-                           value=self._file,publish=False)
+                           value=os.path.basename(self._file),publish=False)
 
   # --- check directory   ---------------------------------------------------
 
