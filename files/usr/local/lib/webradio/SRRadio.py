@@ -148,6 +148,8 @@ class Radio(Base):
 
     # check if we have to do anything
     if self._backend.play(channel['url']):
+      self._api.update_state(section="radio",key="channel_nr",
+                             value=channel,publish=False)
       self._api._push_event({'type': 'radio_play_channel', 'value': channel})
       self._channel_nr   = nr
       self._last_channel = self._channel_nr
