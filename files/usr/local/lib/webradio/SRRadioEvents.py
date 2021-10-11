@@ -68,6 +68,9 @@ class RadioEvents(Base):
         ev = {'type': 'version','value': self._api.get_version()}
         ev['text'] = self._formatter.format(ev)
         self._consumers[id].put_nowait(ev)
+        ev = {'type': 'state','value': self._api.get_state()}
+        ev['text'] = self._formatter.format(ev)
+        self._consumers[id].put_nowait(ev)
         return self._consumers[id]
       except:
         with self._lock:
