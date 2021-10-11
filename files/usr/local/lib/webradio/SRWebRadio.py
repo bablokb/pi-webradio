@@ -97,6 +97,7 @@ class WebRadio(Base):
     self.api.sys_reboot       = self.sys_reboot
     self.api.sys_halt         = self.sys_halt
     self.api.update_state     = self.update_state
+    self.api.get_state        = self.get_state
 
   # --- return version   ---------------------------------------------------
 
@@ -105,6 +106,13 @@ class WebRadio(Base):
 
     self.msg("WebRadio: version: %s" % WebRadio.VERSION)
     return WebRadio.VERSION
+
+  # --- return state   -----------------------------------------------------
+
+  def get_state(self):
+    """ return state """
+
+    return self._state
 
   # --- shutdown system   -----------------------------------------------------
 

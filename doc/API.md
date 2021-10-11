@@ -16,7 +16,8 @@ Web API
 | sys_stop                | stop application        | WebRadio    |   Ok   |
 | sys_reboot              | reboot system           | WebRadio    |   Ok   |
 | sys_halt                | shutdown system         | WebRadio    |   Ok   |
-| update_state            | update and dist. state  | WebRadio    |        |
+| update_state            | update and dist. state  | WebRadio    |   Ok   |
+| get_state               | return current state    | WebRadio    |        |
 |-------------------------|-------------------------|-------------|--------|
 | radio_state             | return current state    | Radio       |        |
 | radio_on                | play current station    | Radio       |   Ok   |
