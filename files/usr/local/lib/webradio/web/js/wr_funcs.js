@@ -165,6 +165,8 @@ function handle_event_state(data) {
     if (data.webgui.tabid) {
       openTab(null,data.webgui.tabid);
     }
+  } else {
+    data.webgui = {tabid: "wr_clock"};
   }
   if (wr_state.player.last_dir !== data.player.last_dir) {
     player_select_dir({'dir': data.player_last_dir});
