@@ -106,8 +106,12 @@ class Player(Base):
     self._api.update_state(section="player",key="last_dir",
                            value=self._dir[len(self._root_dir):]+os.path.sep,
                            publish=False)
-    self._api.update_state(section="player",key="last_file",
-                           value=os.path.basename(self._file),publish=False)
+    if self._file:
+      self._api.update_state(section="player",key="last_file",
+                             value=os.path.basename(self._file),publish=False)
+    else:
+      self._api.update_state(section="player",key="last_file",
+                             value=None,publish=False)
 
   # --- check directory   ---------------------------------------------------
 
