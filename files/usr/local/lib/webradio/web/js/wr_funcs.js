@@ -16,7 +16,7 @@
 
 wr_state = {
   'webgui': {
-    'tabid': 'wr_clock'
+    'tabid': 'tab_clock'
   },
   'mode':     null,
   'radio':    {
@@ -35,42 +35,56 @@ wr_file2index = {};
   Tab navigation
 */
 
-currentTab = 'wr_clock';
+currentTab = 'tab_clock';
 
-function openTab(evt, tabId) {
-  // Declare all variables
-  var i, content_area, tablinks;
+function openTab(tabId,data) {
+  if (tabId === wr_state.webgui.tabid) {     // nothing to do
+    return;
+  } else {
+    wr_state.webgui.tabid = tabId;
+  }
 
-  if (tabId === wr_state.webgui.tabid) {   // nothing to do
+  // change styles of menu+tab
+  $(".content_area").hide();                    // hide everything
+  $(".tablink").removeClass("menu_active");     // deactivate everything
+  $("#"+tabId).show();                          // show selected tab
+  $("#"+tabId+"_link").addClass("menu_active"); // style as active
+
+  // execute event-handler
+  if (window["on_open_"+tabId]) {
+    window["on_open_"+tabId](data);
+  }
+
+  // update new state
+  $.post('/api/update_state',JSON.stringify(wr_state));
+};
+
+/**
+   handler for play-tab
+*/
+
+function on_open_tab_play(internal=false) {
+  if (internal) {
     return;
   }
-
-  // Get all elements with class="content_area" and hide them
-  content_area = document.getElementsByClassName("content_area");
-  for (i = 0; i < content_area.length; i++) {
-    content_area[i].style.display = "none";
-  }
-
-  // Get all elements with class="tablink" and remove the class "menu_active"
-  tablinks = document.getElementsByClassName("tablink");
-  for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" menu_active", "");
-  }
-
-  // Show the current tab, and add an "menu_active" class to the link that opened the tab
-  document.getElementById(tabId).style.display = "block";
-  if (evt) {
-    evt.currentTarget.className += " menu_active";
-  }
-
-  if (tabId == 'wr_play' && !wr_state.mode) {
-    // initial state: play last channel
+  if (wr_state.mode == "player") {
+    // TODO: implement (this must read the dir if not already done)
+  } else {
+    // play current channel
     radio_play_channel({'nr': 0});
-  } else if (tabId == 'wr_files' && !wr_state.player.last_dir) {
+  }
+};
+
+/**
+   handler for files-tab
+*/
+
+function on_open_tab_files() {
+  if (!wr_state.player.last_dir) {
     // get directory for server's current-directory
     player_select_dir({'dir': '.'});
     return;
-  } else if (tabId == 'wr_files') {
+  } else {
     // scroll to current file
     if (wr_state.player.last_index > -1) {
       $("#file_list").scrollTop(0);
@@ -81,10 +95,6 @@ function openTab(evt, tabId) {
       $("#file_list").scrollTop(0);
     }
   }
-
-  // update new state
-  wr_state.webgui.tabid = tabId;
-  $.post('/api/update_state',JSON.stringify(wr_state));
 };
 
 /**
@@ -166,17 +176,22 @@ function get_events() {
 };
 
 function handle_event_state(data) {
+  var update = false;
   // only update tabid and mode
   if (data.webgui) {
     if (data.webgui.tabid) {
-      wr_state.webgui = data.webgui.tabid;
+      update = wr_state.webgui.tabid === data.webgui.tabid;
+      wr_state.webgui.tabid = data.webgui.tabid;
     }
   }
   if (data.mode) {
+    update = update || wr_state.mode === data.mode;
     wr_state.mode = data.mode;
   }
   // open tab according to state
-  openTab(null,data.webgui.tabid);
+  if (update) {
+    openTab(wr_state.webgui.tabid);
+  }
 }
 
 function handle_event_rec_start(data) {
@@ -221,9 +236,9 @@ function handle_event_eof(data) {
   $('#wr_pause_btn').removeClass('far').addClass('fas').prop("disabled", true);
   if (data.last) {
     if (wr_state.mode == 'radio') {
-      openTab(null,'wr_channels');
+      openTab('tab_channels');
     } else {
-      openTab(null,'wr_files');
+      openTab('tab_files');
     }
   }
 }
@@ -270,7 +285,6 @@ function getChannels() {
 
 function update_channel_info(channel) {
   $('#wr_infos').empty();
-  $('#wr_play_link').addClass('menu_active');
   if (channel.logo) {
     $('#wr_play_logo').attr('src',channel.logo);
     $('#wr_play_name').empty();
@@ -340,7 +354,7 @@ function radio_play_channel(data) {
   }
   $.getJSON('/api/radio_play_channel',data,
     function(channel) {
-      openTab(null,'wr_play');
+      openTab('tab_play',true);
       $('#wr_rec_btn').show();
       update_channel_info(channel);
     }
@@ -382,7 +396,7 @@ function player_select_dir(data) {
     function(result) {
       $("#msgarea").empty();
       update_player_list(result);
-      openTab(null,'wr_files');
+      openTab('tab_files');
     }
   );
 };
@@ -403,7 +417,7 @@ function player_play_file(data) {
     }
   );
   $('#wr_rec_btn').hide();
-  openTab(null,'wr_play');
+  openTab('tab_play',true);
 };
 
 /**
@@ -419,7 +433,7 @@ function player_play_dir(data) {
     }
   );
   $('#wr_rec_btn').hide();
-  openTab(null,'wr_play');
+  openTab('tab_play',true);
 };
 
 /**
@@ -429,7 +443,7 @@ function player_play_dir(data) {
 function doRestart() {
   $.get("/api/sys_restart");
   showMsg("Restarting the application ...",2000);
-  openTab(null,'wr_clock');
+  openTab('tab_clock');
 };
 
 /**
@@ -439,7 +453,7 @@ function doRestart() {
 function doStop() {
   $.get("/api/sys_stop");
   showMsg("Stopping the application ...",2000);
-  openTab(null,'wr_clock');
+  openTab('tab_clock');
 };
 
 /**
@@ -449,7 +463,7 @@ function doStop() {
 function doHalt() {
   $.get("/api/sys_halt");
   showMsg("Shutting down the system ...",2000);
-  openTab(null,'wr_clock');
+  openTab('tab_clock');
 };
 
 /**
@@ -459,7 +473,7 @@ function doHalt() {
 function doReboot() {
   $.get("/api/sys_reboot");
   showMsg("Rebooting the system ...",2000);
-  openTab(null,'wr_clock');
+  openTab('tab_clock');
 };
 
 /**
