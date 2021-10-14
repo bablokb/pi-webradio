@@ -9,6 +9,11 @@
 // ---------------------------------------------------------------------------
 
 
+/**
+   local state. This is partly propagated to the server, and updated from the
+   server through events.
+*/
+
 wr_state = {
   'webgui': {
     'tabid': 'wr_clock'
@@ -161,17 +166,17 @@ function get_events() {
 };
 
 function handle_event_state(data) {
+  // only update tabid and mode
   if (data.webgui) {
     if (data.webgui.tabid) {
-      openTab(null,data.webgui.tabid);
+      wr_state.webgui = data.webgui.tabid;
     }
-  } else {
-    data.webgui = {tabid: "wr_clock"};
   }
-  if (wr_state.player.last_dir !== data.player.last_dir) {
-    player_select_dir({'dir': data.player_last_dir});
+  if (data.mode) {
+    wr_state.mode = data.mode;
   }
-  wr_state = data;
+  // open tab according to state
+  openTab(null,data.webgui.tabid);
 }
 
 function handle_event_rec_start(data) {
