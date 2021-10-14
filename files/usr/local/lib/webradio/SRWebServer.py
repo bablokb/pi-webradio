@@ -134,10 +134,16 @@ class WebServer(Base):
     """ update state and redistribute """
 
     try:
-      self._api.update_state(state=request.get_json(force=True))
+      # only a subset of the state is controlled by the client, so filter
+      # for valid values
+      state = request.get_json(force=True)
+      for k in list(state.keys()):
+        if k not in ['webgui','mode']:
+          del state[k]
+      self._api.update_state(state=state)
       return ""
     except:
-      self.msg("exception while calling: /api/update_state")
+      self.msg("WebRadio: exception while calling: /api/update_state")
       traceback.print_exc()
       msg = '"internal server error"'
       response = make_response(('{"msg": ' + msg +'}',500))
