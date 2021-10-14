@@ -180,7 +180,16 @@ class WebRadio(Base):
     """ update state and publish as event """
 
     if state:
-      self._state = state
+      # update on key-level
+      for s in state.keys():
+        if isinstance(s,dict):
+          for k in s.keys():
+            if s in self._state:
+              self._state[s][k] = state[s][k]
+            else:
+              self._state[s] = {k:state[s][k]}
+        else:
+          self._state[s] = state[s]
     elif section and key:
       if section in self._state:
         self._state[section][key] = value
