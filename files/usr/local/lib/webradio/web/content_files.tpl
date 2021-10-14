@@ -12,7 +12,7 @@
 # ----------------------------------------------------------------------------
 -->
 
-<div id="wr_files" style="display: none" class="content_area">
+<div id="tab_files" style="display: none" class="content_area">
   <div id="file_list" class="file_list">
     <div id="dir_0" class="dir_item" style="display: none"></div>
     <div id="file_0" class="file_item" style="display: none">

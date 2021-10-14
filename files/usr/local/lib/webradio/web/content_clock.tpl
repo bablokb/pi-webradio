@@ -14,7 +14,7 @@
 # ----------------------------------------------------------------------------
 -->
 
-<div id="wr_clock" class="clock_container content_area">
+<div id="tab_clock" class="clock_container content_area">
   <div class="rim"></div>
   <div class="outer"></div>
   <div class="inner">

@@ -12,7 +12,7 @@
 # ----------------------------------------------------------------------------
 -->
 
-<div id="wr_special" style="height: 100%; display: none" class="content_area">
+<div id="tab_special" style="height: 100%; display: none" class="content_area">
   <div class="content_special">
     <a onclick="doStop()"><i class="fab fa-linux" alt="exit to OS"></i></a>
     <a onclick="doRestart()"><i class="fas fa-exchange-alt"></i></a>

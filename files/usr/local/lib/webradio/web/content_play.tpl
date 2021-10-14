@@ -12,7 +12,7 @@
 # ----------------------------------------------------------------------------
 -->
 
-<div id="wr_play" style="height: inherit; display: none" class="content_area">
+<div id="tab_play" style="height: inherit; display: none" class="content_area">
   <div class="play">                   <!-- flex-row with two columns -->
     <div class="play_left">            <!-- first column              -->
       <div class="clock play_clock">
