@@ -180,17 +180,15 @@ function handle_event_state(data) {
   // only update tabid and mode
   if (data.webgui) {
     if (data.webgui.tabid) {
-      update = wr_state.webgui.tabid === data.webgui.tabid;
-      wr_state.webgui.tabid = data.webgui.tabid;
+      update = wr_state.webgui.tabid !== data.webgui.tabid;
     }
   }
   if (data.mode) {
-    update = update || wr_state.mode === data.mode;
     wr_state.mode = data.mode;
   }
   // open tab according to state
   if (update) {
-    openTab(wr_state.webgui.tabid);
+    openTab(data.webgui.tabid);
   }
 }
 
