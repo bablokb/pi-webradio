@@ -172,14 +172,18 @@ class Player(Base):
     if self._dirinfo:
       self._dirinfo['cur_file'] = self._file
 
+    # this will push the information to all clients, even if the file
+    # is already playing.
+    # We might also need to push the elapsed time?!
+
     total_secs = int(subprocess.check_output(["mp3info", "-p","%S",self._file]))
     file_info = {'name': os.path.basename(self._file),
                  'duration': self._pp_time(total_secs),
                  'last': last}
     self._api._push_event({'type': 'file_info', 'value': file_info })
-    self._backend.play(self._file,last)
-    self._api.update_state(section="player",key="last_file",
-                           value=os.path.basename(self._file),publish=False)
+    if self._backend.play(self._file,last):
+      self._api.update_state(section="player",key="last_file",
+                             value=os.path.basename(self._file),publish=False)
     return file_info
 
   # --- stop playing   -------------------------------------------------------
