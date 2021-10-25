@@ -74,8 +74,11 @@ function on_open_tab_play(internal=false) {
   if (internal) {
     return;
   }
+
+  // open of tab either from user, or from event, so just
+  // play current file/curren channel
   if (wr_state.mode == "player") {
-    // TODO: implement (this must read the dir if not already done)
+    player_play_file({'file': null});
   } else {
     // play current channel
     radio_play_channel({'nr': 0});
