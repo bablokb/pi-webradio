@@ -119,9 +119,10 @@ class Mpg123(Base):
 
     if self._process:
       if self._play:
-        if url == self._url:      # do nothing, already playing
+        check_url = url if url.startswith("http") else os.path.basename(url)
+        if check_url == self._url:   # do nothing, already playing
           return False
-        self.stop(last=False)     # since we are about to play another file
+        self.stop(last=False)        # since we are about to play another file
       self.msg("Mpg123: starting to play %s" % url)
       self._last = last
       if url.startswith("http"):
@@ -146,7 +147,7 @@ class Mpg123(Base):
     if not self._play:
       return
     if self._process:
-      self.msg("Mpg123: stopping current url/file")
+      self.msg("Mpg123: stopping current url/file: %s" % self._url)
       self._last = last
       self._op_event.clear()
       self._process.stdin.write("STOP\n")
