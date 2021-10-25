@@ -64,6 +64,13 @@ function openTab(tabId,data) {
 */
 
 function on_open_tab_play(internal=false) {
+  // record-button only relevant for radio
+  if (wr_state.mode == "player") {
+    $('#wr_rec_btn').hide();
+  } else {
+    $('#wr_rec_btn').show();
+  }
+
   if (internal) {
     return;
   }
@@ -353,7 +360,6 @@ function radio_play_channel(data) {
   $.getJSON('/api/radio_play_channel',data,
     function(channel) {
       openTab('tab_play',true);
-      $('#wr_rec_btn').show();
       update_channel_info(channel);
     }
   );
@@ -414,7 +420,6 @@ function player_play_file(data) {
       // do nothing
     }
   );
-  $('#wr_rec_btn').hide();
   openTab('tab_play',true);
 };
 
@@ -430,7 +435,6 @@ function player_play_dir(data) {
       showMsg("playing directory",2000);
     }
   );
-  $('#wr_rec_btn').hide();
   openTab('tab_play',true);
 };
 
