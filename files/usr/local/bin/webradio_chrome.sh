@@ -24,6 +24,11 @@ else
   PORT=8026
 fi
 
+# wait for systemd-service
+while ! systemctl --quiet is-active pi-webradio.service; do
+  sleep 1
+done
+
 chromium-browser --app=http://localhost:$PORT/ --kiosk &
 pid_cb="$!"
 
