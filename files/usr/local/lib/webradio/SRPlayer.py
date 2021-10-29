@@ -102,16 +102,12 @@ class Player(Base):
       if self._file and not self._check_file(self._file):
         self._file = None
     self.msg("Player: currrent dir:  %s" % self._dir)
-    self.msg("Player: currrent file: %s" % self._file)
     self._api.update_state(section="player",key="last_dir",
                            value=self._dir[len(self._root_dir):]+os.path.sep,
                            publish=False)
-    if self._file:
-      self._api.update_state(section="player",key="last_file",
-                             value=os.path.basename(self._file),publish=False)
-    else:
-      self._api.update_state(section="player",key="last_file",
-                             value=None,publish=False)
+
+    self._get_dirinfo(self._dir)
+    self.msg("Player: currrent file: %s" % self._file)
 
   # --- check directory   ---------------------------------------------------
 
@@ -374,6 +370,7 @@ class Player(Base):
       self._dirinfo['cur_file'] = os.path.basename(self._file)
     else:
       if len(self._dirinfo['files']):
+        self._file = os.path.join(self._dir,self._dirinfo['files'][0])
         self._dirinfo['cur_file'] = self._dirinfo['files'][0]
       else:
         self._dirinfo['cur_file'] = None
