@@ -38,8 +38,7 @@ Autostart of the browser
 
 In an integrated setup the client (usually a browser) runs
 on the same system as the server. To automatically start the client
-create a "desktop"-file (e.g. `webradio_chrome.desktop`)
-with the following content
+copy the file `misc/webradio_chrome.desktop` with the following content
 
     [Desktop Entry]
     Name=Pi-Webradio
@@ -49,9 +48,13 @@ with the following content
     Type=Application
     StartupNotify=false
     X-GNOME-Autostart-enabled=true
+    Categories=X-Xfce-Toplevel;AudioVideo
 
-and put it into the directory `$HOME/.config/autostart`. This file
-is part of the distribution in the `misc`-directory.
+into the directories `$HOME/.config/autostart` and
+`$HOME/.local/share/applications`. Note that you might have to
+adapt the "Categories"-variable depending on your window-manager
+(the variable  configures where in the menu the application will
+show up).
 
 The script `/usr/local/bin/webradio_chrome.sh` will start chromium
 in application and kiosk mode:
