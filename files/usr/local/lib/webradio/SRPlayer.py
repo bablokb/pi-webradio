@@ -242,60 +242,30 @@ class Player(Base):
         self._lock.release()
         raise ValueError("invalid directory %s" % dir)
 
-    result =  {'dirs':  [], 'files': [], 'dur': []}
     cache_valid = False
     if dir == self._dir:
       if self._dirinfo:
-        # use buffered information
-        result = self._dirinfo
         cache_valid = True
     else:
-      # set new current directory, reset current file
+      # set new current directory
       self._dir = dir
-      self._file = None
-      self._api.update_state(section="player",key="last_file",
-                           value=None,publish=False)
-    if self._file:
-      result['cur_file'] = os.path.basename(self._file)
-    else:
-      result['cur_file'] = self._file
 
-    # publish event (return dir relative to root_dir)
+    # publish event first (return dir relative to root_dir)
     cur_dir = self._dir[len(self._root_dir):]+os.path.sep
     self._api._push_event({'type':  'dir_select', 'value': cur_dir})
     self._api.update_state(section="player",key="last_dir",
                            value=cur_dir,
                            publish=False)
 
-    # iterate over directory if new ...
+    # then query new directory info
     if not cache_valid:
-      result['cur_dir']  = cur_dir
-      self.msg("Player: collecting dir-info for %s" % dir)
-      if self._dir != self._root_dir:
-        result['dirs'].append('..')
-      for f in os.listdir(dir):
-        if os.path.isfile(os.path.join(dir,f)):
-          if f.endswith(".mp3"):
-            result['files'].append(f)
-        else:
-          result['dirs'].append(f)
-
-      # ... and sort results
-      result['files'].sort()
-      result['dirs'].sort()
-      # add add time-info
-      for f in result['files']:
-        secs = int(subprocess.check_output(["mp3info",
-                                            "-p","%S",
-                                            os.path.join(dir,f)]))
-        result['dur'].append((secs,self._pp_time(secs)))
-      # save results
-      self._dirinfo = result
+      self._get_dirinfo(dir)
+      self._dirinfo['cur_dir'] = cur_dir
     else:
       self.msg("Player: using cached dir-info for %s" % dir)
 
     self._lock.release()
-    return result
+    return self._dirinfo
 
   # --- play all files in directory   -----------------------------------------
 
@@ -375,3 +345,44 @@ class Player(Base):
       return cover
     else:
       return None
+
+  # --- create directory info for given dir   --------------------------------
+
+  def _get_dirinfo(self,dir):
+    """ create directory info """
+
+    self._dirinfo =  {'dirs':  [], 'files': [], 'dur': []}
+    self.msg("Player: collecting dir-info for %s" % dir)
+
+    # first entry is parent directory
+    if self._dir != self._root_dir:
+      self._dirinfo['dirs'].append('..')
+
+    for f in os.listdir(dir):
+      if os.path.isfile(os.path.join(dir,f)):
+        if f.endswith(".mp3"):
+          self._dirinfo['files'].append(f)
+      else:
+        self._dirinfo['dirs'].append(f)
+
+    # ... and sort results
+    self._dirinfo['files'].sort()
+    self._dirinfo['dirs'].sort()
+
+    # set current file (keep existing)
+    if self._file:
+      self._dirinfo['cur_file'] = os.path.basename(self._file)
+    else:
+      if len(self._dirinfo['files']):
+        self._dirinfo['cur_file'] = self._dirinfo['files'][0]
+      else:
+        self._dirinfo['cur_file'] = None
+      self._api.update_state(section="player",key="last_file",
+                             value= self._dirinfo['cur_file'],publish=False)
+
+    # add add time-info
+    for f in self._dirinfo['files']:
+      secs = int(subprocess.check_output(["mp3info",
+                                          "-p","%S",
+                                          os.path.join(dir,f)]))
+      self._dirinfo['dur'].append((secs,self._pp_time(secs)))
