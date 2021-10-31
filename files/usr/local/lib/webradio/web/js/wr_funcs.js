@@ -58,7 +58,9 @@ function openTab(tabId,data) {
   }
 
   // update new state
-  $.post('/api/update_state',JSON.stringify(wr_state));
+  if (data !== 'sys') {
+    $.post('/api/update_state',JSON.stringify(wr_state));
+  }
 };
 
 /**
@@ -450,7 +452,8 @@ function player_play_dir(data) {
 function doRestart() {
   $.get("/api/sys_restart");
   showMsg("Restarting the application ...",2000);
-  openTab('tab_clock');
+  openTab('tab_clock','sys');
+  init_state();
 };
 
 /**
@@ -460,7 +463,8 @@ function doRestart() {
 function doStop() {
   $.get("/api/sys_stop");
   showMsg("Stopping the application ...",2000);
-  openTab('tab_clock');
+  openTab('tab_clock','sys');
+  init_state();
 };
 
 /**
@@ -470,7 +474,8 @@ function doStop() {
 function doHalt() {
   $.get("/api/sys_halt");
   showMsg("Shutting down the system ...",2000);
-  openTab('tab_clock');
+  openTab('tab_clock','sys');
+  init_state();
 };
 
 /**
@@ -480,7 +485,8 @@ function doHalt() {
 function doReboot() {
   $.get("/api/sys_reboot");
   showMsg("Rebooting the system ...",2000);
-  openTab('tab_clock');
+  openTab('tab_clock','sys');
+  init_state();
 };
 
 /**
