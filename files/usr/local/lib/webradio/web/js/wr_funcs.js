@@ -14,21 +14,23 @@
    server through events.
 */
 
-wr_state = {
-  'webgui': {
-    'tabid': 'tab_clock'
-  },
-  'mode':     null,
-  'radio':    {
-    'last_channel': null
-  },
-  'player': {
-    'last_dir': null,
-    'last_file': null,
-    'last_index': -1
-  }
-};
-
+function init_state() {
+  wr_state = {
+    'webgui': {
+      'tabid': 'tab_clock'
+    },
+    'mode':     null,
+    'radio':    {
+      'last_channel': null
+    },
+    'player': {
+      'last_dir': null,
+      'last_file': null,
+      'last_index': -1
+    }
+  };
+}
+init_state();
 wr_file2index = {};
 
 /**
