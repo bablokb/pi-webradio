@@ -15,6 +15,8 @@
 */
 
 function init_state() {
+  $(".tablink").removeClass("menu_active");     // deactivate everything
+  $(".tablink").addClass("menu_disabled");      // disable    everything
   wr_state = {
     'webgui': {
       'tabid': 'tab_clock'
@@ -40,6 +42,10 @@ wr_file2index = {};
 currentTab = 'tab_clock';
 
 function openTab(tabId,data) {
+  if (!wr_state.mode) {
+    // state is initial, not updated from server
+    return;
+  }
   if (tabId === wr_state.webgui.tabid) {     // nothing to do
     return;
   } else {
@@ -198,6 +204,9 @@ function handle_event_state(data) {
     }
   }
   if (data.mode) {
+    if (!wr_state.mode) {
+      $(".tablink").removeClass("menu_disabled");  // enable everything
+    }
     wr_state.mode = data.mode;
   }
   // open tab according to state
