@@ -151,7 +151,7 @@ can also try to write a friendly mail to the radio station.
 Status
 ------
 
-The current stable version is _0.96_. New versions will be available as soon
+The current stable version is _0.97_. New versions will be available as soon
 as they are stable.
 
   * 0.90: stable core, Web-GUI with basic functions
