@@ -58,7 +58,12 @@ body {
 
 .menu_active {
   color: black !important;
-  background-color: blue;   /* light gray */
+  background-color: blue;
+}
+
+.menu_disabled {
+  color: black !important;
+  background-color: black;
 }
 
 /* content container   ---------------------------------------------------- */
