@@ -181,3 +181,4 @@ with this project:
 
   - jquery 3.6.0 (<https://jquery.com/download>)
   - Fontawesome-free 5.13.3 (<https://fontawesome.com>)
+  - ReconnectingEventSource (https://github.com/fanout/reconnecting-eventsource/)
