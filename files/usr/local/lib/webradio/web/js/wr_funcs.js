@@ -31,7 +31,18 @@ function init_state() {
       'last_index': -1
     }
   };
+  wr_wait = true;
+  wait_for_server();
 }
+
+wr_wait = false;
+function wait_for_server() {
+  if (wr_wait) {
+    showMsg("waiting for server ...",1000);
+    setTimeout(wait_for_server,5000);
+  }
+};
+
 init_state();
 wr_file2index = {};
 
@@ -178,7 +189,8 @@ function addInfo(txt) {
 
 function get_events() {
   if (!!window.EventSource) {
-    var source = new EventSource('/api/get_events');
+    var source = new ReconnectingEventSource('/api/get_events',
+                                             {max_retry_time: 5000});
     source.addEventListener('message', function(e) {
       data = JSON.parse(e.data);
       if (['icy_meta', 'icy_name','id3'].includes(data.type)) {
@@ -205,6 +217,7 @@ function handle_event_state(data) {
   }
   if (data.mode) {
     if (!wr_state.mode) {
+      wr_wait = false;                             // stop waiting message
       $(".tablink").removeClass("menu_disabled");  // enable everything
     }
     wr_state.mode = data.mode;
