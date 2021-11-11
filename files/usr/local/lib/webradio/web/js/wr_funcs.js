@@ -88,8 +88,10 @@ function on_open_tab_play(internal=false) {
   // record-button only relevant for radio
   if (wr_state.mode == "player") {
     $('#wr_rec_btn').hide();
+    $('#wr_time').show();
   } else {
     $('#wr_rec_btn').show();
+    $('#wr_time').hide();
   }
 
   if (internal) {
