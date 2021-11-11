@@ -125,6 +125,7 @@ main {
 
 .play_left {                      /* single column flex-container */
   display: flex;
+  height: inherit;
   align-items: center;
   flex-direction: column;
   justify-content: space-between;
@@ -132,6 +133,7 @@ main {
 
 .play_right {                      /* single column flex-container */
   display: flex;
+  height: inherit;
   flex: 1;
   flex-direction: column;
 }
@@ -170,7 +172,6 @@ main {
 }
 
 .play_info {
-  height: inherit;
   max-height: 390px;
   flex-grow: 1;
   box-sizing: border-box;
@@ -183,6 +184,61 @@ main {
   color: lightblue;
   font-size: 36px;
   overflow-y: auto;
+}
+
+.play_time {
+  min-height: 100px;
+  display: flex;
+  width: inherit;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
+  margin-left: 15px;
+  color: blue;
+  font-size: 36px;
+}
+
+.play_time_cur {
+  padding-right: 15px;
+}
+
+.play_time_range {
+  flex:1;
+  color: blue;
+}
+
+.play_time_tot {
+  padding-left: 15px;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  margin-right: 15px;
+  width: 200px;
+  height: 7px;
+  background: lightblue;
+  border-radius: 5px;
+  background-image: linear-gradient(blue, blue);
+  background-size: 70% 100%;
+  background-repeat: no-repeat;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: blue;
+  cursor: ew-resize;
+  box-shadow: 0 0 2px 0 #555;
+  transition: background .3s ease-in-out;
+}
+
+input[type=range]::-webkit-slider-runnable-track  {
+  -webkit-appearance: none;
+  box-shadow: none;
+  border: none;
+  background: transparent;
 }
 
 /* --- file selection   --------------------------------------------------- */
