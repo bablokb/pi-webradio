@@ -12,7 +12,7 @@
 #
 # -----------------------------------------------------------------------------
 
-import os, datetime, subprocess, threading, copy, queue
+import os, time, datetime, subprocess, threading, copy, queue
 
 from webradio import Base
 
@@ -27,11 +27,12 @@ class Player(Base):
     self._api     = app.api
     self._backend = app.backend
 
-    self._lock    = threading.Lock()
-    self._file    = None
-    self._dirinfo = None
-    self._dirplay = None
-    self._dirstop = threading.Event()
+    self._lock        = threading.Lock()
+    self._file        = None
+    self._dirinfo     = None
+    self._dirplay     = None
+    self._dirstop     = threading.Event()
+    self._init_thread = None
 
     self.read_config()
     self.register_apis()
@@ -42,23 +43,17 @@ class Player(Base):
     """ read configuration from config-file """
 
     # section [PLAYER]
+    self._wait_dir = int(self.get_value(self._app.parser,"PLAYER",
+                                        "player_wait_dir",10))
     self._root_dir = self.get_value(self._app.parser,"PLAYER",
                                     "player_root_dir",
                                     os.path.expanduser("~"))
-    if not os.path.exists(self._root_dir):
-      self.msg("[WARNING] Player: root-directory %s of player does not exist" %
-               self._root_dir,True)
-      self._root_dir = os.path.expanduser("~")
-      self.msg("[WARNING] Player: using %s as fallback" % self._root_dir,True)
     self._root_dir = os.path.abspath(self._root_dir)
 
     self._def_dir = self.get_value(self._app.parser,"PLAYER",
                                     "player_def_dir",
                                     self._root_dir)
     self._def_dir = os.path.abspath(self._def_dir)
-    if not self._check_dir(self._def_dir):
-      self._def_dir = self._root_dir
-      self.msg("[WARNING] Player: using %s as fallback" % self._root_dir,True)
 
     self._dir = self._def_dir
     self.msg("Player: root dir:    %s" % self._root_dir)
@@ -95,18 +90,50 @@ class Player(Base):
     self.msg("Player: restoring persistent state")
     if 'player_dir' in state_map:
       self._dir = state_map['player_dir']
-      if not self._check_dir(self._dir):
-        self._dir = self._def_dir
+      self.msg("Player: currrent dir (tentative):  %s" % self._dir)
     if 'player_file' in state_map:
       self._file = state_map['player_file']
-      if self._file and not self._check_file(self._file):
-        self._file = None
-    self.msg("Player: currrent dir:  %s" % self._dir)
+      self.msg("Player: currrent file (tentative): %s" % self._file)
     self._api.update_state(section="player",key="last_dir",
                            value=self._dir[len(self._root_dir):]+os.path.sep,
                            publish=False)
+    self._init_thread = threading.Thread(target=self._init_state)
+    self._init_thread.start()
 
-    self._get_dirinfo(self._dir)
+  # --- lazy query of dir-info during initialization   ----------------------
+
+  def _init_state(self):
+    """ wait for directory and query dir-info """
+
+    # check directory (wait if necessary)
+    self.msg("Player: waiting for %s" % self._dir)
+    while not os.path.exists(self._dir) and self._wait_dir:
+      time.sleep(1)
+      self._wait_dir -= 1
+
+    # check again
+    if self._check_dir(self._dir):
+      self._get_dirinfo(self._dir)
+
+    else:
+      # oops, check failed, now check everything
+      if not os.path.exists(self._root_dir):
+        self.msg("[WARNING] Player: root-directory %s of player does not exist" %
+                 self._root_dir,True)
+        self._root_dir = os.path.expanduser("~")
+        self.msg("[WARNING] Player: using %s as fallback" % self._root_dir,True)
+      if not self._check_dir(self._def_dir):
+        self._def_dir = self._root_dir
+        self.msg("[WARNING] Player: using %s as fallback" % self._root_dir,True)
+      self._dir = self._def_dir
+      self._get_dirinfo(self._dir)
+
+    # also check files now
+    if self._file and not self._check_file(self._file):
+      self._file = None
+
+    self._init_thread = None
+    self.msg("Player: currrent dir:  %s" % self._dir)
     self.msg("Player: currrent file: %s" % self._file)
 
   # --- check directory   ---------------------------------------------------
@@ -154,6 +181,9 @@ class Player(Base):
 
   def player_play_file(self,file=None,last=True):
     """ start playing """
+
+    if self._init_thread:
+      self._init_thread.join()
 
     if file:
       if not os.path.isabs(file):
@@ -222,6 +252,9 @@ class Player(Base):
         to root_dir, otherwise relative to the current directory
     """
 
+    if self._init_thread:
+      self._init_thread.join()
+
     self._lock.acquire()
 
     if not dir:
@@ -269,6 +302,9 @@ class Player(Base):
     """ play all files in the current directory starting with
         the given file
     """
+
+    if self._init_thread:
+      self._init_thread.join()
 
     # check existing player-thread, stop it and wait until it is finished
     if self._dirplay:
