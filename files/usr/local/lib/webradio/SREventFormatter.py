@@ -27,7 +27,7 @@ class EventFormatter(object):
     'radio_play_channel': 'start playing channel {nr} ({name})',
     'play': 'playing {value}',
     'pause': 'pausing {value}',
-    'file_info': '{name}: {duration}',
+    'file_info': '{name}: {total_pretty}',
     'id3': '{tag}: {value}',
     'keep_alive': 'current time: {value}',
     'eof': '{name} finished',
