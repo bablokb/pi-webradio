@@ -20,7 +20,7 @@ from webradio import EventFormatter
 class RadioEvents(Base):
   """ Multiplex events to consumers """
 
-  QUEUE_SIZE          = 10   # size of client event-queues
+  QUEUE_SIZE          = 20   # size of client event-queues
   KEEP_ALIVE_INTERVAL = 15   # send keep-alive every x seconds
 
   def __init__(self,app):
