@@ -43,9 +43,9 @@
     <div id="wr_info_column" class="play_right">       <!-- second column  -->
       <div id="wr_infos" class="play_info"></div>      <!-- info area      -->
       <div id="wr_time" class="play_time">             <!-- current/total  -->
-        <div id="wr_time_cur" class="play_time_cur">00:00</div>
+        <div id="wr_time_cur" class="play_time_cur"></div>
         <input type="range" class="play_time_range"></input>
-        <div id="wr_time_tot" class="play_time_tot">22:22</div>
+        <div id="wr_time_tot" class="play_time_tot"></div>
       </div>
     </div>
   </div>
