@@ -28,7 +28,8 @@ function init_state() {
     'player': {
       'last_dir': null,
       'last_file': null,
-      'last_index': -1
+      'last_index': -1,
+      'time': [null,null]
     }
   };
   wr_wait = true;
@@ -290,6 +291,12 @@ function handle_event_dir_select(data) {
   if (wr_state.player.last_dir !== data) {
     player_select_dir({'dir': data});
   }
+}
+
+function handle_event_file_info(data) {
+  wr_state.player.time = [0,data.total];
+  $("#wr_time_cur").text("00:00");
+  $("#wr_time_tot").text(data.total_pretty);
 }
 
 /**
