@@ -16,7 +16,7 @@ After=pi-webradio.service
 
 [Service]
 Type=simple
-User=bablokb
+User=XXX
 ExecStart=/usr/local/bin/webradio_cli.py -k -e -o
 
 [Install]
