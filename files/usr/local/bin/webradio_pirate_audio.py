@@ -58,13 +58,13 @@ class PirateAudio(RadioCli):
   # --- update display   -----------------------------------------------------
 
   def _update_display(self,logo):
-    """ update display with logo """
+    """ update display with logo (logo is relative to the web-root) """
 
     if logo == self._last_logo:
       return
 
     logo_file = os.path.join(self.pgm_dir,"..","lib","webradio",
-                             "web","images",logo)
+                             "web",logo)
     if not os.path.exists(logo_file):
       logo_file = os.path.join(self.pgm_dir,"..","lib","webradio",
                              "web","images","default.png")
