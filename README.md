@@ -106,7 +106,12 @@ the update script will not overwrite any of your configuration files in
 
     cd pi-webradio
     git pull
+    sudo stop pi-webradio-pirate-audio.service # if you use pirate-audio-hats
+    sudo stop pi-webradio.service
     sudo tools/install [username]
+    sudo systemctl daemon-reload
+    sudo start pi-webradio.service
+    sudo start pi-webradio-pirate-audio.service # if you use pirate-audio-hats
 
 The second command will update the local copy of the project-repository.
 
