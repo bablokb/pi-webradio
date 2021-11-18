@@ -142,7 +142,10 @@ This project does not distribute any logos for the sample channel list
 to prevent any copyright-trouble. Please download the files yourself
 and copy them to the `files/usr/local/lib/webradio/web/images` directory
 (before installation, afterwards use the same path without the
-`files`-prefix). The image-size should be about 256x256 pixel.
+`files`-prefix). The image-size should be about 256x256 pixel. If you
+use a [Pirate-Audio hat](doc/pirate-audio.md), scale the logos to a
+maximum of 240x240 pixel, since the integrated display does not
+support larger images.
 
 Finding the correct urls for your favorite radio-stations is not always
 simple, there are various portals which can serve as a starting point.
