@@ -46,6 +46,7 @@ function wait_for_server() {
 
 init_state();
 wr_file2index = {};
+wr_isPause = false;
 
 /**
   Tab navigation
