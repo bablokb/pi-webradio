@@ -58,6 +58,9 @@ class RadioCli(object):
     parser.add_argument('-k', '--keyboard', action='store_true',
       dest='keyboard', default=False,
       help="key-control mode (maps keys to APIs)")
+    parser.add_argument('-v', '--voice', action='store_true',
+      dest='voice', default=False,
+      help="voice-control mode (needs Vosk and a microphone)")
 
     parser.add_argument('-e', '--events', action='store_true',
       dest='events', default=False,
