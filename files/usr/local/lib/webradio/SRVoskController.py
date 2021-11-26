@@ -26,8 +26,8 @@ class VoskController(Base):
 
   # TODO: move to /etc/.pi-webradio.vosk.json
   WORDMAP = {
-    "radio an":       ["radio_on"],
-    "radio aus":      ["radio_off"],
+    "an":             ["radio_on"],
+    "aus":            ["radio_off"],
     "lauter":         ["vol_up"],
     "leiser":         ["vol_down"],
     "kanal eins":     ["radio_play_channel", "nr=1"],
@@ -42,7 +42,9 @@ class VoskController(Base):
     "kanal neun":     ["radio_play_channel", "nr=9"],
     "kanal siebzehn": ["radio_play_channel", "nr=17"],
     "ndr info":       ["radio_play_channel", "nr=17"],
-    "stop":           ["sys_stop"]
+    "stop":           ["sys_stop"],
+    "ende":           ["_quit"],
+    "radio":          ["_toggle_cmd"]
     }
 
   # --- constructor   --------------------------------------------------------
@@ -56,8 +58,20 @@ class VoskController(Base):
     self._wmap        = VoskController.WORDMAP
     self._model       = os.path.join(pgm_dir,"..","lib","vosk","model")
     self._device_id   = 1
+    self._cmd_mode    = False
 
-    vosk.setLogLevel(-2)  # AssertFailed:-3,Error:-2,Warning:-1,Info:0
+    vosk.SetLogLevel(-2)  # AssertFailed:-3,Error:-2,Warning:-1,Info:0
+
+  # --- toggle command-mode   ------------------------------------------------
+
+  def _toggle_cmd(self,mode=None):
+    """ toggle command-mode """
+
+    if mode is None:
+      self._cmd_mode = not self._cmd_mode
+    else:
+      self._cmd_mode = mode
+    self.msg("VoskController: command-mode set to: '%r'" % self._cmd_mode)
 
   # --- process audio-block   ------------------------------------------------
 
@@ -98,7 +112,19 @@ class VoskController(Base):
             phrase = json.loads(rec.FinalResult())['text']
             self.msg("VoskController: phrase: '%s'" % phrase)
             if phrase in self._wmap:
-              yield self._wmap[phrase]
+              # only process valid commands ...
+              if self._wmap[phrase][0] == "_toggle_cmd":
+                self._toggle_cmd(True)
+              elif self._cmd_mode:
+                # ... and only if in command-mode
+                yield self._wmap[phrase]
+                self._toggle_cmd(False)
+              else:
+                self.msg("VoskController: not in command-mode, ignoring %s" % phrase)
+            elif len(phrase):
+              # non-empty, but unknown command, so clear command-mode
+              self.msg("VoskController: unknown phrase")
+              self._toggle_cmd(False)
     except GeneratorExit:
       pass
     except:
