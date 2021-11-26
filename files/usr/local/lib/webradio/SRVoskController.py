@@ -57,6 +57,8 @@ class VoskController(Base):
     self._model       = os.path.join(pgm_dir,"..","lib","vosk","model")
     self._device_id   = 1
 
+    vosk.setLogLevel(-2)  # AssertFailed:-3,Error:-2,Warning:-1,Info:0
+
   # --- process audio-block   ------------------------------------------------
 
   def _process_audio_block(self,indata, frames, time, status):
