@@ -15,6 +15,7 @@ The software has the following components:
   - a [web-GUI](doc/web-gui.md)
   - a [commandline client](doc/webradio_cli.md)
   - an integrated [client for Pirate-Audio-Hats](doc/pirate-audio.md)
+  - a highly experimental [voice control client](doc/voice-control.md)
 
 Although the webradio can be controlled from any browser, it is also
 possible to implement other clients by just using the [web-API](doc/API.md)
