@@ -79,7 +79,7 @@
     "logo": "WDR3.png"
   },
   { "name": "NDR Info",
-    "url": "http://ndr-edge-30c1-dus-ts-cdn.cast.addradio.de/ndr/ndrinfo/niedersachsen/mp3/128/stream.mp3",
+    "url": "http://icecast.ndr.de/ndr/ndrinfo/niedersachsen/mp3/128/stream.mp3",
     "logo": "NDR-Info.png"
   },
   { "name": "Bremen Zwei",
