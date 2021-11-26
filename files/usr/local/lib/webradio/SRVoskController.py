@@ -27,7 +27,7 @@ class VoskController(Base):
   # TODO: move to /etc/.pi-webradio.vosk.json
   WORDMAP = {
     "radio an":       ["radio_on"],
-    "radio aus":      ["radio_on"],
+    "radio aus":      ["radio_off"],
     "lauter":         ["vol_up"],
     "leiser":         ["vol_down"],
     "kanal eins":     ["radio_play_channel", "nr=1"],
