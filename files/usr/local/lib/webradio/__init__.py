@@ -25,9 +25,9 @@ from . SRRadioClient    import RadioClient    as RadioClient
 from . SRKeyController  import KeyController  as KeyController
 
 # voice control with Vosk is optional
-_have_vosk = False
+have_vosk = False
 try:
   from . SRVoskController  import VoskController  as VoskController
-  _have_vosk = True
+  have_vosk = True
 except:
   pass
