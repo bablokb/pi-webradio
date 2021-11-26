@@ -21,7 +21,7 @@ from   argparse import ArgumentParser
 sys.path.append(os.path.join(
   os.path.dirname(sys.argv[0]),"../lib"))
 
-from webradio import RadioClient, KeyController
+from webradio import RadioClient, KeyController, have_vosk
 
 # --- application class   ----------------------------------------------------
 
@@ -230,18 +230,26 @@ class RadioCli(object):
     # process stdin (if available)
     self.process_stdin()
 
-    # process keyboard / interactive input
-    if self.keyboard:
-      kc = KeyController(self.get_stop_event(),self.debug)
-      for api in kc.api_from_key():
+    # process keyboard / voice / interactive input
+    if self.keyboard or self.voice:
+      if self.keyboard:
+        ctrl = KeyController(self.get_stop_event(),self.debug)
+      else:
+        if have_vosk:
+          from webradio import VoskController
+          ctrl = VoskController(self.get_stop_event(),self.debug)
+        else:
+          self.msg("webradio_cli: voice-support not installed",force=True)
+          return
+      for api in ctrl.api_from_key():
         if api[0] == "_quit":
-          break
+          return
         elif api[0] == "_help":
-          kc.print_mapping()
+          ctrl.print_mapping()
         else:
           self.process_api(api[0],api[1:],sync=False)
         if api[0] == 'sys_stop':
-          break
+          return
     elif self.interactive:
       self._api_list = self._cli.get_api_list()
       readline.set_completer(lambda text,state: self.completer(text,state))
@@ -251,13 +259,11 @@ class RadioCli(object):
         if not len(line):
           continue
         elif line in ['q','Q','quit','Quit']:
-          break
+          return
         api  = shlex.split(line)
         self.process_api(api[0],api[1:],sync=False)
         if api[0] == 'sys_stop':
-          break
-
-    self.close()
+          return
 
 # --- main program   ---------------------------------------------------------
 
@@ -269,3 +275,4 @@ if __name__ == '__main__':
   # create client-class and parse arguments
   app = RadioCli()
   app.run()
+  app.close()
