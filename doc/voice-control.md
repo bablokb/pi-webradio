@@ -31,6 +31,33 @@ You need to configure your microphone device-id and map phrases
 to api-calls.
 
 
+LED-Support
+===========
+
+The voice-controller optionally supports LEDs, mainly because
+the ReSpeaker-HAT (a microphone-array with four microphones)
+from Seeed-Studio has a nice APA102 LED-ring.
+
+There is a sample implementation of the LEDController in the `misc`
+directory. If you have a ReSpeaker, copy the relevant files:
+
+    sudo cp  misc/LEDController.py /usr/local/lib/webradio
+    sudo cp  misc/apa102.py /usr/local/lib/webradio
+    sudo chown root:root /usr/local/lib/webradio/LEDController.py
+    sudo chown root:root /usr/local/lib/webradio/apa102.py
+
+Otherwise, you have to provide your own implementation. Note that
+the LEDController-class can actually do anything, you are not limited
+to LEDs.
+
+The methods of the class `LEDController` are callbacks for certain
+events, e.g. when the wakeup-word is detected and the mic waits for
+a command, the LED-ring will signal "active".
+
+If you don't have a ReSpeaker and don't provide your own implementation,
+then don't copy anything or else you will run into trouble.
+
+
 Usage
 =====
 
