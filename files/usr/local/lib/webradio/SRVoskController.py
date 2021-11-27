@@ -17,6 +17,13 @@ import os, sys, queue, json, traceback, vosk, sounddevice as sd
 
 from webradio import Base
 
+have_LEDs = False
+try:
+  import webradio.LEDController as LEDController
+  have_LEDs = True
+except:
+  pass
+
 class VoskController(Base):
   """ map words phrases to api-calls """
 
@@ -65,6 +72,9 @@ class VoskController(Base):
     else:
       vosk.SetLogLevel(-2)  # AssertFailed:-3,Error:-2,Warning:-1,Info:0
 
+    if have_LEDs:
+      self._leds = LEDController.LEDController()
+
   # --- set command-mode   ---------------------------------------------------
 
   def _set_cmd_mode(self,mode):
@@ -85,6 +95,41 @@ class VoskController(Base):
     else:
       self._audio_queue.put(bytes(indata))
 
+  # --- hook for active command-mode   ---------------------------------------
+
+  def _on_active(self):
+    """ active mode is set to on """
+
+    self._set_cmd_mode(True)
+    if have_LEDs:
+      self._leds.active()
+
+  # --- hook for inactive command-mode   -------------------------------------
+
+  def _on_inactive(self):
+    """ active mode is set to off """
+
+    self._set_cmd_mode(False)
+    if have_LEDs:
+      self._leds.inactive()
+
+  # --- hook for successful command   ----------------------------------------
+
+  def _on_success(self):
+    """ command executed successfully """
+
+    if have_LEDs:
+      self._leds.success()
+
+  # --- hook for unknown command   -------------------------------------------
+
+  def _on_unknown(self):
+    """ command unknown """
+
+    self._set_cmd_mode(False)
+    if have_LEDs:
+      self._leds.unknown()
+
   # --- yield api from detected words/phrases   ------------------------------
 
   def api_from_key(self):
@@ -103,7 +148,13 @@ class VoskController(Base):
                              callback=self._process_audio_block):
 
         rec = vosk.KaldiRecognizer(model,rate,
-                                   json.dumps(list(self._wmap.keys())))
+                        json.dumps(list(self._wmap.keys())))
+
+        # signal ready ...
+        self._on_active()
+        self._on_inactive()
+
+        # ... and listen
         while True:
           data = self._audio_queue.get()
           if not data:
@@ -114,17 +165,21 @@ class VoskController(Base):
             if phrase in self._wmap:
               # only process valid commands ...
               if self._wmap[phrase][0] == "_set_cmd_mode":
-                self._set_cmd_mode(True)
+                self._on_active()
               elif self._cmd_mode:
                 # ... and only if in command-mode
+                self._on_success()
                 yield self._wmap[phrase]
-                self._set_cmd_mode(False)
+                self._on_inactive()
               else:
-                self.msg("VoskController: not in command-mode, ignoring %s" % phrase)
+                self.msg("VoskController: not in command-mode, ignoring %s" %
+                         phrase)
             elif len(phrase):
-              # non-empty, but unknown command, so clear command-mode
+              # non-empty, but unknown phrase
               self.msg("VoskController: unknown phrase")
-              self._set_cmd_mode(False)
+              if self._cmd_mode:
+                self._on_unknown()
+                self._on_inactive()
     except GeneratorExit:
       pass
     except:
