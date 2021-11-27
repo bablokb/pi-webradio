@@ -44,7 +44,7 @@ class VoskController(Base):
     "ndr info":       ["radio_play_channel", "nr=17"],
     "stop":           ["sys_stop"],
     "ende":           ["_quit"],
-    "radio":          ["_toggle_cmd"]
+    "radio":          ["_set_cmd_mode"]
     }
 
   # --- constructor   --------------------------------------------------------
@@ -65,15 +65,12 @@ class VoskController(Base):
     else:
       vosk.SetLogLevel(-2)  # AssertFailed:-3,Error:-2,Warning:-1,Info:0
 
-  # --- toggle command-mode   ------------------------------------------------
+  # --- set command-mode   ---------------------------------------------------
 
-  def _toggle_cmd(self,mode=None):
+  def _set_cmd_mode(self,mode):
     """ toggle command-mode """
 
-    if mode is None:
-      self._cmd_mode = not self._cmd_mode
-    else:
-      self._cmd_mode = mode
+    self._cmd_mode = mode
     self.msg("VoskController: command-mode set to: '%r'" % self._cmd_mode)
 
   # --- process audio-block   ------------------------------------------------
@@ -116,18 +113,18 @@ class VoskController(Base):
             self.msg("VoskController: phrase: '%s'" % phrase)
             if phrase in self._wmap:
               # only process valid commands ...
-              if self._wmap[phrase][0] == "_toggle_cmd":
-                self._toggle_cmd(True)
+              if self._wmap[phrase][0] == "_set_cmd_mode":
+                self._set_cmd_mode(True)
               elif self._cmd_mode:
                 # ... and only if in command-mode
                 yield self._wmap[phrase]
-                self._toggle_cmd(False)
+                self._set_cmd_mode(False)
               else:
                 self.msg("VoskController: not in command-mode, ignoring %s" % phrase)
             elif len(phrase):
               # non-empty, but unknown command, so clear command-mode
               self.msg("VoskController: unknown phrase")
-              self._toggle_cmd(False)
+              self._set_cmd_mode(False)
     except GeneratorExit:
       pass
     except:
