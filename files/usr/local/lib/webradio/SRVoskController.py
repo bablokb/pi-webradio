@@ -60,7 +60,10 @@ class VoskController(Base):
     self._device_id   = 1
     self._cmd_mode    = False
 
-    vosk.SetLogLevel(-2)  # AssertFailed:-3,Error:-2,Warning:-1,Info:0
+    if self.debug:
+      vosk.SetLogLevel(0)   # AssertFailed:-3,Error:-2,Warning:-1,Info:0
+    else:
+      vosk.SetLogLevel(-2)  # AssertFailed:-3,Error:-2,Warning:-1,Info:0
 
   # --- toggle command-mode   ------------------------------------------------
 
