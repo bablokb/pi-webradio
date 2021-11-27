@@ -148,7 +148,7 @@ class VoskController(Base):
                              callback=self._process_audio_block):
 
         rec = vosk.KaldiRecognizer(model,rate,
-                        json.dumps(list(self._wmap.keys())))
+                   json.dumps(list(self._wmap.keys()),ensure_ascii=False))
 
         # signal ready ...
         self._on_active()
