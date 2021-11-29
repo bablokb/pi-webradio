@@ -46,7 +46,34 @@ function wait_for_server() {
 
 init_state();
 wr_file2index = {};
+
+/**
+  Timer-function for elapsed playing time
+
+  This is not exact due to multiple reasons, e.g. server playing the file
+  and client showing elapsed-time, elapsed time lost when toggling pause.
+*/
 wr_isPause = false;
+wr_update_play_time_id = null;
+function update_play_time() {
+  if (!wr_isPause) {
+    // update elapsed time and display
+    wr_state.player.time[0] += 1;
+    h = ~~(wr_state.player.time[0] / 3600);
+    m = ~~((wr_state.player.time[0]-h*3600) / 60);
+    s = Math.round(wr_state.player.time[0] -h*3600 - m*60);
+    if (h>0) {
+      elapsed = formatTime(h)+':'+formatTime(m)+':'+formatTime(s);
+    } else {
+      elapsed = formatTime(m)+':'+formatTime(s);
+    }
+    $("#wr_time_cur").text(elapsed);
+    elapsed_pc = 100*wr_state.player.time[0]/wr_state.player.time[1];
+    $("#wr_time_range").val(elapsed_pc);
+    $("#wr_time_range").css("background-size",elapsed_pc+"% 100%");
+  }
+}
+
 
 /**
   Tab navigation
@@ -245,6 +272,13 @@ function handle_event_rec_stop(data) {
 }
 
 function handle_event_play(file) {
+
+  // start timer for update of elapsed-time
+  clearInterval(wr_update_play_time_id);
+  wr_isPause = false;
+  wr_update_play_time_id = setInterval(update_play_time,1000);
+
+  // enable pause-button
   $('#wr_pause_btn').removeClass('far').addClass('fas').prop("disabled", false);
 
   // update state
@@ -266,10 +300,15 @@ function handle_event_play(file) {
 }
 
 function handle_event_pause(data) {
+  wr_isPause = true;
   $('#wr_pause_btn').removeClass('fas').addClass('far');
 }
 
 function handle_event_eof(data) {
+  if (wr_update_play_time_id) {
+    clearInterval(wr_update_play_time_id);
+    wr_update_play_time_id = null;
+  }
   $('#wr_infos').empty();
   $('#wr_pause_btn').removeClass('far').addClass('fas').prop("disabled", true);
   if (data.last) {
