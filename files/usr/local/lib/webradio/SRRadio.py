@@ -110,7 +110,7 @@ class Radio(Base):
         nr += 1
     except:
       self.msg("Radio: Loading channels failed")
-      if self. debug:
+      if self.debug:
         traceback.print_exc()
 
   # --- get channel info   ----------------------------------------------------
