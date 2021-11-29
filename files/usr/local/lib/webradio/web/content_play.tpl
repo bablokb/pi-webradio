@@ -44,7 +44,8 @@
       <div id="wr_infos" class="play_info"></div>      <!-- info area      -->
       <div id="wr_time" class="play_time">             <!-- current/total  -->
         <div id="wr_time_cur" class="play_time_cur"></div>
-        <input type="range" class="play_time_range"></input>
+        <input id="wr_time_range" type="range" class="play_time_range"
+               min="0" max="100"></input>
         <div id="wr_time_tot" class="play_time_tot"></div>
       </div>
     </div>
