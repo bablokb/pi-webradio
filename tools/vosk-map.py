@@ -164,7 +164,9 @@ class App(object):
       value = ["radio_play_channel", "nr=%d" % nr]
       if nr in words:
         key = "%s %s" % (words["channel"], words[nr])
-        config["api_map"][key] = value
+      else:
+        key = "%s %d" % (words["channel"], nr)
+      config["api_map"][key] = value
 
       # add api by channel name
       key = self._convert_name(channel["name"])
