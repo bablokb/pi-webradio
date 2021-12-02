@@ -94,7 +94,6 @@ class App(object):
 
     self._channels = []
 
-    print("Loading channels from %s" % self.file[0])
     f = open(self.file[0],"r")
     self._channels = json.load(f)
     f.close()
