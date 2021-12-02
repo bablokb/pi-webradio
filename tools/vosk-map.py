@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 # ----------------------------------------------------------------------------
-# A simple cli-client for the pi-webradio.
+# Create phrase-api map from pi-webradio.channels (pass as argument).
 #
 # Author: Bernhard Bablok
 # License: GPL3
@@ -15,45 +15,12 @@ from   argparse import ArgumentParser
 
 # --- language-mappings   ----------------------------------------------------
 
-WORDS_DE = {
-  "on":          "an",
-  "off":         "aus",
-  "volume up":   "lauter",
-  "volume down": "leiser",
-  "channel":     "kanal",
-  "next":        "weiter",
-  "previous":    "zurück",
-  "stop":        "stop",
-  "quit":        "ende",
-  "radio":       "radio",
-  1:             "eins",
-  2:             "zwei",
-  3:             "drei",
-  4:             "vier",
-  5:             "fünf"
-  }
-
-WORDS_EN = {
-  "on":          "on",
-  "off":         "off",
-  "volume up":   "volume up",
-  "volume down": "volume down",
-  "channel":     "channel",
-  "next":        "next",
-  "previous":    "previous",
-  "stop":        "stop",
-  "quit":        "quit",
-  "radio":       "radio",
-  1:             "one",
-  2:             "two",
-  3:             "three",
-  4:             "four",
-  5:             "five"
-  }
+from word_map_de import words_de
+from word_map_en import words_en
 
 WORDS_MAPS = {
-  "de": WORDS_DE,
-  "en": WORDS_EN
+  "de": words_de,
+  "en": words_en
   }
 
 # --- application class   ----------------------------------------------------
