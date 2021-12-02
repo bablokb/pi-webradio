@@ -93,6 +93,33 @@ class App(object):
       default=1, help='channel file name')
     return parser
 
+  # --- convert name   -------------------------------------------------------
+
+  def _convert_name(self,name):
+    """ convert numbers within name """
+
+    words = WORDS_MAPS[self.lang]
+
+    name = name.lower()
+
+    parts = name.split()
+    result = []
+    for part in parts:
+      # check for number ...
+      try:
+        part_int = int(part)
+        is_int = True
+      except:
+        is_int = False
+
+      if is_int and part_int in words:
+        # ...  and convert to text
+        result.append(words[part_int])
+      else:
+        result.append(part)
+
+    return " ".join(result)
+
   # --- read channel file   --------------------------------------------------
 
   def read_channels(self):
@@ -140,7 +167,7 @@ class App(object):
         config["api_map"][key] = value
 
       # add api by channel name
-      key = channel["name"]
+      key = self._convert_name(channel["name"])
       config["api_map"][key] = value
 
     print(json.dumps(config,indent=2,ensure_ascii=False))
