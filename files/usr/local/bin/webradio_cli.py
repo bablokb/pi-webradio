@@ -237,8 +237,7 @@ class RadioCli(object):
       else:
         if have_vosk:
           from webradio import VoskController
-          ctrl = VoskController(self.get_stop_event(),
-                                os.path.dirname(sys.argv[0]),self.debug)
+          ctrl = VoskController(self.get_stop_event(),self.debug)
         else:
           self.msg("webradio_cli: voice-support not installed",force=True)
           return
