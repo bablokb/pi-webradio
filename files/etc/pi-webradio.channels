@@ -44,7 +44,7 @@
     "logo": "NDR-Kultur.png"
   },
 
-  { "name": "hr2 kultur",
+  { "name": "hr 2 kultur",
     "url":  "http://hr-hr2-live.cast.addradio.de/hr/hr2/live/mp3/128/stream.mp3",
     "logo": "hr2-Kultur.png"
   },
@@ -64,7 +64,7 @@
     "logo": "Klassik-im-Konzert.png"
   },
 
-  { "name": "Kulturradio",
+  { "name": "Kultur Radio",
     "url":  "http://rbb-rbbkultur-live.cast.addradio.de/rbb/rbbkultur/live/mp3/high",
     "logo": "rbb-Kultur.png"
   },
@@ -83,7 +83,7 @@
     "logo": "NDR-Info.png"
   },
   { "name": "Bremen Zwei",
-    "url": "http://rb-bremenzwei-live.cast.addradio.de/rb/bremenzwei/live/mp3/128/stream.mp3",
+    "url": "http://icecast.radiobremen.de/rb/bremenzwei/live/mp3/128/stream.mp3",
     "logo": "Bremen-Zwei.png"
   },
   { "name": "Ö 1",
