@@ -14,17 +14,17 @@
     "logo": "Bayern3.png"
   },
 
-  { "name": "BR-Klassik",
+  { "name": "BR Klassik",
     "url":  "http://dispatcher.rndfnk.com/br/brklassik/live/mp3/high",
     "logo": "BR-Klassik.png"
   },
 
-  { "name": "BR24",
+  { "name": "BR 24",
     "url":  "http://dispatcher.rndfnk.com/br/br24/live/mp3/mid",
     "logo": "BR24.png"
   },
 
-  { "name": "BR24live",
+  { "name": "BR 24 live",
     "url":  "http://dispatcher.rndfnk.com/br/br24live/live/mp3/mid",
     "logo": "BR24live.png"
   },
@@ -44,7 +44,7 @@
     "logo": "NDR-Kultur.png"
   },
 
-  { "name": "hr2-kultur",
+  { "name": "hr2 kultur",
     "url":  "http://hr-hr2-live.cast.addradio.de/hr/hr2/live/mp3/128/stream.mp3",
     "logo": "hr2-Kultur.png"
   },
@@ -86,7 +86,7 @@
     "url": "http://rb-bremenzwei-live.cast.addradio.de/rb/bremenzwei/live/mp3/128/stream.mp3",
     "logo": "Bremen-Zwei.png"
   },
-  { "name": "Ö1",
+  { "name": "Ö 1",
     "url": "http://orf-live.ors-shoutcast.at/oe1-q2a",
     "logo": "OE1.png"
   }       
