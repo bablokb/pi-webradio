@@ -1,0 +1,24 @@
+# --------------------------------------------------------------------------
+# Systemd service Definition for pi-webradio-vosk.service.
+#
+# The service just starts the script /usr/local/bin/webradio_cli.py
+# for the voice-recognition software Vosk.
+#
+# Author: Bernhard Bablok
+# License: GPL3
+#
+# Website: https://github.com/bablokb/pi-webradio
+#
+# --------------------------------------------------------------------------
+
+[Unit]
+Description=pi-webradio vosk client
+After=pi-webradio.service
+
+[Service]
+Type=simple
+User=bablokb
+ExecStart=/usr/local/bin/webradio_cli.py -v
+
+[Install]
+WantedBy=network.target
