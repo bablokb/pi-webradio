@@ -27,44 +27,16 @@ except:
 class VoskController(Base):
   """ map words phrases to api-calls """
 
-  TIMEOUT = 5             # check stop-event every x seconds
-
-  # --- builtin-word-map   ---------------------------------------------------
-
-  # TODO: move to /etc/.pi-webradio.vosk.json
-  WORDMAP = {
-    "an":             ["radio_on"],
-    "aus":            ["radio_off"],
-    "lauter":         ["vol_up"],
-    "leiser":         ["vol_down"],
-    "kanal eins":     ["radio_play_channel", "nr=1"],
-    "kanal zwei":     ["radio_play_channel", "nr=2"],
-    "kanal drei":     ["radio_play_channel", "nr=3"],
-    "kanal vier":     ["radio_play_channel", "nr=4"],
-    "br klassik":     ["radio_play_channel", "nr=4"],
-    "kanal fünf":     ["radio_play_channel", "nr=5"],
-    "kanal sechs":    ["radio_play_channel", "nr=6"],
-    "kanal sieben":   ["radio_play_channel", "nr=7"],
-    "kanal acht":     ["radio_play_channel", "nr=8"],
-    "kanal neun":     ["radio_play_channel", "nr=9"],
-    "kanal siebzehn": ["radio_play_channel", "nr=17"],
-    "ndr info":       ["radio_play_channel", "nr=17"],
-    "stop":           ["sys_stop"],
-    "ende":           ["_quit"],
-    "radio":          ["_set_cmd_mode"]
-    }
+  CONFIG_FILE = "/etc/pi-webradio.vosk"
 
   # --- constructor   --------------------------------------------------------
 
-  def __init__(self,stop,pgm_dir,debug=False):
+  def __init__(self,stop,debug=False):
     """ constructor """
 
     self._stop        = stop
     self.debug        = debug
     self._audio_queue = queue.Queue()
-    self._wmap        = VoskController.WORDMAP
-    self._model       = os.path.join(pgm_dir,"..","lib","vosk","model")
-    self._device_id   = 1
     self._cmd_mode    = False
 
     if self.debug:
@@ -74,6 +46,45 @@ class VoskController(Base):
 
     if have_LEDs:
       self._leds = LEDController.LEDController()
+
+    self._read_config()
+
+  # --- read vosk-configuration   --------------------------------------------
+
+  def _read_config(self):
+    """ read vosk-configuration """
+
+    self._model       = '/usr/local/lib/vosk/model'
+    self._device_id   = 1
+    self._wmap        = {
+      "an":             ["radio_on"],
+      "aus":            ["radio_off"],
+      "lauter":         ["vol_up"],
+      "leiser":         ["vol_down"],
+      "kanal eins":     ["radio_play_channel", "nr=1"],
+      "stop":           ["sys_stop"],
+      "ende":           ["_quit"],
+      "radio":          ["_set_cmd_mode"]
+      }
+
+    try:
+      self.msg("VoskController: reading vosk-config from %s" %
+                                                   VoskController.CONFIG_FILE)
+      f = open(VoskController.CONFIG_FILE,"r")
+      vosk_config = json.load(f)
+      f.close()
+
+      if "model" in vosk_config:
+        self._model = vosk_config["model"]
+      if "device_id" in vosk_config:
+        self._device_id = vosk_config["device_id"]
+      if "api_map" in vosk_config:
+        self._wmap = vosk_config["api_map"]
+
+    except:
+      self.msg("VoskController: loading configuration failed, using defaults")
+      if self.debug:
+        traceback.print_exc()
 
   # --- set command-mode   ---------------------------------------------------
 
