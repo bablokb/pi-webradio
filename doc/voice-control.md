@@ -20,7 +20,7 @@ Install Vosk and download a suitable model:
     sudo ln -s vosk-model-small-de-0.15 /usr/local/lib/vosk/model
 
 There is a helper-script with these commands: just edit the model-name
-within `tools/vosk-install` and run it.
+within `tools/install-vosk` and run it.
 
 
 Configuration
