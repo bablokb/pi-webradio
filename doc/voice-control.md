@@ -13,7 +13,7 @@ Installation
 
 Install Vosk and download a suitable model:
 
-    sudo pip3 install vosk soundfile
+    sudo pip3 install vosk sounddevice
     wget https://alphacephei.com/kaldi/models/vosk-model-small-de-0.15.zip
     sudo mkdir /usr/local/lib/vosk
     sudo unzip -d /usr/local/lib/vosk vosk-model-small-de-0.15.zip
