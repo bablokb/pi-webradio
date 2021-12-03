@@ -22,6 +22,10 @@ Install Vosk and download a suitable model:
 There is a helper-script with these commands: just edit the model-name
 within `tools/install-vosk` and run it.
 
+Note that the installation of Vosk is necessary where the controller
+runs, not where the webradio is installed (but it could of course be
+the same physical system).
+
 
 Configuration
 =============
@@ -36,6 +40,20 @@ review it and update as necessary.
 
 You need to configure the path to your model, your microphone device-id
 and a dict that maps phrases to api-calls.
+
+    {
+      "model": "/usr/local/lib/vosk/model",
+      "device_id": 1,
+      "api_map": {
+        "radio": [
+          "_set_cmd_mode"
+        ],
+        ...
+      }
+    }
+
+Take special care regarding the "wake-word", which puts the voice-controller
+into command-mode. The default is "radio":
 
 You can pass `-L en` to `tools/vosk-map.py` to create an English map.
 Pull requests for additional languages are welcome, you mainly have
@@ -70,8 +88,8 @@ If you don't have a ReSpeaker and don't provide your own implementation,
 then don't copy anything or else you will run into trouble.
 
 
-Usage
-=====
+Activating Voice-Control
+========================
 
 Start the [commandline client](webradio_cli.md) with the option `-v`:
 
@@ -90,3 +108,22 @@ To automatically start the voice-controller at startup, run
 
 The service just starts the commandline client with the option `-v`
 as shown above.
+
+
+Usage
+=====
+
+To start a voice-command, first use the wake-word (default: "radio").
+This puts the controller into command-mode and will mute the radio.
+Then say the command, e.g. "channel two".
+
+If the detected phrase is within the api-map, the controller will
+pass the api to the api-processor. Otherwise, it will ignore the command.
+
+If you use a ReSpeaker and have configured the LEDController as
+described above, the hat will use the following colors:
+
+  - off:   waiting for (next) wake-word
+  - blue:  wake-word detected, waiting for command
+  - green: valid phrase, executing API
+  - red:   invalid phrase
