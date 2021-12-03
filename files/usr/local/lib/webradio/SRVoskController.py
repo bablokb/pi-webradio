@@ -177,11 +177,14 @@ class VoskController(Base):
               # only process valid commands ...
               if self._wmap[phrase][0] == "_set_cmd_mode":
                 self._on_active()
+                yield ["vol_mute_on"]
               elif self._cmd_mode:
                 # ... and only if in command-mode
                 self._on_success()
                 yield self._wmap[phrase]
                 self._on_inactive()
+                if self._wmap[phrase][0] != "vol_mute_on":
+                  yield ["vol_mute_off"]
               else:
                 self.msg("VoskController: not in command-mode, ignoring %s" %
                          phrase)
@@ -191,6 +194,7 @@ class VoskController(Base):
               if self._cmd_mode:
                 self._on_unknown()
                 self._on_inactive()
+                yield ["vol_mute_off"]
     except GeneratorExit:
       pass
     except:
