@@ -2,10 +2,17 @@ Configuring Voice-Control for Pi-Webradio
 =========================================
 
 Voice-Control is based on [Vosk](https://alphacephei.com/vosk/).
-This is currently a highly experimental and unstable feature. 
 
-These notes are for early adopters ready to spent some time to
-figure out what to do.
+Voice recognition and speech-to-text is local, i.e. no cloud-services
+are needed. Hardware prerequisites are a microphone and a Raspberry Pi
+with armv7-architecture (Vosk does not run on a Pi-Zero).
+
+Vosk has been successfully installed and tested on a Pi3 and a Pi-Zero-2
+using [Seeed's ReSpeeker 4-Mic Array for Raspberry Pi](https://wiki.seeedstudio.com/ReSpeaker_4_Mic_Array_for_Raspberry_Pi/)
+and
+[Waveshare's WM9860-Audio-Hat](http://www.waveshare.com/wiki/WM8960_Audio_HAT) with two microphones. Note that the
+latter is very similar to
+[Seeed's ReSpeaker 2-Mics Pi-Hat](https://wiki.seeedstudio.com/ReSpeaker_2_Mics_Pi_HAT/).
 
 
 Installation
