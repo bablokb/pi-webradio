@@ -15,7 +15,8 @@ The software has the following components:
   - a [web-GUI](doc/web-gui.md)
   - a [commandline client](doc/webradio_cli.md)
   - an integrated [client for Pirate-Audio-Hats](doc/pirate-audio.md)
-  - a highly experimental [voice control client](doc/voice-control.md)
+  - an [offline voice control client](doc/voice-control.md) using
+    [Vosk](https://alphacephei.com/vosk/)
 
 Although the webradio can be controlled from any browser, it is also
 possible to implement other clients by just using the [web-API](doc/API.md)
@@ -46,6 +47,7 @@ Documentation is a part of this Github-project:
   - [Web GUI](doc/web-gui.md)
   - [Commandline client](doc/webradio_cli.md)
   - [Using Pirate-Audio Hats](doc/pirate-audio.md)
+  - [Offline voice control](doc/voice-control.md)
   - [API](doc/API.md)
 
 Note: not all planned documentation might be available/complete yet.
