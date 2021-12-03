@@ -1,0 +1,19 @@
+#!/bin/bash
+# --------------------------------------------------------------------------
+# This script installs support for vosk. Please change the model according
+# to your language.
+#
+# Author: Bernhard Bablok
+# License: GPL3
+#
+# Website: https://github.com/bablokb/pi-webradio
+#
+# --------------------------------------------------------------------------
+
+MODEL="vosk-model-small-de-0.15"
+
+sudo pip3 install vosk sounddevice
+wget https://alphacephei.com/kaldi/models/"$MODEL".zip
+sudo mkdir /usr/local/lib/vosk
+sudo unzip -d /usr/local/lib/vosk "$MODEL".zip
+sudo ln -s "$MODEL" /usr/local/lib/vosk/model
