@@ -112,15 +112,25 @@ class App(object):
       "model":     "/usr/local/lib/vosk/model",
       "device_id": 1,
       "api_map": {
-        words["radio"]:       ["_set_cmd_mode"],
-        words["on"]:          ["radio_on"],
-        words["off"]:         ["radio_off"],
-        words["volume up"]:   ["vol_up"],
-        words["volume down"]: ["vol_down"],
-        words["next"]:        ["radio_play_next"],
-        words["previous"]:    ["radio_play_prev"],
-        words["stop"]:        ["sys_stop"],
-        words["quit"]:        ["_quit"]
+        words["radio"]:        ["_set_cmd_mode"],
+        words["on"]:           ["radio_on"],
+        words["off"]:          ["radio_off"],
+        words["pause"]:        ["radio_pause"],
+        words["resume"]:       ["radio_resume"],
+        words["mute on"]:      ["vol_mute_on"],
+        words["mute off"]:     ["vol_mute_off"],
+        words["volume up"]:    ["vol_up"],
+        words["volume down"]:  ["vol_down"],
+        words["next"]:         ["radio_play_next"],
+        words["previous"]:     ["radio_play_prev"],
+        words["record start"]: ["rec_start"],
+        words["record stop"]:  ["rec_stop"],
+        words["restart"]:      ["sys_restart"],
+        words["stop"]:         ["sys_stop"],
+        words["reboot"]:       ["sys_reboot"],
+        words["shutdown"]:     ["sys_halt"],
+        words["halt"]:         ["sys_halt"],
+        words["quit"]:         ["_quit"]
         }
       }
 
