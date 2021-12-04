@@ -12,7 +12,7 @@
 
 body {
   background: black;
-/*   height: 380px; */
+  height: 400px;
   width: 100%;
   margin: 0 auto;
   padding: 0;
@@ -172,7 +172,7 @@ main {
 }
 
 .play_info {
-  max-height: 390px;
+  max-height: 340px;
   flex-grow: 1;
   box-sizing: border-box;
   margin-left: 15px;
@@ -187,7 +187,6 @@ main {
 }
 
 .play_time {
-  min-height: 100px;
   display: flex;
   width: inherit;
   flex-direction: row;
