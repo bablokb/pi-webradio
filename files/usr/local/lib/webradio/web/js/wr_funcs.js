@@ -294,9 +294,6 @@ function handle_event_play(file) {
           wr_state.player.last_dir);
     $('#wr_play_logo').attr('src',cover_url);
   }
-
-  // (temporary) info for user
-  showMsg("playing " + file,2000);
 }
 
 function handle_event_pause(data) {
@@ -510,7 +507,7 @@ function player_play_dir(data) {
   $('#wr_infos').empty();
   $.getJSON('/api/player_play_dir',data,
     function(result) {
-      showMsg("playing directory",2000);
+      // do nothing
     }
   );
   openTab('tab_play',true);
