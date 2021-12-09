@@ -158,6 +158,9 @@ network-tab. Look for `mp3`, `m3u`, `icecast` or `shoutcast` in the
 list of urls (but beware, this is only a hint, not a necessity). You
 can also try to write a friendly mail to the radio station.
 
+An alternative list (also json, but with a different format) is maintained
+[here](https://github.com/SEPIA-Framework/sepia-assist-server/blob/master/Xtensions/ServiceProperties/radio-stations.json).
+
 
 Status
 ------
