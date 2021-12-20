@@ -335,8 +335,11 @@ function handle_event_dir_select(data) {
 }
 
 function handle_event_file_info(data) {
-  wr_state.player.time = [0,data.total];
-  $("#wr_time_cur").text("00:00");
+  if (!wr_update_play_time_id) {
+    wr_state.player.time[0] = 0;
+    $("#wr_time_cur").text("00:00");
+  }
+  wr_state.player.time[1] = data.total;
   $("#wr_time_tot").text(data.total_pretty);
 }
 
