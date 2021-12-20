@@ -211,6 +211,9 @@ class Player(Base):
     if self._backend.play(self._file,last):
       self._api.update_state(section="player",key="last_file",
                              value=os.path.basename(self._file),publish=False)
+    self._api.update_state(section="player",key="time",
+                           value=[0,file_info['total'],file_info['total_pretty']],
+                           publish=False)
     return file_info
 
   # --- stop playing   -------------------------------------------------------

@@ -128,7 +128,7 @@ function on_open_tab_play(internal=false) {
   }
 
   // open of tab either from user, or from event, so just
-  // play current file/curren channel
+  // play current file/current channel
   if (wr_state.mode == "player") {
     player_play_file({'file': null});
   } else {
@@ -240,7 +240,7 @@ function get_events() {
 
 function handle_event_state(data) {
   var update = false;
-  // only update tabid and mode
+  // only update selected fields
   if (data.webgui) {
     if (data.webgui.tabid) {
       update = wr_state.webgui.tabid !== data.webgui.tabid;
@@ -252,6 +252,10 @@ function handle_event_state(data) {
       $(".tablink").removeClass("menu_disabled");  // enable everything
     }
     wr_state.mode = data.mode;
+  }
+  if (data.player && data.player.time) {
+    wr_state.player.time[1] = data.player.time[1];
+    $("#wr_time_tot").text(data.player.time[2]);
   }
   // open tab according to state
   if (update) {
