@@ -120,7 +120,11 @@ class Mpg123(Base):
     if self._process:
       if self._play:
         check_url = url if url.startswith("http") else os.path.basename(url)
-        if check_url == self._url:   # do nothing, already playing
+        if check_url == self._url:   # already playing
+          if not url.startswith("http"):
+            self._op_event.clear()
+            self._process.stdin.write("SAMPLE\n")
+            self._op_event.wait()
           return False
         self.stop(last=False)        # since we are about to play another file
       self.msg("Mpg123: starting to play %s" % url)
@@ -260,6 +264,12 @@ class Mpg123(Base):
         self._pause = False
         self._api._push_event({'type': 'play',
                               'value': self._url})
+        self._op_event.set()
+      elif line.startswith("@SAMPLE"):
+        sample = line.split()
+        self._api._push_event({'type': 'sample',
+                              'value': {'elapsed': int(sample[1])/int(sample[2]),
+                                        'pause': self._pause}})
         self._op_event.set()
 
     self.msg("Mpg123: stopping mpg123 reader-thread")
