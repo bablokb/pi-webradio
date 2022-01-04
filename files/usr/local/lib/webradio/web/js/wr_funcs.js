@@ -55,8 +55,8 @@ wr_file2index = {};
 */
 wr_isPause = false;
 wr_update_play_time_id = null;
-function update_play_time() {
-  if (!wr_isPause) {
+function update_play_time(force=false) {
+  if (!wr_isPause || force) {
     // update elapsed time and display
     wr_state.player.time[0] += 1;
     h = ~~(wr_state.player.time[0] / 3600);
@@ -341,6 +341,18 @@ function handle_event_file_info(data) {
   }
   wr_state.player.time[1] = data.total;
   $("#wr_time_tot").text(data.total_pretty);
+}
+
+function handle_event_sample(data) {
+  wr_isPause = data.pause;
+  wr_state.player.time[0] = ~~(data.elapsed*wr_state.player.time[1]);
+  if (wr_isPause) {
+    wr_state.player.time[0] -= 1;
+    update_play_time(true);
+  }
+  if (!wr_update_play_time_id) {
+    wr_update_play_time_id = setInterval(update_play_time,1000);
+  }
 }
 
 /**
