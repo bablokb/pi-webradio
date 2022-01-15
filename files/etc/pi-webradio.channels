@@ -45,7 +45,7 @@
   },
 
   { "name": "hr 2 kultur",
-    "url":  "http://hr-hr2-live.cast.addradio.de/hr/hr2/live/mp3/128/stream.mp3",
+    "url":  "http://dispatcher.rndfnk.com/hr/hr2/live/mp3/high",
     "logo": "hr2-Kultur.png"
   },
 
