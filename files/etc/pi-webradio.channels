@@ -65,7 +65,7 @@
   },
 
   { "name": "Kultur Radio",
-    "url":  "http://rbb-rbbkultur-live.cast.addradio.de/rbb/rbbkultur/live/mp3/high",
+    "url":  "http://dispatcher.rndfnk.com/rbb/rbbkultur/live/mp3/high",
     "logo": "rbb-Kultur.png"
   },
 
