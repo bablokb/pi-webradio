@@ -147,17 +147,25 @@ function on_open_tab_files() {
     player_select_dir({'dir': '.'});
     return;
   } else {
-    // scroll to current file
-    if (wr_state.player.last_index > -1) {
-      $("#file_list").scrollTop(0);
-      $('#file_list').stop().animate({
-        'scrollTop': $('#f_'+wr_state.player.last_index).offset().top},
-        800, 'swing');
-    } else {
-      $("#file_list").scrollTop(0);
-    }
+    scroll_to_current_file();
   }
 };
+
+/**
+   Scroll to current file
+*/
+
+function scroll_to_current_file() {
+  // scroll to current file
+  if (wr_state.player.last_index > -1) {
+    $("#file_list").scrollTop(0);
+    $('#file_list').stop().animate({
+      'scrollTop': $('#f_'+wr_state.player.last_index).offset().top},
+      800, 'swing');
+  } else {
+    $("#file_list").scrollTop(0);
+  }
+}
 
 /**
   Update functions for all clocks
