@@ -113,7 +113,7 @@ class Player(Base):
 
     # check again
     if self._check_dir(self._dir):
-      self._get_dirinfo(self._dir)
+      self._get_dirinfo(self._dir,True)
 
     else:
       # oops, check failed, now check everything
@@ -126,7 +126,7 @@ class Player(Base):
         self._def_dir = self._root_dir
         self.msg("[WARNING] Player: using %s as fallback" % self._root_dir,True)
       self._dir = self._def_dir
-      self._get_dirinfo(self._dir)
+      self._get_dirinfo(self._dir,True)
 
     # also check files now
     if self._file and not self._check_file(self._file):
@@ -384,7 +384,7 @@ class Player(Base):
 
   # --- create directory info for given dir   --------------------------------
 
-  def _get_dirinfo(self,dir):
+  def _get_dirinfo(self,dir,init=False):
     """ create directory info """
 
     self._dirinfo =  {'dirs':  [], 'files': [], 'dur': []}
@@ -405,8 +405,8 @@ class Player(Base):
     self._dirinfo['files'].sort()
     self._dirinfo['dirs'].sort()
 
-    # set current file (keep existing)
-    if self._file:
+    # set current file
+    if self._file and init:
       self._dirinfo['cur_file'] = os.path.basename(self._file)
     else:
       if len(self._dirinfo['files']):
