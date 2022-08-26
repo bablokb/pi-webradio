@@ -421,7 +421,8 @@ function update_player_list(dirInfo) {
 
   $(".file_item:gt(0)").remove();              // only keep template
   wr_file2index = {};
-  $.each(dirInfo.files,function(index,file) {
+  $.each(dirInfo.files,function(index,f) {
+      var file = f.fname;
       wr_file2index[file] = index;
       var sep = "'";
       if (file.includes(sep)) {
@@ -439,7 +440,7 @@ function update_player_list(dirInfo) {
         .html("<div class=\"ch_txt\"></div>").text(file);
       item.children().eq(3).attr({"id": "f_"+index+"_duration",
             "onclick": "player_play_file({'file': "+sep+file+sep+"})"})
-        .html("<div class=\"ch_txt\">"+dirInfo.dur[index][1]+"</div>");
+        .html("<div class=\"ch_txt\">"+f.total_pretty+"</div>");
       // highlight current file
       if (file == dirInfo.cur_file) {
         item.addClass('file_item_selected');
