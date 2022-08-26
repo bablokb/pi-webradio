@@ -16,6 +16,7 @@ from . SRApi            import Api            as Api
 from . SREventFormatter import EventFormatter as EventFormatter
 from . SRRadioEvents    import RadioEvents    as RadioEvents
 from . SRRadio          import Radio          as Radio
+from . SRMP3Info        import MP3Info        as MP3Info
 from . SRPlayer         import Player         as Player
 from . SRRecorder       import Recorder       as Recorder
 from . SRMpg123         import Mpg123         as Mpg123
