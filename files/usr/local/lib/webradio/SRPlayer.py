@@ -14,7 +14,7 @@
 
 import os, time, datetime, subprocess, threading, copy, queue
 
-from webradio import Base
+from webradio import Base, MP3Info
 
 class Player(Base):
   """ Player-controller """
@@ -36,6 +36,8 @@ class Player(Base):
 
     self.read_config()
     self.register_apis()
+
+    self._mp3info = MP3Info(app)
 
   # --- read configuration   --------------------------------------------------
 
@@ -165,18 +167,6 @@ class Player(Base):
     else:
       return self._check_dir(os.path.dirname(path))
 
-  # --- pretty print duration/time   ----------------------------------------
-
-  def _pp_time(self,seconds):
-    """ pritty-print time as mm:ss or hh:mm """
-
-    m, s = divmod(seconds,60)
-    h, m = divmod(m,60)
-    if h > 0:
-      return "{0:02d}:{1:02d}:{2:02d}".format(h,m,s)
-    else:
-      return "{0:02d}:{1:02d}".format(m,s)
-
   # --- start playing   -------------------------------------------------------
 
   def player_play_file(self,file=None,last=True):
@@ -195,24 +185,27 @@ class Player(Base):
     if not self._file:
       raise ValueError("default file not set")
 
+    # query fileinfo.
+    base = os.path.basename(self._file)
     if self._dirinfo:
-      self._dirinfo['cur_file'] = self._file
+      self._dirinfo['cur_file'] = base
+      _,file_info = self._get_index(base)
+      file_info = copy.deepcopy(file_info)      # keep original as is
+    else:
+      file_info = self._mp3info.get_fileinfo(None,self._file)
+    # add info
+    file_info['last']  = last
 
     # this will push the information to all clients, even if the file
     # is already playing.
     # We might also need to push the elapsed time?!
 
-    total_secs = int(subprocess.check_output(["mp3info", "-p","%S",self._file]))
-    file_info = {'name': os.path.basename(self._file),
-                 'total': total_secs,
-                 'total_pretty': self._pp_time(total_secs),
-                 'last': last}
     self._api._push_event({'type': 'file_info', 'value': file_info })
     if self._backend.play(self._file,last):
       self._api.update_state(section="player",key="last_file",
                              value=os.path.basename(self._file),publish=False)
-    self._api.update_state(section="player",key="time",
-                           value=[0,file_info['total'],file_info['total_pretty']],
+    self._api.update_state(section="player",key="file_info",
+                           value=file_info,
                            publish=False)
     return file_info
 
@@ -320,7 +313,7 @@ class Player(Base):
       files = copy.deepcopy(self._dirinfo['files'])
     else:
       try:
-        index = self._dirinfo['files'].index(start)
+        index,_ = self._get_index(start)
         self.msg("Player: starting play_dir with file %s (index %i)" %
                  (start,index))
         files = copy.deepcopy(self._dirinfo['files'][index:])
@@ -332,6 +325,16 @@ class Player(Base):
     self._dirplay = threading.Thread(target=self._play_dir,args=(files,))
     self._dirplay.start()
 
+  # --- get index within file-list   -----------------------------------------
+
+  def _get_index(self,start):
+    """ return index for given filename """
+
+    for index, item in enumerate(self._dirinfo['files']):
+      if item['fname'] == start:
+        return index,item
+    raise ValueError()
+
   # --- play all files (helper)   --------------------------------------------
 
   def _play_dir(self,files):
@@ -341,7 +344,8 @@ class Player(Base):
     do_exit = False
 
     index_last = len(files)-1
-    for index,fname in enumerate(files):
+    for index,f in enumerate(files):
+      fname = f['fname']
       if do_exit:
         break
       self.msg("Player: _play_dir: playing next file %s" % fname)
@@ -387,39 +391,20 @@ class Player(Base):
   def _get_dirinfo(self,dir,init=False):
     """ create directory info """
 
-    self._dirinfo =  {'dirs':  [], 'files': [], 'dur': []}
-    self.msg("Player: collecting dir-info for %s" % dir)
+    self._dirinfo = self._mp3info.get_dirinfo(dir)
 
-    # first entry is parent directory
+    # first entry is parent directory unless in root-dir
     if self._dir != self._root_dir:
-      self._dirinfo['dirs'].append('..')
-
-    for f in os.listdir(dir):
-      if os.path.isfile(os.path.join(dir,f)):
-        if f.endswith(".mp3"):
-          self._dirinfo['files'].append(f)
-      else:
-        self._dirinfo['dirs'].append(f)
-
-    # ... and sort results
-    self._dirinfo['files'].sort()
-    self._dirinfo['dirs'].sort()
+      self._dirinfo['dirs'].insert(0,'..')
 
     # set current file
     if self._file and init:
       self._dirinfo['cur_file'] = os.path.basename(self._file)
     else:
       if len(self._dirinfo['files']):
-        self._file = os.path.join(self._dir,self._dirinfo['files'][0])
-        self._dirinfo['cur_file'] = self._dirinfo['files'][0]
+        self._file = os.path.join(self._dir,self._dirinfo['files'][0]['fname'])
+        self._dirinfo['cur_file'] = self._dirinfo['files'][0]['fname']
       else:
         self._dirinfo['cur_file'] = None
       self._api.update_state(section="player",key="last_file",
                              value= self._dirinfo['cur_file'],publish=False)
-
-    # add add time-info
-    for f in self._dirinfo['files']:
-      secs = int(subprocess.check_output(["mp3info",
-                                          "-p","%S",
-                                          os.path.join(dir,f)]))
-      self._dirinfo['dur'].append((secs,self._pp_time(secs)))
