@@ -54,6 +54,15 @@ class MP3Info(Base):
     #                                  track
     #                                      title
 
+    # as fallback, assume file = "artist - title.mp3"
+    ind = file.find('-')
+    if ind > 0:
+      artist = file[:ind-2]
+      title  = file[ind+2:len(file)-5]
+    else:
+      artist = ""
+      title  = ""
+
     try:
       mp3info = mp3info.decode("utf-8")
     except:
@@ -67,12 +76,24 @@ class MP3Info(Base):
     info['total_pretty'] = self._pp_time(info['total'])
     try:
       info['artist']       = tokens[1]
+    except:
+      info['artist']       = artist
+    try:
       info['comment']      = tokens[2]
+    except:
+      info['comment']      = ""
+    try:
       info['album']        = tokens[3]
+    except:
+      info['album']        = ""
+    try:
       info['track']        = int(tokens[4])
+    except:
+      info['track']        = 1
+    try:
       info['title']        = tokens[5]
     except:
-      pass
+      info['title']        = title
     self.msg("MP3Info: file-info: %s" % json.dumps(info))
     return info
 
