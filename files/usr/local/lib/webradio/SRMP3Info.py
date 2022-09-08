@@ -103,7 +103,8 @@ class MP3Info(Base):
     """ return directory info """
 
     info_file = os.path.join(dir,".dirinfo")
-    if os.path.exists(info_file):
+    mtime_dir = os.path.getmtime(dir)
+    if os.path.exists(info_file) and mtime_dir <= os.path.getmtime(info_file):
       try:
         f = open(info_file,"r")
         dirinfo = json.load(f)
