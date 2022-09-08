@@ -109,11 +109,22 @@ class MP3Info(Base):
         f = open(info_file,"r")
         dirinfo = json.load(f)
         close(f)
-        self.msg("MP3Info: using dir-info from %s" % info_file)
+        self.msg("MP3Info: using dir-info file %s" % info_file)
         return dirinfo
       except:
-        pass
-    return self._create_dirinfo(dir)
+        self.msg("MP3Info: could not load dir-info file %s" % info_file)
+
+    dirinfo = self._create_dirinfo(dir)
+    # only update dirinfo-file if it already existed before
+    if os.path.exists(info_file):
+      try:
+        f = open(info_file,"w")
+        json.dump(dirinfo,f,indent=2)
+        f.close()
+        self.msg("MP3Info: updating dir-info file %s" % info_file)
+      except:
+        self.msg("MP3Info: could not update dir-info file %s" % info_file)
+    return dirinfo
 
   # --- create directory info for given dir   --------------------------------
 
