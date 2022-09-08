@@ -100,6 +100,23 @@ class MP3Info(Base):
   # --- create directory info for given dir   --------------------------------
 
   def get_dirinfo(self,dir):
+    """ return directory info """
+
+    info_file = os.path.join(dir,".dirinfo")
+    if os.path.exists(info_file):
+      try:
+        f = open(info_file,"r")
+        dirinfo = json.load(f)
+        close(f)
+        self.msg("MP3Info: using dir-info from %s" % info_file)
+        return dirinfo
+      except:
+        pass
+    return self._create_dirinfo(dir)
+
+  # --- create directory info for given dir   --------------------------------
+
+  def _create_dirinfo(self,dir):
     """ create directory info """
 
     dirinfo = {'dirs':  [], 'files': []}
