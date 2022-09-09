@@ -12,7 +12,7 @@
 #
 # -----------------------------------------------------------------------------
 
-import os, subprocess, json
+import os, subprocess, json, traceback
 
 from webradio import Base
 
@@ -55,13 +55,13 @@ class MP3Info(Base):
     #                                      title
 
     # as fallback, assume file = "artist - title.mp3"
-    ind = file.find('-')
+    ind = file.find(' - ')
     if ind > 0:
-      artist = file[:ind-2]
-      title  = file[ind+2:len(file)-5]
+      artist = file[:ind]
+      title  = file[ind+3:len(file)-4]
     else:
       artist = ""
-      title  = ""
+      title  = file[0:len(file)-4]
 
     try:
       mp3info = mp3info.decode("utf-8")
@@ -76,6 +76,8 @@ class MP3Info(Base):
     info['total_pretty'] = self._pp_time(info['total'])
     try:
       info['artist']       = tokens[1]
+      if not info['artist']:
+        info['artist'] = artist
     except:
       info['artist']       = artist
     try:
@@ -92,12 +94,14 @@ class MP3Info(Base):
       info['track']        = 1
     try:
       info['title']        = tokens[5]
+      if not info['title']:
+        info['title'] = title
     except:
       info['title']        = title
     self.msg("MP3Info: file-info: %s" % json.dumps(info))
     return info
 
-  # --- create directory info for given dir   --------------------------------
+  # --- return directory info for given dir   --------------------------------
 
   def get_dirinfo(self,dir,force_save=False):
     """ return directory info """
@@ -108,11 +112,13 @@ class MP3Info(Base):
       try:
         f = open(info_file,"r")
         dirinfo = json.load(f)
-        close(f)
-        self.msg("MP3Info: using dir-info file %s" % info_file)
+        f.close()
+        self.msg("MP3Info: using existing dir-info file %s" % info_file,force_save)
         return dirinfo
       except:
         self.msg("MP3Info: could not load dir-info file %s" % info_file)
+        if self.debug:
+          traceback.print_exc()
 
     dirinfo = self._create_dirinfo(dir)
     # only update dirinfo-file if it already existed before
@@ -121,10 +127,22 @@ class MP3Info(Base):
         f = open(info_file,"w")
         json.dump(dirinfo,f,indent=2)
         f.close()
-        self.msg("MP3Info: updating dir-info file %s" % info_file)
+        self.msg("MP3Info: saving dir-info file %s" % info_file,force_save)
       except:
-        self.msg("MP3Info: could not update dir-info file %s" % info_file)
+        self.msg("MP3Info: could not write dir-info file %s" % info_file,force_save)
     return dirinfo
+
+  # --- recursively write directory info for given dir   ---------------------
+
+  def write_dirinfo(self,dir):
+    """ recursively write directory info """
+
+    if not os.path.isdir(dir):
+      self.msg("MP3Info: error: %d is no directory" % dir,True)
+      return
+    dirinfo = self.get_dirinfo(dir,True)
+    for d in dirinfo['dirs']:
+      self.write_dirinfo(os.path.join(dir,d))
 
   # --- create directory info for given dir   --------------------------------
 
