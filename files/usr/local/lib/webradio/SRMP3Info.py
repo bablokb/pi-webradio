@@ -99,7 +99,7 @@ class MP3Info(Base):
 
   # --- create directory info for given dir   --------------------------------
 
-  def get_dirinfo(self,dir):
+  def get_dirinfo(self,dir,force_save=False):
     """ return directory info """
 
     info_file = os.path.join(dir,".dirinfo")
@@ -116,7 +116,7 @@ class MP3Info(Base):
 
     dirinfo = self._create_dirinfo(dir)
     # only update dirinfo-file if it already existed before
-    if os.path.exists(info_file):
+    if os.path.exists(info_file) or force_save:
       try:
         f = open(info_file,"w")
         json.dump(dirinfo,f,indent=2)
