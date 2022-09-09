@@ -54,6 +54,11 @@ def get_parser():
     dest='target_dir',
     help='target directory for recordings')
 
+  parser.add_argument('-c', '--create-mp3-info', nargs=1,
+    metavar='root directory', default=None,
+    dest='do_info',
+    help='recursively create mp3-info files in root directory')
+
   parser.add_argument('-d', '--debug', action='store_true',
     dest='debug', default=False,
     help="force debug-mode (overrides config-file)")
@@ -100,6 +105,14 @@ def process_events(app,options,queue):
   except:
     pass
 
+# --- create mp3-info files   -------------------------------------------------
+
+def create_mp3info(app,root_dir):
+  """ create mp3info files """
+
+  mp3info = MP3Info(app)
+  mp3info.write_dirinfo(root_dir)
+
 # --- main program   ----------------------------------------------------------
 
 if __name__ == '__main__':
@@ -126,6 +139,8 @@ if __name__ == '__main__':
     PRINT_CHANNEL_FMT="{0:2d}: {1}"
     for channel in channels:
       print(PRINT_CHANNEL_FMT.format(channel['nr'],channel['name']))
+  elif options.do_info:
+    create_mp3info(app,options.do_info[0])
   else:
     ev_queue = app.api._add_consumer("main")
     threading.Thread(target=process_events,args=(app,options,ev_queue)).start()
