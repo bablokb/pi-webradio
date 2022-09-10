@@ -59,7 +59,6 @@ class MP3Info(Base):
     info                 = {}
     info['total']        = int(mp3info.info.time_secs)
     info['total_pretty'] = self._pp_time(info['total'])
-    info                 = {} 
     info['fname']        = file
     info['artist']       = mp3info.tag.artist if mp3info.tag.artist else artist
     info['album']        = mp3info.tag.album
