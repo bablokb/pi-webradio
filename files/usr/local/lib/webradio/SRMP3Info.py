@@ -19,6 +19,40 @@ from webradio import Base
 class MP3Info(Base):
   """ query MP3-info from files """
 
+  # encoding map to replace wrong encodings with the correct version
+  _ENC_MAP = {
+    "\u00c3\u0080": "À",
+    "\u00c3\u0084": "Ä",
+    "\u00c3\u0088": "È",
+    "\u00c3\u0089": "É",
+    "\u00c3\u0095": "Õ",
+    "\u00c3\u0096": "Ö",
+    "\u00c3\u009c": "Ü",
+    "\u00c3\u009f": "ß",
+    "\u00c3\u00a0": "à",
+    "\u00c3\u00a1": "á",
+    "\u00c3\u00a2": "â",
+    "\u00c3\u00a4": "ä",
+    "\u00c3\u00a7": "ç",
+    "\u00c3\u00a8": "è",
+    "\u00c3\u00a9": "é",
+    "\u00c3\u00aa": "ê",
+    "\u00c3\u00ab": "ë",
+    "\u00c3\u00ac": "ì",
+    "\u00c3\u00ad": "í",
+    "\u00c3\u00ae": "î",
+    "\u00c3\u00af": "ï",
+    "\u00c3\u00b1": "ñ",
+    "\u00c3\u00b2": "ò",
+    "\u00c3\u00b3": "ó",
+    "\u00c3\u00b4": "ô",
+    "\u00c3\u00b5": "õ",
+    "\u00c3\u00b6": "ö",
+    "\u00c3\u00b9": "ù",
+    "\u00c3\u00bb": "û",
+    "\u00c3\u00bc": "ü"
+    }
+
   def __init__(self,app):
     """ constructor """
 
@@ -46,13 +80,17 @@ class MP3Info(Base):
     else:
       f = os.path.join(dir,file)
 
-    # as fallback, assume file = "artist - title.mp3"
+    # TODO: defaults for artist/album from dirname
+    artist = ""
+    album  = ""
+    # defaults for artist/title from filename
+    # assumes file = "artist - title.mp3"
+    # TODO: support leading track number"
     ind = file.find(' - ')
     if ind > 0:
       artist = file[:ind]
       title  = file[ind+3:len(file)-4]
     else:
-      artist = ""
       title  = file[0:len(file)-4]
 
     mp3info = eyed3.load(f)
@@ -60,23 +98,39 @@ class MP3Info(Base):
     info['total']        = int(mp3info.info.time_secs)
     info['total_pretty'] = self._pp_time(info['total'])
     info['fname']        = file
-    info['artist']       = mp3info.tag.artist if mp3info.tag.artist else artist
-    info['album']        = mp3info.tag.album
-    info['track']        = mp3info.tag.track_num[0]
-    info['title']        = mp3info.tag.title if mp3info.tag.title else title
+    if mp3info.tag:
+      info['artist']       = mp3info.tag.artist if mp3info.tag.artist else artist
+      info['album']        = mp3info.tag.album if mp3info.tag.album else album
+      info['track']        = mp3info.tag.track_num[0]
+      info['title']        = mp3info.tag.title if mp3info.tag.title else title
 
-    # read raw comment field to have a chance to decode it correctly
-    # id2.3 does not support unicode, nevertheless it is used
-    if len(mp3info.tag.comments):
-      c = mp3info.tag.comments[0]
-      try:
-        info['comment'] = c.data[4:].lstrip(b'\x00').decode("utf-8")
-      except:
-        info['comment'] = c.data[4:].lstrip(b'\x00').decode("iso-8859-1")
-      info['comment'] = info['comment'].replace("\x00 ",": ")
+      # read raw comment field to have a chance to decode it correctly
+      # id2.3 does not support unicode, nevertheless it is used
+      if len(mp3info.tag.comments):
+        c = mp3info.tag.comments[0]
+        try:
+          info['comment'] = c.data[4:].lstrip(b'\x00').decode("utf-8")
+        except:
+          info['comment'] = c.data[4:].lstrip(b'\x00').decode("iso-8859-1")
+        info['comment'] = info['comment'].replace("\x00 ",": ")
+      else:
+        info['comment'] = ""
+
     else:
+      info['artist']  = artist
+      info['album']   = album
+      info['track']   = 1
+      info['title']   = title
       info['comment'] = ""
 
+    # fix some encoding errors
+    for tag in ['artist','album','title']:
+      v = info[tag]
+      if not v:
+        continue
+      for key,value in MP3Info._ENC_MAP.items():
+        v = v.replace(key,value)
+      info[tag] = v
     self.msg("MP3Info: file-info: %s" % json.dumps(info))
     return info
 
@@ -104,7 +158,7 @@ class MP3Info(Base):
     if os.path.exists(info_file) or force_save:
       try:
         f = open(info_file,"w")
-        json.dump(dirinfo,f,indent=2)
+        json.dump(dirinfo,f,indent=2,ensure_ascii=False)
         f.close()
         self.msg("MP3Info: saving dir-info file %s" % info_file,force_save)
       except:
