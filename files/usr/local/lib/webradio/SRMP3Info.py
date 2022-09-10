@@ -12,7 +12,7 @@
 #
 # -----------------------------------------------------------------------------
 
-import os, subprocess, json, traceback
+import os, subprocess, json, traceback, eyed3
 
 from webradio import Base
 
@@ -45,14 +45,6 @@ class MP3Info(Base):
       f = file
     else:
       f = os.path.join(dir,file)
-    mp3info = subprocess.check_output(
-      ["mp3info","-p","%S\n%a\n%c\n%l\n%n\n%t",f])
-    #                  total
-    #                      artist
-    #                          comment
-    #                              album
-    #                                  track
-    #                                      title
 
     # as fallback, assume file = "artist - title.mp3"
     ind = file.find(' - ')
@@ -63,41 +55,29 @@ class MP3Info(Base):
       artist = ""
       title  = file[0:len(file)-4]
 
-    try:
-      mp3info = mp3info.decode("utf-8")
-    except:
-      mp3info = mp3info.decode("iso-8859-1")
-
-    #tokenize and convert
-    tokens = mp3info.split("\n")
+    mp3info = eyed3.load(f)
+    info                 = {}
+    info['total']        = int(mp3info.info.time_secs)
+    info['total_pretty'] = self._pp_time(info['total'])
     info                 = {} 
     info['fname']        = file
-    info['total']        = int(tokens[0])
-    info['total_pretty'] = self._pp_time(info['total'])
-    try:
-      info['artist']       = tokens[1]
-      if not info['artist']:
-        info['artist'] = artist
-    except:
-      info['artist']       = artist
-    try:
-      info['comment']      = tokens[2]
-    except:
-      info['comment']      = ""
-    try:
-      info['album']        = tokens[3]
-    except:
-      info['album']        = ""
-    try:
-      info['track']        = int(tokens[4])
-    except:
-      info['track']        = 1
-    try:
-      info['title']        = tokens[5]
-      if not info['title']:
-        info['title'] = title
-    except:
-      info['title']        = title
+    info['artist']       = mp3info.tag.artist if mp3info.tag.artist else artist
+    info['album']        = mp3info.tag.album
+    info['track']        = mp3info.tag.track_num[0]
+    info['title']        = mp3info.tag.title if mp3info.tag.title else title
+
+    # read raw comment field to have a chance to decode it correctly
+    # id2.3 does not support unicode, nevertheless it is used
+    if len(mp3info.tag.comments):
+      c = mp3info.tag.comments[0]
+      try:
+        info['comment'] = c.data[4:].lstrip(b'\x00').decode("utf-8")
+      except:
+        info['comment'] = c.data[4:].lstrip(b'\x00').decode("iso-8859-1")
+      info['comment'] = info['comment'].replace("\x00 ",": ")
+    else:
+      info['comment'] = ""
+
     self.msg("MP3Info: file-info: %s" % json.dumps(info))
     return info
 
