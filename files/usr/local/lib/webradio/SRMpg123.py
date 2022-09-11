@@ -239,11 +239,6 @@ class Mpg123(Base):
       elif line.startswith("@I ICY-NAME"):
         self._api._push_event({'type': 'icy_name',
                               'value': line[13:].rstrip("\n")})
-      elif line.startswith("@I ID3v2"):
-        tag = line[9:].rstrip("\n").split(":")
-        self._api._push_event({'type': 'id3',
-                               'value': {'tag': tag[0],
-                                         'value': tag[1]}})
       elif line.startswith("@P 0"):
         # @P 0 is not reliable
         if self._play:

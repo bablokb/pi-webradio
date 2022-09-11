@@ -28,7 +28,6 @@ class EventFormatter(object):
     'play': 'playing {value}',
     'pause': 'pausing {value}',
     'file_info': '{fname}: {total_pretty}',
-    'id3': '{tag}: {value}',
     'keep_alive': 'current time: {value}',
     'eof': '{name} finished',
     'dir_select': 'current directory: {value}'
