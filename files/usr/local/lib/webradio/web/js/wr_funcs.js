@@ -349,6 +349,7 @@ function handle_event_file_info(data) {
   }
   wr_state.player.time[1] = data.total;
   $("#wr_time_tot").text(data.total_pretty);
+  wr_state.player.file_info = data;
 }
 
 function handle_event_sample(data) {
