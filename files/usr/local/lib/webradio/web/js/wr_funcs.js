@@ -223,6 +223,17 @@ function addInfo(txt) {
 };
 
 /**
+  Update id3-tags
+*/
+
+function update_id3_tags() {
+  $('#wr_infos').empty();
+  $.each(['title','artist','album','comment'],function(i,tag) {
+      addInfo(tag+": "+wr_state.player.file_info[tag]);
+    }) 
+}
+
+/**
   Setup SSE
 */
 
@@ -349,7 +360,10 @@ function handle_event_file_info(data) {
   }
   wr_state.player.time[1] = data.total;
   $("#wr_time_tot").text(data.total_pretty);
+
+  console.log("file_info:",data);
   wr_state.player.file_info = data;
+  update_id3_tags();
 }
 
 function handle_event_sample(data) {
