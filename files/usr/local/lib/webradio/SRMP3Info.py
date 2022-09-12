@@ -12,7 +12,7 @@
 #
 # -----------------------------------------------------------------------------
 
-import os, subprocess, json, traceback, eyed3
+import os, subprocess, re, json, traceback, eyed3
 
 from webradio import Base
 
@@ -77,21 +77,37 @@ class MP3Info(Base):
 
     if os.path.isabs(file):
       f = file
+      fname = os.path.basename(f)[0:-4]
+      dname = os.path.basename(os.path.dirname(f))
     else:
       f = os.path.join(dir,file)
+      fname = file[0:-4]
+      dname = os.path.basename(dir.rstrip(os.path.sep))
 
-    # TODO: defaults for artist/album from dirname
-    artist = ""
-    album  = ""
-    # defaults for artist/title from filename
-    # assumes file = "artist - title.mp3"
-    # TODO: support leading track number"
-    ind = file.find(' - ')
+    # defaults for artist/album from dirname
+    ind = dname.find(' - ')
     if ind > 0:
-      artist = file[:ind]
-      title  = file[ind+3:len(file)-4]
+      artist = dname[:ind]
+      album  = dname[ind+3:]
     else:
-      title  = file[0:len(file)-4]
+      artist = dname
+      album  = ""
+    self.msg("MP3Info: artist/album from directory: %s/%s" % (artist,album))
+
+    # defaults for artist/title from filename (without extension)
+    # Could be:
+    #   "artist - title"
+    #   "track.? ?title"
+    #   "track.? ?artist - title"
+    regex_track = r'(\d+.?)? ?(.+)'
+    _,_,fname,_ = re.split(regex_track,fname)   # remove track-number
+    ind = fname.find(' - ')
+    if ind > 0:
+      artist = fname[:ind]
+      title  = fname[ind+3]
+    else:
+      title  = fname                           # uses artist from dirname
+    self.msg("MP3Info: artist/title from filename: %s/%s" % (artist,title))
 
     mp3info = eyed3.load(f)
     info                 = {}
