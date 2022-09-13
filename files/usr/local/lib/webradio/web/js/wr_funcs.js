@@ -17,7 +17,7 @@
 function init_state() {
   $(".tablink").removeClass("menu_active");     // deactivate everything
   $(".tablink").addClass("menu_disabled");      // disable    everything
-  wr_state = {
+  wr_staete = {
     'webgui': {
       'tabid': 'tab_clock'
     },
@@ -114,13 +114,14 @@ function openTab(tabId,data) {
 */
 
 function on_open_tab_play(internal=false) {
-  // record-button only relevant for radio
   if (wr_state.mode == "player") {
     $('#wr_rec_btn').hide();
-    $('#wr_time').show();
+    $('#wr_radio').hide();
+    $('#wr_player').show();
   } else {
     $('#wr_rec_btn').show();
-    $('#wr_time').hide();
+    $('#wr_radio').show();
+    $('#wr_player').hide();
   }
 
   if (internal) {
@@ -208,7 +209,7 @@ function showMsg(text,time) {
 
 
 function addInfo(txt) {
-  var info_div = $('#wr_infos');
+  var info_div = $('#wr_radio');
   info_div.append('<div>'+txt+'</div>');
   shouldScroll = false;
   while (!shouldScroll) {
@@ -227,9 +228,8 @@ function addInfo(txt) {
 */
 
 function update_id3_tags() {
-  $('#wr_infos').empty();
-  $.each(['title','artist','album','comment'],function(i,tag) {
-      addInfo(tag+": "+wr_state.player.file_info[tag]);
+  $.each(['artist','title','album','comment'],function(i,tag) {
+      $('#wr_'+tag).text(wr_state.player.file_info[tag]);
     }) 
 }
 
@@ -329,7 +329,7 @@ function handle_event_eof(data) {
     clearInterval(wr_update_play_time_id);
     wr_update_play_time_id = null;
   }
-  $('#wr_infos').empty();
+  $('#wr_radio').empty();
   $('#wr_pause_btn').removeClass('far').addClass('fas').prop("disabled", true);
   if (data.last) {
     if (wr_state.mode == 'radio') {
@@ -361,7 +361,6 @@ function handle_event_file_info(data) {
   wr_state.player.time[1] = data.total;
   $("#wr_time_tot").text(data.total_pretty);
 
-  console.log("file_info:",data);
   wr_state.player.file_info = data;
   update_id3_tags();
 }
@@ -406,7 +405,7 @@ function getChannels() {
 */
 
 function update_channel_info(channel) {
-  $('#wr_infos').empty();
+  $('#wr_radio').empty();
   if (channel.logo) {
     $('#wr_play_logo').attr('src',channel.logo);
     $('#wr_play_name').empty();
@@ -529,8 +528,6 @@ function player_select_dir(data) {
 
 function player_play_file(data) {
   wr_state.mode = 'player';
-  // clear info-box
-  $('#wr_infos').empty();
 
   // tell server to start playing
   $.getJSON('/api/player_play_file',data,
@@ -547,7 +544,6 @@ function player_play_file(data) {
 
 function player_play_dir(data) {
   wr_state.mode = 'player';
-  $('#wr_infos').empty();
   $.getJSON('/api/player_play_dir',data,
     function(result) {
       // do nothing
