@@ -171,7 +171,7 @@ main {
   color: blue;
 }
 
-.play_info {
+.play_radio {
   max-height: 340px;
   flex-grow: 1;
   box-sizing: border-box;
