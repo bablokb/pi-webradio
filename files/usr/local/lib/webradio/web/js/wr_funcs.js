@@ -118,10 +118,12 @@ function on_open_tab_play(internal=false) {
     $('#wr_rec_btn').hide();
     $('#wr_radio').hide();
     $('#wr_player').show();
+    $('#wr_time').show();
   } else {
     $('#wr_rec_btn').show();
     $('#wr_radio').show();
     $('#wr_player').hide();
+    $('#wr_time').hide();
   }
 
   if (internal) {
