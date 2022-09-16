@@ -293,7 +293,10 @@ class Mpg123(Base):
         self._op_event.set()
       elif line.startswith("@SAMPLE"):
         sample = line.split()
-        self._elapsed = int(sample[1])/int(sample[2])
+        if int(sample[2]) > 0:
+          self._elapsed = int(sample[1])/int(sample[2])
+        else:
+          self._elapsed = 0
         self._api._push_event({'type': 'sample',
                               'value': {'elapsed': self._elapsed,
                                         'pause': self._pause}})
