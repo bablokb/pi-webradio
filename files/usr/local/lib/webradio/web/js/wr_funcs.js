@@ -17,7 +17,7 @@
 function init_state() {
   $(".tablink").removeClass("menu_active");     // deactivate everything
   $(".tablink").addClass("menu_disabled");      // disable    everything
-  wr_staete = {
+  wr_state = {
     'webgui': {
       'tabid': 'tab_clock'
     },
