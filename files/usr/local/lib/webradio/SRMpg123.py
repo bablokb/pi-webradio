@@ -158,6 +158,9 @@ class Mpg123(Base):
           self._process.stdin.write("PAUSE\n")
         else:
           self._process.stdin.write("LOAD %s\n" % url)
+          self._op_event.wait()
+          self._op_event.clear()
+          self._process.stdin.write("SAMPLE\n")
       self._op_event.wait()
       return True
     else:
