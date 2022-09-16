@@ -172,7 +172,7 @@ main {
 }
 
 .play_radio {
-  max-height: 340px;
+  max-height: 380px;
   flex-grow: 1;
   box-sizing: border-box;
   margin-left: 15px;
