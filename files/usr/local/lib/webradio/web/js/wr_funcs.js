@@ -517,6 +517,9 @@ function player_select_dir(data) {
     function(result) {
       $("#msgarea").empty();
       update_player_list(result);
+      if (data.dir == '.') {
+        scroll_to_current_file();
+      }
       openTab('tab_files');
     }
   );
