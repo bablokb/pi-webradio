@@ -197,6 +197,43 @@ main {
   font-size: 36px;
 }
 
+/* --- player (files)  ---------------------------------------------------- */
+
+.play_player {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  align-items: baseline;
+  align-content: flex-start;
+  max-height: 340px;
+  flex-grow: 1;
+  box-sizing: border-box;
+  margin-left: 15px;
+  padding: 16px;
+  border-style: double;
+  border-width: 5px;
+  border-color: blue;
+  border-radius: 5px;
+  color: lightblue;
+  overflow-y: auto;
+}
+
+.id3_artist {
+  font-size: 24px;
+}
+
+.id3_title {
+  font-size: 36px;
+}
+
+.id3_album {
+  font-size: 20px;
+}
+
+.id3_comment {
+  font-size: 18px;
+}
+
 .play_time_cur {
   padding-right: 15px;
 }
