@@ -81,7 +81,8 @@ class Player(Base):
     """ return persistent state (overrides SRBase.get_pesistent_state()) """
     return {
       'player_dir': self._dir,
-      'player_file': self._file
+      'player_file': self._file,
+      'player_elapsed': self._backend.elapsed()
       }
 
   # --- restore persistent state of this class   ------------------------------
@@ -96,6 +97,9 @@ class Player(Base):
     if 'player_file' in state_map:
       self._file = state_map['player_file']
       self.msg("Player: currrent file (tentative): %s" % self._file)
+    if 'player_elapsed' in state_map:
+      self._elapsed = state_map['player_elapsed']
+      self.msg("Player: elapsed: %s" % self._elapsed)
     self._api.update_state(section="player",key="last_dir",
                            value=self._dir[len(self._root_dir):]+os.path.sep,
                            publish=False)
@@ -133,6 +137,7 @@ class Player(Base):
     # also check files now
     if self._file and not self._check_file(self._file):
       self._file = None
+      self._elapsed = 0
 
     self._init_thread = None
     self.msg("Player: currrent dir:  %s" % self._dir)
@@ -180,6 +185,10 @@ class Player(Base):
         file = os.path.join(self._dir,file)
       if not self._check_file(file):
         raise ValueError("invalid filename %s" % file)
+      if self._file != file:
+        self._elapsed = 0
+      #else:
+      #  self._elapsed = self._backend.elapsed()
       self._file = file
 
     if not self._file:
@@ -201,7 +210,7 @@ class Player(Base):
     # We might also need to push the elapsed time?!
 
     self._api._push_event({'type': 'file_info', 'value': file_info })
-    if self._backend.play(self._file,last):
+    if self._backend.play(self._file,last,self._elapsed*file_info['total']):
       self._api.update_state(section="player",key="last_file",
                              value=os.path.basename(self._file),publish=False)
     self._api.update_state(section="player",key="file_info",
@@ -219,6 +228,7 @@ class Player(Base):
       self._dirplay.join()
     else:
       self._backend.stop()        # backend will publish eof-event
+    self._elapsed = 0
 
   # --- pause playing   -----------------------------------------------------
 
@@ -226,6 +236,7 @@ class Player(Base):
     """ pause playing (play->pause) """
 
     self._backend.pause()
+    self._elapsed = self._backend.elapsed()
 
   # --- resume playing   ----------------------------------------------------
 
@@ -240,6 +251,7 @@ class Player(Base):
     """ toggle playing (play->pause, pause->play) """
 
     self._backend.toggle()
+    self._elapsed = self._backend.elapsed()
 
   # --- select directory, return entries   ------------------------------------
 
@@ -362,6 +374,7 @@ class Player(Base):
           if ev:
             if ev['type'] == 'eof' and ev['value']['name'] == fname:
               self.msg("Player: processing eof for %s" % fname)
+              self._elapsed = 0
               break                              # start next file
           else:
             do_exit = True
