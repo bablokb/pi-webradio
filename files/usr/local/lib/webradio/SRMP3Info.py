@@ -117,30 +117,28 @@ class MP3Info(Base):
     if mp3info.tag:
       info['artist']       = mp3info.tag.artist if mp3info.tag.artist else artist
       info['album']        = mp3info.tag.album if mp3info.tag.album else album
-      info['track']        = mp3info.tag.track_num[0]
+      info['track']        = [mp3info.tag.track_num[0],
+                     mp3info.tag.track_num[1] if mp3info.tag.track_num[1] else 1]
       info['title']        = mp3info.tag.title if mp3info.tag.title else title
 
-      # read raw comment field to have a chance to decode it correctly
-      # id2.3 does not support unicode, nevertheless it is used
       if len(mp3info.tag.comments):
         c = mp3info.tag.comments[0]
-        try:
-          info['comment'] = c.data[4:].lstrip(b'\x00').decode("utf-8")
-        except:
-          info['comment'] = c.data[4:].lstrip(b'\x00').decode("iso-8859-1")
-        info['comment'] = info['comment'].replace("\x00 ",": ")
+        if c.description:
+          info['comment'] = "%s: %s" % (c.description,c.text)
+        else:
+          info['comment'] = c.text
       else:
         info['comment'] = ""
 
     else:
       info['artist']  = artist
       info['album']   = album
-      info['track']   = 1
+      info['track']   = [1,1]
       info['title']   = title
       info['comment'] = ""
 
     # fix some encoding errors
-    for tag in ['artist','album','title']:
+    for tag in ['artist','album','title','comment']:
       v = info[tag]
       if not v:
         continue
