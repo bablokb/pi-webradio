@@ -437,6 +437,8 @@ function update_player_list(dirInfo) {
 
   $(".file_item:gt(0)").remove();              // only keep template
   wr_file2index = {};
+  wr_state.player.last_index = -1;
+  wr_state.player.last_file  = null;
   $.each(dirInfo.files,function(index,f) {
       var file = f.fname;
       wr_file2index[file] = index;
@@ -521,6 +523,8 @@ function player_select_dir(data) {
       update_player_list(result);
       if (data.dir == '.') {
         scroll_to_current_file();
+      } else {
+        $("#file_list").scrollTop(0);
       }
       openTab('tab_files');
     }
