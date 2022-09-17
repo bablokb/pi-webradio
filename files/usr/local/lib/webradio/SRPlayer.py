@@ -12,7 +12,7 @@
 #
 # -----------------------------------------------------------------------------
 
-import os, time, datetime, subprocess, threading, copy, queue
+import os, time, datetime, threading, copy, queue
 
 from webradio import Base, MP3Info
 
