@@ -220,6 +220,14 @@ class Mpg123(Base):
         self.msg("Mpg123: ... exception during destroy of mpg123")
         pass
 
+  # --- jump to position   ----------------------------------------------------
+
+  def jump(self,elapsed):
+    """ jump to specified position (elapsed time in seconds) """
+
+    self._exec_cmd("JUMP %ss" % str(elapsed))
+    self._exec_cmd("SAMPLE")
+
   # --- execute mpg123-command   ----------------------------------------------
 
   def _exec_cmd(self,cmd,wait=True):
