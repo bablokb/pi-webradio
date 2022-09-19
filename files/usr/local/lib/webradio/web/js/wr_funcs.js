@@ -232,7 +232,9 @@ function addInfo(txt) {
 function update_id3_tags() {
   $.each(['artist','title','album','comment'],function(i,tag) {
       $('#wr_'+tag).text(wr_state.player.file_info[tag]);
-    }) 
+    });
+  $('#wr_track').text(wr_state.player.file_info['track'][0]);
+  $('#wr_track_total').text(wr_state.player.file_info['track'][1]);
 }
 
 /**

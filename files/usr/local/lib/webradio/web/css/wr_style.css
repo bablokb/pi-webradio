@@ -234,6 +234,10 @@ main {
   font-size: 22px;
 }
 
+.play_track {
+  padding-right: 15px;
+}
+
 .play_time_cur {
   padding-right: 15px;
 }
@@ -244,6 +248,10 @@ main {
 }
 
 .play_time_tot {
+  padding-left: 15px;
+}
+
+.play_track_total {
   padding-left: 15px;
 }
 
