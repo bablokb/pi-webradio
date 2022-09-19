@@ -95,7 +95,7 @@ class Mpg123(Base):
   # --- elapsed time   ---------------------------------------------------------
 
   def elapsed(self):
-    """ return elapsed time """
+    """ return relative elapsed time (0.0-1.0) """
 
     return self._elapsed
 
@@ -223,7 +223,7 @@ class Mpg123(Base):
   # --- jump to position   ----------------------------------------------------
 
   def jump(self,elapsed):
-    """ jump to specified position (elapsed time in seconds) """
+    """ jump to specified absolute position (elapsed time in seconds) """
 
     self._exec_cmd("JUMP %ss" % str(elapsed))
     self._exec_cmd("SAMPLE")
