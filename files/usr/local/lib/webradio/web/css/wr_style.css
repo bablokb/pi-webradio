@@ -219,19 +219,19 @@ main {
 }
 
 .id3_artist {
-  font-size: 24px;
+  font-size: 28px;
 }
 
 .id3_title {
-  font-size: 36px;
+  font-size: 40px;
 }
 
 .id3_album {
-  font-size: 20px;
+  font-size: 28px;
 }
 
 .id3_comment {
-  font-size: 18px;
+  font-size: 22px;
 }
 
 .play_time_cur {
