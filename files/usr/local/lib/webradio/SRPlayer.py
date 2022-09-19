@@ -71,6 +71,7 @@ class Player(Base):
     self._api.player_pause      = self.player_pause
     self._api.player_resume     = self.player_resume
     self._api.player_toggle     = self.player_toggle
+    self._api.player_set_pos    = self.player_set_pos
     self._api.player_select_dir = self.player_select_dir
     self._api.player_play_dir   = self.player_play_dir
     self._api._player_get_cover_file = self._player_get_cover_file
@@ -82,7 +83,7 @@ class Player(Base):
     return {
       'player_dir': self._dir,
       'player_file': self._file,
-      'player_elapsed': self._backend.elapsed()
+      'player_elapsed': self._backend.elapsed()   # 0.0-1.0 elapsed (relative)
       }
 
   # --- restore persistent state of this class   ------------------------------
@@ -207,7 +208,6 @@ class Player(Base):
 
     # this will push the information to all clients, even if the file
     # is already playing.
-    # We might also need to push the elapsed time?!
 
     self._api._push_event({'type': 'file_info', 'value': file_info })
     if self._backend.play(self._file,last,self._elapsed*file_info['total']):
@@ -252,6 +252,13 @@ class Player(Base):
 
     self._backend.toggle()
     self._elapsed = self._backend.elapsed()
+
+  # --- jump to selected position   -------------------------------------------
+
+  def player_set_pos(self,elapsed):
+    """ jump to given absolute position in seconds """
+
+    self._backend.jump(elapsed)
 
   # --- select directory, return entries   ------------------------------------
 
