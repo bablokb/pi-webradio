@@ -58,7 +58,7 @@
         <div id="wr_track" class="play_track"></div>
         <div id="wr_time_cur" class="play_time_cur"></div>
         <input id="wr_time_range" type="range" class="play_time_range"
-               min="0" max="100"></input>
+               min="0" max="100" onchange="player_set_pos()"></input>
         <div id="wr_time_tot" class="play_time_tot"></div>
         <div id="wr_track_total" class="play_track_total"></div>
       </div>

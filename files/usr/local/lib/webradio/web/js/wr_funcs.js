@@ -564,6 +564,17 @@ function player_play_dir(data) {
 };
 
 /**
+  Handle set position
+*/
+
+function player_set_pos(event) {
+  val = $('#wr_time_range').val();
+  $.getJSON('/api/player_set_pos',
+            {'elapsed': val/100*wr_state.player.time[1]}
+  );
+}
+
+/**
   Handle restart
 */
 
