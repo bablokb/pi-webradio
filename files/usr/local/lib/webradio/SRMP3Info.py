@@ -104,7 +104,7 @@ class MP3Info(Base):
     ind = fname.find(' - ')
     if ind > 0:
       artist = fname[:ind]
-      title  = fname[ind+3]
+      title  = fname[ind+3:]
     else:
       title  = fname                           # uses artist from dirname
     self.msg("MP3Info: artist/title from filename: %s/%s" % (artist,title))
