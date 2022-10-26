@@ -72,7 +72,7 @@ class MP3Info(Base):
 
   # --- create file info for a given file   ----------------------------------
 
-  def get_fileinfo(self,dir,file):
+  def get_fileinfo(self,dir,file,tracks=1):
     """ create file info """
 
     if os.path.isabs(file):
@@ -100,7 +100,12 @@ class MP3Info(Base):
     #   "track.? ?title"
     #   "track.? ?artist - title"
     regex_track = r'(\d+.?)? ?(.+)'
-    _,_,fname,_ = re.split(regex_track,fname)   # remove track-number
+    _,track,fname,_ = re.split(regex_track,fname)   # remove track-number
+    if track:
+      track = re.sub('[ .]','',track)
+    else:
+      track  = 1
+      tracks = 1                # no track-number in filename=>total tracks=1
     ind = fname.find(' - ')
     if ind > 0:
       artist = fname[:ind]
@@ -117,8 +122,9 @@ class MP3Info(Base):
     if mp3info.tag:
       info['artist']       = mp3info.tag.artist if mp3info.tag.artist else artist
       info['album']        = mp3info.tag.album if mp3info.tag.album else album
-      info['track']        = [mp3info.tag.track_num[0],
-                     mp3info.tag.track_num[1] if mp3info.tag.track_num[1] else 1]
+      info['track']        = [
+        mp3info.tag.track_num[0] if mp3info.tag.track_num[0] else track,
+        mp3info.tag.track_num[1] if mp3info.tag.track_num[1] else tracks]
       info['title']        = mp3info.tag.title if mp3info.tag.title else title
 
       if len(mp3info.tag.comments):
@@ -211,8 +217,8 @@ class MP3Info(Base):
     files.sort()
     dirinfo['dirs'].sort()
 
-    # add add time and mp3-info
+    # add time and mp3-info
     for f in files:
-      dirinfo['files'].append(self.get_fileinfo(dir,f))
+      dirinfo['files'].append(self.get_fileinfo(dir,f,tracks=len(files)))
 
     return dirinfo
