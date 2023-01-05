@@ -73,7 +73,7 @@ sed -i -e "/User=/s/=.*/=$USERNAME/" \
   /etc/systemd/system/${PROJECT}.service \
   /etc/systemd/system/${PROJECT}-cli.service \
   /etc/systemd/system/${PROJECT}-pirate-audio.service
-usermod -a -G audio "$USERNAME"
+usermod -a -G audio,input "$USERNAME"
 
 # --- activate service   ----------------------------------------------------
 
