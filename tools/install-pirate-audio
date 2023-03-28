@@ -43,7 +43,7 @@ fi
 if ! grep -q "^pio=25" /boot/config.txt ; then
   echo -e "[INFO] activating DAC in /boot/config.txt" 2>&1
   echo "# activate DAC" >> /boot/config.txt
-  echo "pio=25=op,dh" >> /boot/config.txt
+  echo "gpio=25=op,dh" >> /boot/config.txt
   echo "dtoverlay=hifiberry-dac" >> /boot/config.txt
 fi
     

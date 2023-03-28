@@ -28,7 +28,7 @@ and adds the following entries to `/boot/config.txt`:
     dtparam=audio=off
     
     # activate DAC
-    pio=25=op,dh
+    gpio=25=op,dh
     dtoverlay=hifiberry-dac
     
     #key-mapping: A->up, B->down, X->right, Y->left
