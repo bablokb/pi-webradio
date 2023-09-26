@@ -53,7 +53,7 @@ chmod 755 /usr/local/bin/webradio_cli.py
 chmod 755 /usr/local/bin/webradio_pirate_audio.py
 chmod 755 /usr/local/bin/webradio_chrome.sh
 chmod 644 /etc/${PROJECT}.conf
-chmod 644 /etc/${PROJECT}.channels
+chmod 666 /etc/${PROJECT}.channels
 chmod 644 /etc/systemd/system/${PROJECT}.service
 
 # restore old configuration
