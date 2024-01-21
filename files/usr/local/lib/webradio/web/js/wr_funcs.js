@@ -684,3 +684,29 @@ function rec_toggle() {
   $.get("/api/rec_toggle");
 };
 
+
+function on_open_tab_add_channel() {
+  var button = document.getElementById("add_channel_add_button")
+  button.addEventListener("click", function() {on_add_click();});
+  console.log("test: ", button.id)
+}
+function on_add_click(){
+       var name = document.getElementById("add_channel_name").value
+       var url = document.getElementById("add_channel_url").value
+       add_channel({'url': url, 'radio_name': name, 'logo': ""});
+    }
+/**
+    add channel (data should be {'url': url, 'radio_name': name, 'logo': logo, 'nr':nr})
+    where nr is optional
+*/
+function add_channel(data) {
+    console.log("add channel: ", data)
+    wr_state.mode = 'radio'; // TODO what does that?
+    $.get("api/radio_add_channel",data,
+      function(success) {
+        if(!success){ // TODO add proper error messages
+          showMsg("Error! Either you are not root or sth else went wrong.", 6000);
+        }
+      }
+    );
+};
