@@ -171,8 +171,8 @@ main {
   color: blue;
 }
 
-.play_info {
-  max-height: 340px;
+.play_radio {
+  max-height: 380px;
   flex-grow: 1;
   box-sizing: border-box;
   margin-left: 15px;
@@ -197,6 +197,48 @@ main {
   font-size: 36px;
 }
 
+/* --- player (files)  ---------------------------------------------------- */
+
+.play_player {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: baseline;
+  align-content: flex-start;
+  max-height: 340px;
+  flex-grow: 1;
+  box-sizing: border-box;
+  margin-left: 15px;
+  padding: 16px;
+  border-style: double;
+  border-width: 5px;
+  border-color: blue;
+  border-radius: 5px;
+  color: lightblue;
+  overflow-y: auto;
+}
+
+.id3_artist {
+  font-size: 28px;
+}
+
+.id3_title {
+  font-size: 40px;
+}
+
+.id3_album {
+  font-size: 28px;
+}
+
+.id3_comment {
+  font-size: 22px;
+}
+
+.play_track {
+  padding-right: 15px;
+  color: lightblue;
+}
+
 .play_time_cur {
   padding-right: 15px;
 }
@@ -208,6 +250,11 @@ main {
 
 .play_time_tot {
   padding-left: 15px;
+}
+
+.play_track_total {
+  padding-left: 15px;
+  color: lightblue;
 }
 
 input[type="range"] {

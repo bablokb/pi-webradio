@@ -44,6 +44,7 @@ Web API
 | rec_toggle                                  | toggle recording            | Recorder    |   Ok   |
 | -------------------------                   | -------------------------   |-------------|--------|
 | player_play_file(file)                      | play selected file          | Player      |   Ok   |
+| player_set_pos(secs)                        | jump to given offset        | Player      |   Ok   |
 | player_play_dir(start)                      | play all files in dir       | Player      |   Ok   |
 | player_select_dir(dir)                      | select directory            | Player      |   Ok   |
 | player_stop                                 | stop playing                | Player      |   Ok   |

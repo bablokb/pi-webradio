@@ -32,6 +32,7 @@ class Mpg123(Base):
     self._play      = False
     self._pause     = False
     self._volume    = -1
+    self._elapsed   = 0
     self._mute      = False
     self._url       = None
 
@@ -91,6 +92,13 @@ class Mpg123(Base):
 
     return self._process is not None and self._process.poll() is None
 
+  # --- elapsed time   ---------------------------------------------------------
+
+  def elapsed(self):
+    """ return relative elapsed time (0.0-1.0) """
+
+    return self._elapsed
+
   # --- create player in the background in remote-mode   ----------------------
 
   def create(self):
@@ -114,7 +122,7 @@ class Mpg123(Base):
 
   # --- play URL/file   -------------------------------------------------------
 
-  def play(self,url,last=True):
+  def play(self,url,last=True,elapsed=-1):
     """ start playing, return True if a new file/url is started """
 
     if self._process:
@@ -122,9 +130,7 @@ class Mpg123(Base):
         check_url = url if url.startswith("http") else os.path.basename(url)
         if check_url == self._url:   # already playing
           if not url.startswith("http"):
-            self._op_event.clear()
-            self._process.stdin.write("SAMPLE\n")
-            self._op_event.wait()
+            self._exec_cmd("SAMPLE")
           return False
         self.stop(last=False)        # since we are about to play another file
       self.msg("Mpg123: starting to play %s" % url)
@@ -133,12 +139,17 @@ class Mpg123(Base):
         self._url   = url
       else:
         self._url   = os.path.basename(url)
-      self._op_event.clear()
       if url.endswith(".m3u"):
-        self._process.stdin.write("LOADLIST 0 %s\n" % url)
+        self._exec_cmd("LOADLIST 0 %s" % url)
       else:
-        self._process.stdin.write("LOAD %s\n" % url)
-      self._op_event.wait()
+        if elapsed > 0:
+          self._exec_cmd("LOADPAUSED %s" % url)
+          self._exec_cmd("JUMP %ss" % elapsed)
+          self._exec_cmd("SAMPLE")
+          self._exec_cmd("PAUSE")
+        else:
+          self._exec_cmd("LOAD %s" % url)
+          self._exec_cmd("SAMPLE")
       return True
     else:
       return False
@@ -153,9 +164,8 @@ class Mpg123(Base):
     if self._process:
       self.msg("Mpg123: stopping current url/file: %s" % self._url)
       self._last = last
-      self._op_event.clear()
-      self._process.stdin.write("STOP\n")
-      self._op_event.wait()
+      self._exec_cmd("STOP")
+      self._elapsed   = 0
 
   # --- pause playing   -------------------------------------------------------
 
@@ -167,9 +177,8 @@ class Mpg123(Base):
     if self._process:
       self.msg("Mpg123: pausing playback")
       if not self._pause:
-        self._op_event.clear()
-        self._process.stdin.write("PAUSE\n")
-        self._op_event.wait()
+        self._exec_cmd("PAUSE")
+        self._exec_cmd("SAMPLE")
 
   # --- continue playing   ----------------------------------------------------
 
@@ -181,9 +190,7 @@ class Mpg123(Base):
     if self._process:
       self.msg("Mpg123: resuming playback")
       if self._pause:
-        self._op_event.clear()
-        self._process.stdin.write("PAUSE\n")
-        self._op_event.wait()
+        self._exec_cmd("PAUSE")
 
   # --- toggle playing   ------------------------------------------------------
 
@@ -194,9 +201,8 @@ class Mpg123(Base):
       return
     if self._process:
       self.msg("Mpg123: toggle playback")
-      self._op_event.clear()
-      self._process.stdin.write("PAUSE\n")
-      self._op_event.wait()
+      self._exec_cmd("PAUSE")
+      self._exec_cmd("SAMPLE")
 
   # --- stop player   ---------------------------------------------------------
 
@@ -206,13 +212,31 @@ class Mpg123(Base):
     if self._process:
       self.msg("Mpg123: stopping mpg123 ...")
       try:
-        self._process.stdin.write("QUIT\n")
+        self._exec_cmd("QUIT",wait=False)
         self._process.wait(5)
         self.msg("Mpg123: ... done")
       except:
         # can't do anything about it
         self.msg("Mpg123: ... exception during destroy of mpg123")
         pass
+
+  # --- jump to position   ----------------------------------------------------
+
+  def jump(self,elapsed):
+    """ jump to specified absolute position (elapsed time in seconds) """
+
+    self._exec_cmd("JUMP %ss" % str(elapsed))
+    self._exec_cmd("SAMPLE")
+
+  # --- execute mpg123-command   ----------------------------------------------
+
+  def _exec_cmd(self,cmd,wait=True):
+    """ execute mpg123-command """
+
+    self._op_event.clear()
+    self._process.stdin.write(cmd+"\n")
+    if wait:
+      self._op_event.wait()
 
   # --- process output of mpg123   --------------------------------------------
 
@@ -239,20 +263,16 @@ class Mpg123(Base):
       elif line.startswith("@I ICY-NAME"):
         self._api._push_event({'type': 'icy_name',
                               'value': line[13:].rstrip("\n")})
-      elif line.startswith("@I ID3v2"):
-        tag = line[9:].rstrip("\n").split(":")
-        self._api._push_event({'type': 'id3',
-                               'value': {'tag': tag[0],
-                                         'value': tag[1]}})
       elif line.startswith("@P 0"):
         # @P 0 is not reliable
         if self._play:
           self._api._push_event({'type': 'eof',
                                  'value': {'name': self._url,
                                            'last': self._last}})
-          self._url   = None
-          self._pause = False
-          self._play  = False
+          self._url     = None
+          self._pause   = False
+          self._play    = False
+          self._elapsed = 0
           self._op_event.set()
       elif line.startswith("@P 1"):
         self._pause = True
@@ -267,9 +287,15 @@ class Mpg123(Base):
         self._op_event.set()
       elif line.startswith("@SAMPLE"):
         sample = line.split()
+        if int(sample[2]) > 0:
+          self._elapsed = int(sample[1])/int(sample[2])
+        else:
+          self._elapsed = 0
         self._api._push_event({'type': 'sample',
-                              'value': {'elapsed': int(sample[1])/int(sample[2]),
+                              'value': {'elapsed': self._elapsed,
                                         'pause': self._pause}})
+        self._op_event.set()
+      elif line.startswith("@J"):
         self._op_event.set()
 
     self.msg("Mpg123: stopping mpg123 reader-thread")
@@ -307,7 +333,7 @@ class Mpg123(Base):
     self._volume = val
     if self._process:
       self.msg("Mpg123: setting current volume to: %d%%" % val)
-      self._process.stdin.write("VOLUME %d\n" % val)
+      self._exec_cmd("VOLUME %d" % val,wait=False)
       self._api._push_event({'type': 'vol_set',
                               'value': self._volume})
       return self._volume

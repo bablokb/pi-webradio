@@ -60,6 +60,10 @@ class WebRadio(Base):
       self.backend  = None
       self.radio    = Radio(self)
       self._objects = [self,self.radio]
+    elif options.do_info:
+      self.backend  = None
+      self.radio    = None
+      self._objects = [self]
     else:
       self._events  = RadioEvents(self)
       self._server  = WebServer(self)

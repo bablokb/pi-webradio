@@ -41,12 +41,26 @@
       </div>
     </div>
     <div id="wr_info_column" class="play_right">       <!-- second column  -->
-      <div id="wr_infos" class="play_info"></div>      <!-- info area      -->
-      <div id="wr_time" class="play_time">             <!-- current/total  -->
+
+      <!-- in radio mode   ----------------------------------------------  -->
+
+      <div id="wr_radio" class="play_radio"></div>    <!-- info area      -->
+
+      <!-- in player mode   ---------------------------------------------  -->
+
+      <div id="wr_player" class="play_player">
+        <div id="wr_artist"  class="id3_artist"></div>
+        <div id="wr_title"   class="id3_title"></div>
+        <div id="wr_album"   class="id3_album"></div>
+        <div id="wr_comment" class="id3_comment"></div>
+      </div>
+      <div id="wr_time" class="play_time">           <!-- current/total  -->
+        <div id="wr_track" class="play_track"></div>
         <div id="wr_time_cur" class="play_time_cur"></div>
         <input id="wr_time_range" type="range" class="play_time_range"
-               min="0" max="100"></input>
+               min="0" max="100" onchange="player_set_pos()"></input>
         <div id="wr_time_tot" class="play_time_tot"></div>
+        <div id="wr_track_total" class="play_track_total"></div>
       </div>
     </div>
   </div>

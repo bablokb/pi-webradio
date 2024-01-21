@@ -114,12 +114,15 @@ function openTab(tabId,data) {
 */
 
 function on_open_tab_play(internal=false) {
-  // record-button only relevant for radio
   if (wr_state.mode == "player") {
     $('#wr_rec_btn').hide();
+    $('#wr_radio').hide();
+    $('#wr_player').show();
     $('#wr_time').show();
   } else {
     $('#wr_rec_btn').show();
+    $('#wr_radio').show();
+    $('#wr_player').hide();
     $('#wr_time').hide();
   }
 
@@ -208,7 +211,7 @@ function showMsg(text,time) {
 
 
 function addInfo(txt) {
-  var info_div = $('#wr_infos');
+  var info_div = $('#wr_radio');
   info_div.append('<div>'+txt+'</div>');
   shouldScroll = false;
   while (!shouldScroll) {
@@ -223,6 +226,18 @@ function addInfo(txt) {
 };
 
 /**
+  Update id3-tags
+*/
+
+function update_id3_tags() {
+  $.each(['artist','title','album','comment'],function(i,tag) {
+      $('#wr_'+tag).text(wr_state.player.file_info[tag]);
+    });
+  $('#wr_track').text(wr_state.player.file_info['track'][0]);
+  $('#wr_track_total').text(wr_state.player.file_info['track'][1]);
+}
+
+/**
   Setup SSE
 */
 
@@ -232,7 +247,7 @@ function get_events() {
                                              {max_retry_time: 5000});
     source.addEventListener('message', function(e) {
       data = JSON.parse(e.data);
-      if (['icy_meta', 'icy_name','id3'].includes(data.type)) {
+      if (['icy_meta', 'icy_name'].includes(data.type)) {
         addInfo(data.text);
       } else {
         // window["handle_event_"+data.type]?.(data.value);
@@ -318,7 +333,7 @@ function handle_event_eof(data) {
     clearInterval(wr_update_play_time_id);
     wr_update_play_time_id = null;
   }
-  $('#wr_infos').empty();
+  $('#wr_radio').empty();
   $('#wr_pause_btn').removeClass('far').addClass('fas').prop("disabled", true);
   if (data.last) {
     if (wr_state.mode == 'radio') {
@@ -349,6 +364,9 @@ function handle_event_file_info(data) {
   }
   wr_state.player.time[1] = data.total;
   $("#wr_time_tot").text(data.total_pretty);
+
+  wr_state.player.file_info = data;
+  update_id3_tags();
 }
 
 function handle_event_sample(data) {
@@ -391,7 +409,7 @@ function getChannels() {
 */
 
 function update_channel_info(channel) {
-  $('#wr_infos').empty();
+  $('#wr_radio').empty();
   if (channel.logo) {
     $('#wr_play_logo').attr('src',channel.logo);
     $('#wr_play_name').empty();
@@ -421,7 +439,10 @@ function update_player_list(dirInfo) {
 
   $(".file_item:gt(0)").remove();              // only keep template
   wr_file2index = {};
-  $.each(dirInfo.files,function(index,file) {
+  wr_state.player.last_index = -1;
+  wr_state.player.last_file  = null;
+  $.each(dirInfo.files,function(index,f) {
+      var file = f.fname;
       wr_file2index[file] = index;
       var sep = "'";
       if (file.includes(sep)) {
@@ -439,7 +460,7 @@ function update_player_list(dirInfo) {
         .html("<div class=\"ch_txt\"></div>").text(file);
       item.children().eq(3).attr({"id": "f_"+index+"_duration",
             "onclick": "player_play_file({'file': "+sep+file+sep+"})"})
-        .html("<div class=\"ch_txt\">"+dirInfo.dur[index][1]+"</div>");
+        .html("<div class=\"ch_txt\">"+f.total_pretty+"</div>");
       // highlight current file
       if (file == dirInfo.cur_file) {
         item.addClass('file_item_selected');
@@ -502,6 +523,11 @@ function player_select_dir(data) {
     function(result) {
       $("#msgarea").empty();
       update_player_list(result);
+      if (data.dir == '.') {
+        scroll_to_current_file();
+      } else {
+        $("#file_list").scrollTop(0);
+      }
       openTab('tab_files');
     }
   );
@@ -513,8 +539,6 @@ function player_select_dir(data) {
 
 function player_play_file(data) {
   wr_state.mode = 'player';
-  // clear info-box
-  $('#wr_infos').empty();
 
   // tell server to start playing
   $.getJSON('/api/player_play_file',data,
@@ -531,7 +555,6 @@ function player_play_file(data) {
 
 function player_play_dir(data) {
   wr_state.mode = 'player';
-  $('#wr_infos').empty();
   $.getJSON('/api/player_play_dir',data,
     function(result) {
       // do nothing
@@ -539,6 +562,17 @@ function player_play_dir(data) {
   );
   openTab('tab_play',true);
 };
+
+/**
+  Handle set position
+*/
+
+function player_set_pos(event) {
+  val = $('#wr_time_range').val();
+  $.getJSON('/api/player_set_pos',
+            {'elapsed': val/100*wr_state.player.time[1]}
+  );
+}
 
 /**
   Handle restart
