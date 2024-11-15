@@ -25,7 +25,9 @@ if [ -n "$PACKAGES" ]; then
 fi
 
 # install PIP3 packages
-[ -n "$PACKAGES_PIP" ] && pip3 --disable-pip-version-check install $PACKAGES_PIP
+[ -n "$PACKAGES_PIP" ] && \
+   pip3 --disable-pip-version-check \
+        --break-system-packages install $PACKAGES_PIP
 
 # --- configure system   ----------------------------------------------------
 
