@@ -26,8 +26,8 @@ fi
 
 # install PIP3 packages
 [ -n "$PACKAGES_PIP" ] && \
-   pip3 --disable-pip-version-check \
-        --break-system-packages install $PACKAGES_PIP
+   pip3 --disable-pip-version-check install \
+        --break-system-packages $PACKAGES_PIP
 
 # --- install specific files   ----------------------------------------------
 
