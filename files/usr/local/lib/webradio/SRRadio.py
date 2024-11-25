@@ -67,6 +67,7 @@ class Radio(Base):
     self._api.radio_play_channel   = self.radio_play_channel
     self._api.radio_play_next      = self.radio_play_next
     self._api.radio_play_prev      = self.radio_play_prev
+    self._api.radio_add_channel    = self.radio_add_channel
 
   # --- return persistent state of this class   -------------------------------
 
@@ -88,6 +89,39 @@ class Radio(Base):
     self._api.update_state(section="radio",key="channel_nr",
                            value=self._last_channel,publish=False)
 
+  # --- add channel   ---------------------------------------------------------
+
+  def radio_add_channel(self, url, radio_name, logo, nr=None):
+    """ add channel"""
+
+    if url is None:
+      return False #TODO add proper error messages
+    if radio_name is None:
+      return False
+    if logo == "":
+      logo = None
+
+    channel = {
+      "name": radio_name,
+      "url": url,
+      "logo": logo
+    }
+    # TODO check if name is available !!!
+    if nr == None:
+      self._channels.append(channel)
+    else:
+      self._channels.insert(nr, channel)
+
+    try:
+      with open(self._channel_file, "w") as fp:
+        json.dump(self._channels, fp, indent=2)
+    except PermissionError:
+      # TODO consider moving pi-webradio.channels (and conf) into user dir instead of root /etc
+      return False
+
+    # reload and give back state for error handling
+    return self.read_channels()
+
   # --- read channels   -------------------------------------------------------
 
   def read_channels(self):
@@ -102,22 +136,26 @@ class Radio(Base):
       nr=1
       for channel in self._channels:
         channel['nr'] = nr
-        logo_path = os.path.join(self._web_root,"images",channel['logo'])
-        if os.path.exists(logo_path):
-          channel['logo'] = os.path.join("images",channel['logo'])
-        else:
-          channel['logo'] = None
+        if 'logo' in channel and channel['logo'] is not None:
+          logo_path = os.path.join(self._web_root,"images",channel['logo'])
+          if os.path.exists(logo_path):
+            channel['logo'] = os.path.join("images",channel['logo'])
+          else:
+            channel['logo'] = None
         nr += 1
+      return True
     except:
       self.msg("Radio: Loading channels failed")
       if self.debug:
         traceback.print_exc()
+      return False
 
   # --- get channel info   ----------------------------------------------------
 
   def radio_get_channel(self,nr=0):
     """ return info-dict {name,url,logo} for channel nr """
 
+    self.read_channels()
     try:
       nr = int(nr)
     except:
@@ -135,6 +173,7 @@ class Radio(Base):
   def radio_get_channels(self):
     """ return complete channel-list """
 
+    self.read_channels()
     return [dict(c) for c in self._channels]
 
   # --- play given channel   --------------------------------------------------

@@ -22,6 +22,8 @@
         onclick="openTab('tab_play')"><i class="fas fa-play"></i></a>
   <a id="tab_files_link" class="tablink" href="#"
         onclick="openTab('tab_files')"><i class="fas fa-file-audio"></i></a>
+  <a id="tab_add_channel_link" class="tablink" href="#"
+        onclick="openTab('tab_add_channel')"><i class="fas fa-folder-plus"></i></a>
   <a id="tab_special_link" class="tablink" href="#"
         onclick="openTab('tab_special')"><i class="fas fa-wrench"></i></a>
 </div>
